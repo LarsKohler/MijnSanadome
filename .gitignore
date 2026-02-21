@@ -4,6 +4,9 @@ node_modules/
 # Vercel
 .vercel
 
+# Supabase config (bevat keys)
+config.js
+
 # Environment
 .env
 .env.local

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inloggen · Sanadome HRMS</title>
+  <title>Inloggen · MijnSanadome</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
@@ -41,9 +41,9 @@
       min-height: 100vh;
     }
 
-    /* Linkerhelft – branding */
+    /* Rechterhelft – branding */
     .brand-side {
-      flex: 1;
+      flex: 0 0 50%;
       background: linear-gradient(160deg, var(--sanadome-blue-pale) 0%, var(--sanadome-blue-mist) 50%, rgba(255,255,255,0.95) 100%);
       display: flex;
       flex-direction: column;
@@ -91,6 +91,15 @@
       margin-bottom: 2.5rem;
     }
 
+    .brand-welcome {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--sanadome-blue);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
     .brand-tagline {
       font-size: 1.05rem;
       font-weight: 400;
@@ -106,17 +115,57 @@
       opacity: 0.6;
     }
 
-    /* Rechterhelft – formulier */
+    /* MijnSanadome logo */
+    .logo-mijnsanadome {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      margin-bottom: 2rem;
+    }
+    .logo-mijnsanadome svg {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+    }
+    .logo-mijnsanadome-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--sanadome-text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .logo-mijnsanadome-text span {
+      color: var(--sanadome-blue);
+      font-weight: 700;
+    }
+    .logo-mijnsanadome--large {
+      margin-bottom: 1.5rem;
+    }
+    .logo-mijnsanadome--large svg {
+      width: 48px;
+      height: 48px;
+    }
+    .logo-mijnsanadome--large .logo-mijnsanadome-text {
+      font-size: 1.6rem;
+      color: var(--sanadome-blue);
+    }
+    .logo-mijnsanadome--large .logo-mijnsanadome-text span {
+      color: var(--sanadome-blue-light);
+      font-weight: 600;
+    }
+
+    /* Linkerhelft – formulier */
     .form-side {
-      width: 480px;
-      min-width: 400px;
+      flex: 0 0 50%;
       background: var(--white);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 3rem;
-      box-shadow: -8px 0 32px rgba(45, 55, 72, 0.04);
+      box-shadow: 8px 0 32px rgba(45, 55, 72, 0.04);
     }
 
     .form-container {
@@ -128,6 +177,14 @@
       margin-bottom: 2rem;
     }
 
+    .welcome-greeting {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--sanadome-blue);
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.02em;
+    }
+
     .form-title {
       font-size: 1.5rem;
       font-weight: 600;
@@ -137,7 +194,8 @@
     .form-subtitle {
       font-size: 0.9rem;
       color: var(--sanadome-text-soft);
-      margin-top: 0.35rem;
+      margin-top: 0.5rem;
+      line-height: 1.5;
     }
 
     .form-group {
@@ -240,6 +298,21 @@
       transform: scale(0.99);
     }
 
+    .btn-login:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .login-error {
+      font-size: 0.875rem;
+      color: #c53030;
+      background: #fff5f5;
+      border: 1px solid #feb2b2;
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+    }
+
     .footer-note {
       margin-top: 2rem;
       font-size: 0.8rem;
@@ -263,7 +336,10 @@
         padding: 2rem 1.5rem;
       }
 
-      .logo-text { font-size: 1.6rem; }
+      .logo-mijnsanadome svg { width: 36px; height: 36px; }
+      .logo-mijnsanadome .logo-mijnsanadome-text { font-size: 1.2rem; }
+      .logo-mijnsanadome--large svg { width: 40px; height: 40px; }
+      .logo-mijnsanadome--large .logo-mijnsanadome-text { font-size: 1.35rem; }
       .logo-sub { font-size: 0.8rem; margin-bottom: 1rem; }
       .brand-tagline { font-size: 0.95rem; }
 
@@ -278,22 +354,25 @@
 </head>
 <body>
   <div class="split-screen">
-    <aside class="brand-side">
-      <div class="brand-content">
-        <h1 class="logo-text">Sanadome</h1>
-        <p class="logo-sub">Hotel & Spa</p>
-        <div class="divider-ornament"></div>
-        <p class="brand-tagline">
-          HRMS voor het beheer van ons team. Veilig en persoonlijk inloggen op het medewerkersportaal.
-        </p>
-      </div>
-    </aside>
-
     <main class="form-side">
       <div class="form-container">
+        <div class="logo-mijnsanadome" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+            <path d="M12 28V16l8 7 8-7v12h-3V19l-5 4.5-5-4.5v9H12z" fill="white"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4a7c9c"/>
+                <stop offset="1" stop-color="#6b9bb8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="logo-mijnsanadome-text">Mijn<span>Sanadome</span></span>
+        </div>
         <div class="form-header">
+          <p class="welcome-greeting" id="welcome-greeting">Welkom</p>
           <h2 class="form-title">Inloggen</h2>
-          <p class="form-subtitle">Vul je gegevens in om toegang te krijgen</p>
+          <p class="form-subtitle">Log in met je account voor rooster, verlof, documenten en meer. Voor managers en medewerkers.</p>
         </div>
 
         <form id="login-form" action="#" method="post">
@@ -312,22 +391,108 @@
             </label>
             <a href="#" class="forgot-link">Wachtwoord vergeten?</a>
           </div>
-          <button type="submit" class="btn-login">Inloggen</button>
+          <div id="login-error" class="login-error" role="alert" hidden></div>
+          <button type="submit" class="btn-login" id="btn-login">Inloggen</button>
         </form>
 
         <p class="footer-note">
-          Alleen voor medewerkers van Sanadome Hotel & Spa. <a href="#">Hulp nodig?</a>
+          Alleen voor managers en medewerkers van Sanadome Hotel & Spa. <a href="#">Hulp nodig?</a>
         </p>
       </div>
     </main>
+
+    <aside class="brand-side">
+      <div class="brand-content">
+        <div class="logo-mijnsanadome logo-mijnsanadome--large" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad-side)"/>
+            <path d="M12 28V16l8 7 8-7v12h-3V19l-5 4.5-5-4.5v9H12z" fill="white"/>
+            <defs>
+              <linearGradient id="logo-grad-side" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4a7c9c"/>
+                <stop offset="1" stop-color="#6b9bb8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="logo-mijnsanadome-text">Mijn<span>Sanadome</span></span>
+        </div>
+        <p class="logo-sub">Sanadome Hotel & Spa · Medewerkersportaal</p>
+        <div class="divider-ornament"></div>
+        <p class="brand-welcome">Welkom in MijnSanadome</p>
+        <p class="brand-tagline">
+          Veilig toegang tot je rooster, verlofaanvragen, documenten en HR. Voor het hele team — managers en medewerkers.
+        </p>
+      </div>
+    </aside>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script>
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Hier kun je later echte authenticatie koppelen
-      alert('Inloggen wordt verwerkt. Koppel deze pagina aan je HRMS-backend.');
-    });
+    (function() {
+      // Persoonlijke begroeting op basis van tijd van de dag
+      var greetingEl = document.getElementById('welcome-greeting');
+      if (greetingEl) {
+        var h = new Date().getHours();
+        var greeting = 'Welkom';
+        if (h >= 5 && h < 12) greeting = 'Goedemorgen';
+        else if (h >= 12 && h < 18) greeting = 'Goedemiddag';
+        else if (h >= 18 && h < 23) greeting = 'Goedenavond';
+        greetingEl.textContent = greeting + ', log in op het portaal';
+      }
+
+      if (typeof window.SUPABASE_URL === 'undefined' || typeof window.SUPABASE_ANON_KEY === 'undefined') {
+        console.error('Supabase-config ontbreekt. Zorg dat config.js bestaat (zie config.example.js).');
+        document.getElementById('login-error').textContent = 'Configuratie ontbreekt. Neem contact op met beheer.';
+        document.getElementById('login-error').hidden = false;
+        return;
+      }
+
+      var supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      var form = document.getElementById('login-form');
+      var btn = document.getElementById('btn-login');
+      var errEl = document.getElementById('login-error');
+
+      function showError(msg) {
+        errEl.textContent = msg;
+        errEl.hidden = false;
+      }
+      function hideError() {
+        errEl.textContent = '';
+        errEl.hidden = true;
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        hideError();
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value;
+        if (!email || !password) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Bezig met inloggen…';
+
+        supabase.auth.signInWithPassword({ email: email, password: password })
+          .then(function(res) {
+            if (res.error) {
+              if (res.error.message && res.error.message.indexOf('Invalid login') !== -1) {
+                showError('Ongeldig e-mailadres of wachtwoord.');
+              } else {
+                showError(res.error.message || 'Inloggen mislukt.');
+              }
+              btn.disabled = false;
+              btn.textContent = 'Inloggen';
+              return;
+            }
+            window.location.href = 'dashboard.html';
+          })
+          .catch(function(err) {
+            showError(err.message || 'Er ging iets mis. Probeer het opnieuw.');
+            btn.disabled = false;
+            btn.textContent = 'Inloggen';
+          });
+      });
+    })();
   </script>
 </body>
 </html>
