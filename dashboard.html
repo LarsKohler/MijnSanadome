@@ -851,6 +851,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
           Medewerkers
         </a>
+        <a href="nieuws.html" class="nav-item" data-permission="nieuws.bekijken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Nieuwsbeheer
+        </a>
         <a href="rechten.html" class="nav-item" data-permission="rechten.bekijken">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Rechten
@@ -921,45 +925,12 @@
           <div class="news-section" data-permission="dashboard.nieuws">
             <div class="news-section-header">
               <span class="news-section-title">Laatste nieuws</span>
-              <a href="#placeholder-nieuws" class="news-section-link">Alle nieuws →</a>
+              <a href="nieuws.html" class="news-section-link">Alle nieuws →</a>
             </div>
-            <div class="news-hero">
-              <img class="news-hero-img" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" alt="Sanadome entree">
-              <div class="news-hero-overlay"></div>
-              <span class="news-hero-badge">Nieuw</span>
-              <div class="news-hero-content">
-                <div class="news-hero-title">Welkom in MijnSanadome</div>
-                <div class="news-hero-excerpt">Ontdek je nieuwe medewerkersportaal voor nieuws, verlof en documenten.</div>
-                <div class="news-hero-meta">
-                  <span>Door Team Communicatie</span>
-                  <span class="news-author-dot" aria-hidden="true"></span>
-                  <span>21 feb 2025</span>
-                  <span class="news-author-dot" aria-hidden="true"></span>
-                  <span>2 min lezen</span>
-                </div>
-              </div>
+            <div id="news-container">
+              <div style="text-align:center;padding:40px 20px;color:var(--sanadome-text-soft);font-size:0.88rem;">Nieuws laden…</div>
             </div>
-            <ul class="news-compact-list">
-              <li>
-                <img class="news-thumb" src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=200&q=60" alt="Teamoverleg">
-                <div class="news-compact-item-body">
-                  <div class="news-compact-date">18 feb 2025</div>
-                  <div class="news-compact-title">Teamupdate Q1 · placeholder</div>
-                  <div class="news-compact-excerpt">Belangrijkste prioriteiten en planning voor de komende periode.</div>
-                  <div class="news-compact-meta"><span>Door HR Team</span></div>
-                </div>
-              </li>
-              <li>
-                <img class="news-thumb" src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=200&q=60" alt="Nieuwe collega's">
-                <div class="news-compact-item-body">
-                  <div class="news-compact-date">10 feb 2025</div>
-                  <div class="news-compact-title">Nieuwe collega's · placeholder</div>
-                  <div class="news-compact-excerpt">Maak kennis met de nieuwste teamleden binnen Sanadome.</div>
-                  <div class="news-compact-meta"><span>Door People & Culture</span></div>
-                </div>
-              </li>
-            </ul>
-            <a href="#placeholder-nieuws" class="news-see-all">Alle nieuws bekijken →</a>
+            <a href="nieuws.html" class="news-see-all">Alle nieuws bekijken →</a>
           </div>
 
           <!-- Stacked info widgets -->
@@ -1137,12 +1108,12 @@
 
           // Load and enforce permissions
           function getDefaultPerms(role) {
-            var ALL = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','rechten.bekijken','rechten.bewerken'];
+            var ALL = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','nieuws.bekijken','nieuws.aanmaken','nieuws.bewerken','nieuws.verwijderen','rechten.bekijken','rechten.bewerken'];
             var p = {};
             ALL.forEach(function(k) {
               if (role === 'Manager') p[k] = true;
               else if (role === 'Assistent Manager') p[k] = k !== 'rechten.bewerken' && k !== 'medewerkers.verwijderen';
-              else if (role === 'Senior Medewerker') p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken';
+              else if (role === 'Senior Medewerker') p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken';
               else p[k] = k.startsWith('dashboard.') || k.startsWith('nav.');
             });
             return p;
@@ -1159,6 +1130,9 @@
             });
           }).catch(function() {});
 
+          // Load news dynamically
+          loadDashboardNews();
+
           document.getElementById('btn-logout').addEventListener('click', function(e) {
             e.preventDefault();
             supabase.auth.signOut().then(function() {
@@ -1166,6 +1140,68 @@
             });
           });
         });
+
+        function loadDashboardNews() {
+          var nc = document.getElementById('news-container');
+          if (!nc) return;
+          supabase.from('news').select('*').eq('status', 'gepubliceerd').order('pinned', { ascending: false }).order('created_at', { ascending: false }).limit(3)
+            .then(function(res) {
+              if (res.error || !res.data || res.data.length === 0) {
+                nc.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--sanadome-text-soft);font-size:0.88rem;">Geen nieuws beschikbaar</div>';
+                return;
+              }
+              var html = '';
+              var hero = res.data[0];
+              var wc = (hero.content || '').replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length;
+              var rt = Math.max(1, Math.round(wc / 200));
+              var heroExcerpt = hero.promo_text || (hero.content || '').replace(/<[^>]*>/g, '').substring(0, 120);
+              var heroDate = new Date(hero.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' });
+              html += '<div class="news-hero">';
+              if (hero.thumbnail_url) {
+                html += '<img class="news-hero-img" src="' + hero.thumbnail_url + '" alt="">';
+              } else {
+                html += '<div class="news-hero-img" style="background:var(--gradient-primary);"></div>';
+              }
+              html += '<div class="news-hero-overlay"></div>';
+              if (hero.pinned) html += '<span class="news-hero-badge">📌 Vastgepind</span>';
+              else html += '<span class="news-hero-badge">Nieuw</span>';
+              html += '<div class="news-hero-content">';
+              html += '<div class="news-hero-title">' + (hero.title || '') + '</div>';
+              html += '<div class="news-hero-excerpt">' + heroExcerpt + '</div>';
+              html += '<div class="news-hero-meta">';
+              html += '<span>Door ' + (hero.author_name || 'Onbekend') + '</span>';
+              html += '<span class="news-author-dot" aria-hidden="true"></span>';
+              html += '<span>' + heroDate + '</span>';
+              html += '<span class="news-author-dot" aria-hidden="true"></span>';
+              html += '<span>' + rt + ' min lezen</span>';
+              html += '</div></div></div>';
+
+              if (res.data.length > 1) {
+                html += '<ul class="news-compact-list">';
+                for (var i = 1; i < res.data.length; i++) {
+                  var n = res.data[i];
+                  var nDate = new Date(n.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' });
+                  var nExcerpt = n.promo_text || (n.content || '').replace(/<[^>]*>/g, '').substring(0, 100);
+                  html += '<li>';
+                  if (n.thumbnail_url) {
+                    html += '<img class="news-thumb" src="' + n.thumbnail_url + '" alt="">';
+                  } else {
+                    html += '<div class="news-thumb" style="background:var(--sanadome-blue-pale);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">📰</div>';
+                  }
+                  html += '<div class="news-compact-item-body">';
+                  html += '<div class="news-compact-date">' + nDate + '</div>';
+                  html += '<div class="news-compact-title">' + (n.title || '') + '</div>';
+                  html += '<div class="news-compact-excerpt">' + nExcerpt + '</div>';
+                  html += '<div class="news-compact-meta"><span>Door ' + (n.author_name || 'Onbekend') + '</span></div>';
+                  html += '</div></li>';
+                }
+                html += '</ul>';
+              }
+              nc.innerHTML = html;
+            }).catch(function() {
+              nc.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--sanadome-text-soft);font-size:0.88rem;">Geen nieuws beschikbaar</div>';
+            });
+        }
       }).catch(function() {
         window.location.href = 'index.html';
       });

@@ -62,5 +62,6 @@ fs.copyFileSync(path.join(rootDir, 'index.html'), path.join(distDir, 'index.html
 fs.copyFileSync(path.join(rootDir, 'dashboard.html'), path.join(distDir, 'dashboard.html'));
 fs.copyFileSync(path.join(rootDir, 'gebruikers.html'), path.join(distDir, 'gebruikers.html'));
 fs.copyFileSync(path.join(rootDir, 'rechten.html'), path.join(distDir, 'rechten.html'));
+fs.copyFileSync(path.join(rootDir, 'nieuws.html'), path.join(distDir, 'nieuws.html'));
 
 console.log('Build voltooid: dist/');
