@@ -82,116 +82,283 @@
 
     /* ── Main content ── */
     .app-main {
-      margin-left: var(--sidebar-w); flex: 1; min-height: 100vh;
+      margin-left: var(--sidebar-w); min-height: 100vh;
     }
 
-    /* ── Article layout ── */
-    .article-wrapper {
-      max-width: 800px; margin: 0 auto; padding: 40px 36px 80px;
+    /* ── Full-width hero banner ── */
+    .article-hero-banner {
+      position: relative; width: 100%; height: 340px; overflow: hidden;
+      background: var(--gradient-primary);
     }
+    .article-hero-banner img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .6s ease;
+    }
+    .article-hero-banner::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(0deg, rgba(15,23,42,0.75) 0%, rgba(15,23,42,0.25) 40%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-banner-content {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+      padding: 40px 48px 36px; max-width: 900px;
+    }
+    .hero-banner-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: 20px; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      background: rgba(255,255,255,0.18); backdrop-filter: blur(8px);
+      color: white; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.2);
+    }
+    .hero-banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2.2rem; font-weight: 800;
+      color: white; line-height: 1.2; margin-bottom: 12px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+    .hero-banner-meta {
+      display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+      font-size: 0.82rem; color: rgba(255,255,255,0.85);
+    }
+    .hero-banner-meta-item { display: flex; align-items: center; gap: 6px; }
+    .hero-banner-meta-item svg { width: 15px; height: 15px; opacity: 0.75; }
+    .hero-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.45); }
 
-    /* Back link */
+    /* No-image hero */
+    .hero-no-image {
+      display: flex; align-items: flex-end;
+      background: linear-gradient(135deg, #1e3a5f 0%, #3b82c4 50%, #60a5e8 100%);
+    }
+    .hero-no-image .hero-banner-content { position: relative; padding-bottom: 40px; }
+
+    /* ── Back bar ── */
+    .back-bar {
+      padding: 14px 48px; background: var(--white); border-bottom: 1px solid var(--sanadome-border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
     .back-link {
       display: inline-flex; align-items: center; gap: 8px; color: var(--sanadome-text-soft);
-      text-decoration: none; font-size: 0.85rem; font-weight: 500; margin-bottom: 24px;
-      transition: color .15s; padding: 6px 0;
+      text-decoration: none; font-size: 0.84rem; font-weight: 500; transition: color .15s;
     }
     .back-link:hover { color: var(--sanadome-blue); }
-    .back-link svg { width: 18px; height: 18px; }
+    .back-link svg { width: 16px; height: 16px; }
+    .back-bar-actions { display: flex; gap: 8px; }
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px;
+      border: 1.5px solid var(--sanadome-border); background: var(--white);
+      border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+      color: var(--sanadome-text-soft); cursor: pointer; font-family: inherit;
+      transition: all .15s;
+    }
+    .action-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); background: var(--sanadome-blue-pale); }
+    .action-btn svg { width: 15px; height: 15px; }
 
-    /* Hero image */
-    .article-hero {
-      width: 100%; max-height: 400px; object-fit: cover; border-radius: var(--radius);
-      margin-bottom: 28px; background: var(--sanadome-blue-pale);
+    /* ── Article body layout ── */
+    .article-layout {
+      max-width: 1100px; margin: 0 auto; padding: 36px 48px 80px;
+      display: grid; grid-template-columns: 1fr 320px; gap: 48px;
     }
-    .article-hero-placeholder {
-      width: 100%; height: 240px; border-radius: var(--radius);
-      background: var(--gradient-primary); margin-bottom: 28px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 4rem;
-    }
+    .article-main { min-width: 0; }
 
-    /* Meta */
-    .article-meta {
-      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-      margin-bottom: 20px; font-size: 0.82rem; color: var(--sanadome-text-soft);
-    }
-    .article-meta-item { display: flex; align-items: center; gap: 6px; }
-    .article-meta-item svg { width: 16px; height: 16px; }
-    .article-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--sanadome-border); }
-    .article-badge {
-      padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.03em;
-    }
-    .badge-pinned { background: #dbeafe; color: #1e40af; }
-
-    /* Title */
-    .article-title {
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 800;
-      color: var(--sanadome-text); line-height: 1.25; margin-bottom: 8px;
+    /* ── Article card ── */
+    .article-card {
+      background: var(--white); border-radius: var(--radius); padding: 40px 44px;
+      box-shadow: var(--shadow-card); border: 1px solid var(--sanadome-border);
     }
 
-    /* Promo */
+    /* Promo text */
     .article-promo {
-      font-size: 1.05rem; color: var(--sanadome-text-soft); line-height: 1.6;
-      margin-bottom: 28px; font-style: italic;
-      border-left: 3px solid var(--sanadome-blue); padding-left: 16px;
+      font-size: 1.05rem; color: var(--sanadome-text-soft); line-height: 1.7;
+      margin-bottom: 28px; font-style: italic; position: relative;
+      padding: 20px 24px; background: var(--sanadome-blue-pale); border-radius: 12px;
+      border-left: 4px solid var(--sanadome-blue);
     }
 
     /* Content */
-    .article-content {
-      font-size: 0.95rem; line-height: 1.85; color: var(--sanadome-text);
-    }
-    .article-content h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 700; margin: 32px 0 12px; }
-    .article-content h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 600; margin: 24px 0 8px; }
-    .article-content p { margin-bottom: 16px; }
-    .article-content ul, .article-content ol { padding-left: 24px; margin-bottom: 16px; }
-    .article-content li { margin-bottom: 6px; }
+    .article-content { font-size: 0.95rem; line-height: 1.9; color: var(--sanadome-text); }
+    .article-content h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.35rem; font-weight: 700; margin: 36px 0 14px; color: var(--sanadome-text); }
+    .article-content h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 600; margin: 28px 0 10px; }
+    .article-content p { margin-bottom: 18px; }
+    .article-content ul, .article-content ol { padding-left: 24px; margin-bottom: 18px; }
+    .article-content li { margin-bottom: 8px; }
     .article-content blockquote {
-      border-left: 3px solid var(--sanadome-blue); padding: 12px 18px; margin: 16px 0;
-      background: var(--sanadome-blue-pale); border-radius: 0 8px 8px 0;
+      border-left: 4px solid var(--sanadome-blue); padding: 16px 20px; margin: 20px 0;
+      background: var(--sanadome-blue-pale); border-radius: 0 12px 12px 0;
       color: var(--sanadome-text-soft); font-style: italic;
     }
-    .article-content img {
-      max-width: 100%; height: auto; border-radius: 12px; margin: 16px 0;
-    }
+    .article-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 20px 0; }
     .article-content a { color: var(--sanadome-blue); text-decoration: underline; }
 
-    /* Divider */
-    .article-divider {
-      border: none; border-top: 1px solid var(--sanadome-border);
-      margin: 32px 0;
+    /* ── Author card ── */
+    .author-card {
+      display: flex; align-items: center; gap: 16px; padding: 20px 24px;
+      background: #f8fafc; border-radius: 12px; margin-top: 36px;
+      border: 1px solid var(--sanadome-border);
+    }
+    .author-avatar {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem; color: white; flex-shrink: 0;
+    }
+    .author-info h4 { font-size: 0.9rem; font-weight: 600; color: var(--sanadome-text); margin-bottom: 2px; }
+    .author-info span { font-size: 0.78rem; color: var(--sanadome-text-soft); }
+
+    /* ── Comments section ── */
+    .comments-section {
+      background: var(--white); border-radius: var(--radius); padding: 32px 44px;
+      box-shadow: var(--shadow-card); border: 1px solid var(--sanadome-border);
+      margin-top: 24px;
+    }
+    .comments-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .comments-header h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 700;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .comment-count-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 24px; height: 24px; padding: 0 8px; border-radius: 12px;
+      background: var(--sanadome-blue-pale); color: var(--sanadome-blue);
+      font-size: 0.75rem; font-weight: 700;
     }
 
-    /* Share / actions */
-    .article-footer {
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    /* Comment form */
+    .comment-form {
+      display: flex; gap: 12px; margin-bottom: 28px; align-items: flex-start;
     }
-    .article-footer-btn {
-      display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+    .comment-form-avatar {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.72rem; color: white; flex-shrink: 0; margin-top: 2px;
+    }
+    .comment-form-body { flex: 1; }
+    .comment-input {
+      width: 100%; padding: 12px 16px; border: 1.5px solid var(--sanadome-border);
+      border-radius: 12px; font-family: inherit; font-size: 0.88rem;
+      resize: vertical; min-height: 80px; transition: border-color .15s;
+      background: #f8fafc; color: var(--sanadome-text); line-height: 1.5;
+    }
+    .comment-input:focus { outline: none; border-color: var(--sanadome-blue); background: var(--white); }
+    .comment-input::placeholder { color: var(--sanadome-text-soft); }
+    .comment-form-actions {
+      display: flex; justify-content: flex-end; margin-top: 10px; gap: 8px;
+    }
+    .btn-comment {
+      padding: 8px 20px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; border: none; transition: all .15s;
+    }
+    .btn-comment-primary {
+      background: var(--gradient-primary); color: white;
+    }
+    .btn-comment-primary:hover { opacity: 0.9; }
+    .btn-comment-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Comment items */
+    .comment-list { display: flex; flex-direction: column; gap: 0; }
+    .comment-item {
+      display: flex; gap: 12px; padding: 18px 0; align-items: flex-start;
+      border-top: 1px solid #f1f5f9;
+    }
+    .comment-item:first-child { border-top: none; }
+    .comment-avatar {
+      width: 34px; height: 34px; border-radius: 50%; background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.7rem; color: white; flex-shrink: 0;
+    }
+    .comment-body { flex: 1; min-width: 0; }
+    .comment-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap;
+    }
+    .comment-author { font-weight: 600; font-size: 0.85rem; color: var(--sanadome-text); }
+    .comment-time { font-size: 0.74rem; color: var(--sanadome-text-soft); }
+    .comment-text { font-size: 0.88rem; line-height: 1.6; color: var(--sanadome-text); white-space: pre-wrap; }
+    .comment-actions { margin-top: 6px; display: flex; gap: 12px; }
+    .comment-action-btn {
+      background: none; border: none; font-size: 0.76rem; font-weight: 500;
+      color: var(--sanadome-text-soft); cursor: pointer; font-family: inherit;
+      padding: 2px 0; transition: color .15s;
+    }
+    .comment-action-btn:hover { color: var(--sanadome-blue); }
+    .comment-action-btn.delete:hover { color: #ef4444; }
+
+    .comments-empty {
+      text-align: center; padding: 32px 16px; color: var(--sanadome-text-soft); font-size: 0.88rem;
+    }
+    .comments-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    /* ── Sidebar panel ── */
+    .article-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+    .sidebar-card {
+      background: var(--white); border-radius: var(--radius); padding: 24px;
+      box-shadow: var(--shadow-card); border: 1px solid var(--sanadome-border);
+    }
+    .sidebar-card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem; font-weight: 700;
+      color: var(--sanadome-text); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-card-title svg { width: 18px; height: 18px; color: var(--sanadome-blue); }
+
+    /* Article info list */
+    .info-list { display: flex; flex-direction: column; gap: 12px; }
+    .info-list-item {
+      display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--sanadome-text-soft);
+    }
+    .info-list-item svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--sanadome-blue); opacity: 0.7; }
+    .info-list-item strong { color: var(--sanadome-text); font-weight: 600; }
+
+    /* Related articles */
+    .related-list { display: flex; flex-direction: column; gap: 12px; }
+    .related-item {
+      display: flex; gap: 12px; text-decoration: none; color: inherit;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      border: 1px solid var(--sanadome-border); transition: all .15s;
+    }
+    .related-item:hover { border-color: var(--sanadome-blue); box-shadow: var(--shadow-card-hover); transform: translateY(-1px); }
+    .related-thumb {
+      width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+      background: var(--sanadome-blue-pale);
+    }
+    .related-thumb-placeholder {
+      width: 56px; height: 56px; border-radius: 8px; flex-shrink: 0;
+      background: var(--gradient-primary); display: flex; align-items: center;
+      justify-content: center; font-size: 1.2rem;
+    }
+    .related-info { min-width: 0; flex: 1; }
+    .related-title {
+      font-size: 0.82rem; font-weight: 600; color: var(--sanadome-text);
+      line-height: 1.3; margin-bottom: 4px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .related-date { font-size: 0.72rem; color: var(--sanadome-text-soft); }
+    .related-empty { font-size: 0.82rem; color: var(--sanadome-text-soft); text-align: center; padding: 12px 0; }
+
+    /* Share buttons */
+    .share-buttons { display: flex; flex-direction: column; gap: 8px; }
+    .share-btn {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
       border: 1.5px solid var(--sanadome-border); background: var(--white);
-      border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;
-      color: var(--sanadome-text-soft); cursor: pointer; text-decoration: none;
-      transition: all .15s; font-family: inherit;
+      border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 500;
+      color: var(--sanadome-text-soft); cursor: pointer; font-family: inherit;
+      transition: all .15s; text-decoration: none; width: 100%;
     }
-    .article-footer-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); background: var(--sanadome-blue-pale); }
-    .article-footer-btn svg { width: 16px; height: 16px; }
-    .article-footer-btn.primary {
-      background: var(--gradient-primary); color: white; border-color: transparent;
-    }
-    .article-footer-btn.primary:hover { opacity: 0.9; }
+    .share-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); background: var(--sanadome-blue-pale); }
+    .share-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-    /* Loading / error state */
+    /* ── Loading ── */
     .article-loading {
-      text-align: center; padding: 80px 20px; color: var(--sanadome-text-soft);
+      text-align: center; padding: 100px 20px; color: var(--sanadome-text-soft);
     }
     .article-loading .spinner {
-      width: 36px; height: 36px; border: 3px solid var(--sanadome-border);
+      width: 40px; height: 40px; border: 3px solid var(--sanadome-border);
       border-top-color: var(--sanadome-blue); border-radius: 50%;
-      animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+      animation: spin 0.8s linear infinite; margin: 0 auto 18px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Toast ── */
     .toast {
       position: fixed; bottom: 28px; right: 28px; padding: 14px 22px;
       background: #1e293b; color: white; border-radius: 12px; font-size: 0.85rem;
@@ -200,13 +367,39 @@
     }
     .toast.show { transform: translateY(0); opacity: 1; }
 
+    /* ── Setup banner ── */
+    .setup-banner {
+      padding: 24px; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px;
+      text-align: center;
+    }
+    .setup-banner h4 { font-size: 0.95rem; color: #92400e; margin-bottom: 8px; }
+    .setup-banner p { font-size: 0.82rem; color: #a16207; margin-bottom: 12px; }
+    .setup-banner pre {
+      background: #1e293b; color: #e2e8f0; padding: 14px 16px; border-radius: 8px;
+      font-size: 0.75rem; text-align: left; overflow-x: auto; margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .setup-banner button {
+      padding: 8px 20px; border: none; border-radius: 8px; font-size: 0.82rem;
+      font-weight: 600; background: var(--gradient-primary); color: white;
+      cursor: pointer; font-family: inherit;
+    }
+
     /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .article-layout { grid-template-columns: 1fr; padding: 24px 24px 60px; }
+      .article-sidebar { order: 2; }
+    }
     @media (max-width: 768px) {
       .app-sidebar { display: none; }
       .app-main { margin-left: 0; }
-      .article-wrapper { padding: 20px 16px 60px; }
-      .article-title { font-size: 1.5rem; }
-      .article-hero { max-height: 260px; }
+      .hero-banner-content { padding: 24px 20px; }
+      .hero-banner-title { font-size: 1.5rem; }
+      .article-hero-banner { height: 240px; }
+      .back-bar { padding: 12px 20px; }
+      .article-layout { padding: 20px 16px 60px; gap: 24px; }
+      .article-card { padding: 24px 20px; }
+      .comments-section { padding: 24px 20px; }
     }
   </style>
 </head>
@@ -281,12 +474,10 @@
   </aside>
 
   <!-- ── Main ── -->
-  <div class="app-main">
-    <div class="article-wrapper" id="article-wrapper">
-      <div class="article-loading" id="article-loading">
-        <div class="spinner"></div>
-        <p>Artikel laden…</p>
-      </div>
+  <div class="app-main" id="app-main">
+    <div class="article-loading" id="article-loading">
+      <div class="spinner"></div>
+      <p>Artikel laden…</p>
     </div>
   </div>
 
@@ -296,6 +487,10 @@
   <script src="config.js"></script>
   <script>
     var sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+    var currentUser = null;
+    var currentUserName = '';
+    var currentUserIni = '?';
+    var currentArticleId = null;
 
     function escapeHtml(s) {
       var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
@@ -303,11 +498,33 @@
     function fmtDate(d) {
       return new Date(d).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
     }
+    function fmtDateShort(d) {
+      return new Date(d).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
     function fmtTime(d) {
       return new Date(d).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
     }
     function stripHtml(html) {
       var d = document.createElement('div'); d.innerHTML = html; return (d.textContent || d.innerText || '').trim();
+    }
+    function timeAgo(dateStr) {
+      var now = new Date();
+      var then = new Date(dateStr);
+      var diff = Math.floor((now - then) / 1000);
+      if (diff < 60) return 'Zojuist';
+      if (diff < 3600) return Math.floor(diff / 60) + ' min geleden';
+      if (diff < 86400) return Math.floor(diff / 3600) + ' uur geleden';
+      if (diff < 604800) {
+        var days = Math.floor(diff / 86400);
+        return days + ' dag' + (days > 1 ? 'en' : '') + ' geleden';
+      }
+      return fmtDateShort(dateStr);
+    }
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2800);
     }
 
     /* ── Auth check ── */
@@ -316,17 +533,16 @@
       return sb.auth.getUser();
     }).then(function(res) {
       if (!res || !res.data.user) { window.location.href = 'index.html'; return; }
-      var user = res.data.user;
-      var meta = user.user_metadata || {};
-      var name = ((meta.first_name || '') + ' ' + (meta.last_name || '')).trim() || user.email;
+      currentUser = res.data.user;
+      var meta = currentUser.user_metadata || {};
+      currentUserName = ((meta.first_name || '') + ' ' + (meta.last_name || '')).trim() || currentUser.email;
       var role = meta.role || 'Medewerker';
 
-      document.getElementById('user-name').textContent = name;
+      document.getElementById('user-name').textContent = currentUserName;
       document.getElementById('user-role').textContent = role;
-      var ini = name.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
-      document.getElementById('user-avatar').textContent = ini;
+      currentUserIni = currentUserName.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+      document.getElementById('user-avatar').textContent = currentUserIni;
 
-      // Permission enforcement for sidebar
       sb.from('role_permissions').select('permission, granted').eq('role', role).then(function(pr) {
         if (!pr.error && pr.data && pr.data.length > 0) {
           pr.data.forEach(function(r) {
@@ -352,96 +568,309 @@
     function loadArticle() {
       var params = new URLSearchParams(window.location.search);
       var id = params.get('id');
+      currentArticleId = id;
 
-      if (!id) {
-        showError('Geen artikel-ID opgegeven.', true);
-        return;
-      }
+      if (!id) { showError('Geen artikel-ID opgegeven.'); return; }
 
       sb.from('news').select('*').eq('id', id).single().then(function(res) {
-        if (res.error || !res.data) {
-          showError('Artikel niet gevonden.', true);
-          return;
-        }
+        if (res.error || !res.data) { showError('Artikel niet gevonden.'); return; }
         renderArticle(res.data);
+        loadRelatedArticles(id);
+        loadComments();
       }).catch(function() {
-        showError('Er ging iets mis bij het laden.', true);
+        showError('Er ging iets mis bij het laden.');
       });
     }
 
-    function showError(msg, showBack) {
-      var wrapper = document.getElementById('article-wrapper');
-      wrapper.innerHTML = '<div class="article-loading">' +
+    function showError(msg) {
+      var main = document.getElementById('app-main');
+      main.innerHTML = '<div class="article-loading">' +
         '<div style="font-size:3rem;margin-bottom:16px;">📰</div>' +
         '<p style="font-size:1rem;font-weight:600;margin-bottom:8px;">' + escapeHtml(msg) + '</p>' +
-        (showBack ? '<a href="dashboard.html" class="back-link" style="display:inline-flex;margin-top:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Terug naar dashboard</a>' : '') +
-        '</div>';
+        '<a href="dashboard.html" style="display:inline-flex;align-items:center;gap:8px;color:var(--sanadome-blue);text-decoration:none;font-weight:500;margin-top:12px;">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Terug naar dashboard</a></div>';
     }
 
     function renderArticle(article) {
-      var wrapper = document.getElementById('article-wrapper');
+      var main = document.getElementById('app-main');
       var wordCount = stripHtml(article.content || '').split(/\s+/).filter(Boolean).length;
       var readTime = Math.max(1, Math.round(wordCount / 200));
       var date = fmtDate(article.created_at);
       var time = fmtTime(article.created_at);
+      var authorIni = (article.author_name || 'O').split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
 
-      // Update page title
       document.title = (article.title || 'Artikel') + ' · MijnSanadome';
 
       var html = '';
 
-      // Back link
-      html += '<a href="dashboard.html" class="back-link">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>' +
-        'Terug naar dashboard</a>';
-
-      // Hero image
+      /* ── Hero banner ── */
       if (article.thumbnail_url) {
-        html += '<img class="article-hero" src="' + escapeHtml(article.thumbnail_url) + '" alt="" onerror="this.style.display=\'none\'">';
+        html += '<div class="article-hero-banner">';
+        html += '<img src="' + escapeHtml(article.thumbnail_url) + '" alt="" onerror="this.parentElement.classList.add(\'hero-no-image\');this.remove();">';
+      } else {
+        html += '<div class="article-hero-banner hero-no-image">';
       }
+      html += '<div class="hero-banner-content">';
+      if (article.pinned) html += '<div class="hero-banner-badge">📌 Vastgepind</div>';
+      html += '<h1 class="hero-banner-title">' + escapeHtml(article.title) + '</h1>';
+      html += '<div class="hero-banner-meta">';
+      html += '<span class="hero-banner-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ' + escapeHtml(article.author_name || 'Onbekend') + '</span>';
+      html += '<div class="hero-meta-dot"></div>';
+      html += '<span class="hero-banner-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ' + date + '</span>';
+      html += '<div class="hero-meta-dot"></div>';
+      html += '<span class="hero-banner-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ' + readTime + ' min lezen</span>';
+      html += '</div></div></div>';
 
-      // Title
-      html += '<h1 class="article-title">' + escapeHtml(article.title) + '</h1>';
+      /* ── Back bar ── */
+      html += '<div class="back-bar">';
+      html += '<a href="dashboard.html" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Terug naar dashboard</a>';
+      html += '<div class="back-bar-actions">';
+      html += '<button type="button" class="action-btn" id="btn-copy-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Link kopiëren</button>';
+      html += '</div></div>';
 
-      // Meta
-      html += '<div class="article-meta">';
-      if (article.pinned) {
-        html += '<span class="article-badge badge-pinned">📌 Vastgepind</span>';
-        html += '<div class="article-meta-dot"></div>';
-      }
-      html += '<span class="article-meta-item">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +
-        escapeHtml(article.author_name || 'Onbekend') + '</span>';
-      html += '<div class="article-meta-dot"></div>';
-      html += '<span class="article-meta-item">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
-        date + ' om ' + time + '</span>';
-      html += '<div class="article-meta-dot"></div>';
-      html += '<span class="article-meta-item">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
-        readTime + ' min lezen</span>';
-      html += '</div>';
+      /* ── Two-column layout ── */
+      html += '<div class="article-layout">';
 
-      // Promo text
+      /* Left column */
+      html += '<div class="article-main">';
+      html += '<div class="article-card">';
       if (article.promo_text) {
         html += '<div class="article-promo">' + escapeHtml(article.promo_text) + '</div>';
       }
+      html += '<div class="article-content">' + (article.content || '<p style="color:var(--sanadome-text-soft);font-style:italic;">Dit artikel heeft nog geen inhoud.</p>') + '</div>';
+      html += '<div class="author-card">';
+      html += '<div class="author-avatar">' + authorIni + '</div>';
+      html += '<div class="author-info"><h4>Geschreven door ' + escapeHtml(article.author_name || 'Onbekend') + '</h4>';
+      html += '<span>Gepubliceerd op ' + date + ' om ' + time + '</span></div></div>';
+      html += '</div>'; // .article-card
 
-      // Content
-      html += '<div class="article-content">' + (article.content || '') + '</div>';
+      /* Comments */
+      html += '<div class="comments-section" id="comments-section">';
+      html += '<div class="comments-header"><h3>Reacties <span class="comment-count-badge" id="comment-count">0</span></h3></div>';
+      html += '<div class="comment-form" id="comment-form">';
+      html += '<div class="comment-form-avatar">' + currentUserIni + '</div>';
+      html += '<div class="comment-form-body">';
+      html += '<textarea class="comment-input" id="comment-input" placeholder="Schrijf een reactie…" rows="3"></textarea>';
+      html += '<div class="comment-form-actions">';
+      html += '<button type="button" class="btn-comment btn-comment-primary" id="btn-post-comment" disabled>Plaatsen</button>';
+      html += '</div></div></div>';
+      html += '<div class="comment-list" id="comment-list"><div class="comments-empty"><div class="comments-empty-icon">💬</div>Nog geen reacties. Wees de eerste!</div></div>';
+      html += '</div>';
+      html += '</div>'; // .article-main
 
-      // Footer
-      html += '<hr class="article-divider">';
-      html += '<div class="article-footer">';
-      html += '<a href="dashboard.html" class="article-footer-btn">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>' +
-        'Terug naar dashboard</a>';
-      html += '<button type="button" class="article-footer-btn" onclick="navigator.clipboard.writeText(window.location.href).then(function(){document.getElementById(\'toast\').textContent=\'✅ Link gekopieerd\';document.getElementById(\'toast\').classList.add(\'show\');setTimeout(function(){document.getElementById(\'toast\').classList.remove(\'show\');},2500);})">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
-        'Link kopiëren</button>';
+      /* ── Right sidebar ── */
+      html += '<div class="article-sidebar">';
+
+      /* Info card */
+      html += '<div class="sidebar-card">';
+      html += '<div class="sidebar-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Artikelinfo</div>';
+      html += '<div class="info-list">';
+      html += '<div class="info-list-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span><strong>Auteur:</strong> ' + escapeHtml(article.author_name || 'Onbekend') + '</span></div>';
+      html += '<div class="info-list-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span><strong>Datum:</strong> ' + date + '</span></div>';
+      html += '<div class="info-list-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span><strong>Leestijd:</strong> ' + readTime + ' min</span></div>';
+      html += '<div class="info-list-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span><strong>Woorden:</strong> ' + wordCount.toLocaleString('nl-NL') + '</span></div>';
+      if (article.pinned) {
+        html += '<div class="info-list-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span><strong>Status:</strong> 📌 Vastgepind</span></div>';
+      }
+      html += '</div></div>';
+
+      /* Share card */
+      html += '<div class="sidebar-card">';
+      html += '<div class="sidebar-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Delen</div>';
+      html += '<div class="share-buttons">';
+      html += '<button type="button" class="share-btn" id="btn-copy-link-sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Link kopiëren</button>';
+      html += '<button type="button" class="share-btn" id="btn-email-share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Via e-mail delen</button>';
+      html += '</div></div>';
+
+      /* Related card */
+      html += '<div class="sidebar-card">';
+      html += '<div class="sidebar-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg> Meer nieuws</div>';
+      html += '<div class="related-list" id="related-list"><div class="related-empty">Laden…</div></div>';
       html += '</div>';
 
-      wrapper.innerHTML = html;
+      html += '</div>'; // .article-sidebar
+      html += '</div>'; // .article-layout
+
+      main.innerHTML = html;
+
+      /* ── Event listeners ── */
+      document.getElementById('btn-copy-link').addEventListener('click', copyLink);
+      document.getElementById('btn-copy-link-sidebar').addEventListener('click', copyLink);
+      document.getElementById('btn-email-share').addEventListener('click', function() {
+        var subject = encodeURIComponent(article.title || 'Nieuwsartikel');
+        var body = encodeURIComponent('Bekijk dit artikel: ' + window.location.href);
+        window.open('mailto:?subject=' + subject + '&body=' + body);
+      });
+
+      var commentInput = document.getElementById('comment-input');
+      var btnPost = document.getElementById('btn-post-comment');
+      commentInput.addEventListener('input', function() {
+        btnPost.disabled = !commentInput.value.trim();
+      });
+      btnPost.addEventListener('click', postComment);
+      commentInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          if (commentInput.value.trim()) postComment();
+        }
+      });
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(function() {
+        showToast('✅ Link gekopieerd naar klembord');
+      });
+    }
+
+    /* ── Related articles ── */
+    function loadRelatedArticles(excludeId) {
+      sb.from('news').select('id, title, thumbnail_url, created_at')
+        .eq('status', 'gepubliceerd').neq('id', excludeId)
+        .order('pinned', { ascending: false }).order('created_at', { ascending: false })
+        .limit(4)
+        .then(function(res) {
+          var container = document.getElementById('related-list');
+          if (!container) return;
+          if (res.error || !res.data || res.data.length === 0) {
+            container.innerHTML = '<div class="related-empty">Geen andere artikelen beschikbaar.</div>';
+            return;
+          }
+          container.innerHTML = res.data.map(function(n) {
+            var thumb = n.thumbnail_url
+              ? '<img class="related-thumb" src="' + escapeHtml(n.thumbnail_url) + '" alt="" onerror="this.outerHTML=\'<div class=related-thumb-placeholder>📰</div>\'">'
+              : '<div class="related-thumb-placeholder">📰</div>';
+            return '<a href="artikel?id=' + n.id + '" class="related-item">' +
+              thumb +
+              '<div class="related-info">' +
+              '<div class="related-title">' + escapeHtml(n.title) + '</div>' +
+              '<div class="related-date">' + fmtDateShort(n.created_at) + '</div>' +
+              '</div></a>';
+          }).join('');
+        }).catch(function() {
+          var c = document.getElementById('related-list');
+          if (c) c.innerHTML = '<div class="related-empty">Kon artikelen niet laden.</div>';
+        });
+    }
+
+    /* ── Comments ── */
+    function loadComments() {
+      sb.from('news_comments').select('*')
+        .eq('article_id', currentArticleId)
+        .order('created_at', { ascending: true })
+        .then(function(res) {
+          if (res.error) {
+            if (res.error.code === '42P01' || (res.error.message && res.error.message.indexOf('does not exist') !== -1)) {
+              showCommentsSetup();
+            }
+            return;
+          }
+          renderComments(res.data || []);
+        }).catch(function() {});
+    }
+
+    function showCommentsSetup() {
+      var section = document.getElementById('comments-section');
+      if (!section) return;
+      section.innerHTML = '<div class="setup-banner">' +
+        '<h4>💬 Reacties instellen</h4>' +
+        '<p>Maak de <code>news_comments</code> tabel aan in Supabase:</p>' +
+        '<pre>CREATE TABLE news_comments (\n' +
+        '  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n' +
+        '  article_id UUID NOT NULL REFERENCES news(id) ON DELETE CASCADE,\n' +
+        '  user_id UUID NOT NULL,\n' +
+        '  user_name TEXT NOT NULL,\n' +
+        '  content TEXT NOT NULL,\n' +
+        '  created_at TIMESTAMPTZ DEFAULT now()\n' +
+        ');\n\n' +
+        'ALTER TABLE news_comments ENABLE ROW LEVEL SECURITY;\n\n' +
+        'CREATE POLICY "Iedereen kan reacties lezen"\n' +
+        '  ON news_comments FOR SELECT\n' +
+        '  TO authenticated USING (true);\n\n' +
+        'CREATE POLICY "Gebruikers kunnen reacties plaatsen"\n' +
+        '  ON news_comments FOR INSERT\n' +
+        '  TO authenticated WITH CHECK (auth.uid() = user_id);\n\n' +
+        'CREATE POLICY "Gebruikers kunnen eigen reacties verwijderen"\n' +
+        '  ON news_comments FOR DELETE\n' +
+        '  TO authenticated USING (auth.uid() = user_id);</pre>' +
+        '<button type="button" onclick="loadComments()">🔄 Opnieuw proberen</button></div>';
+    }
+
+    function renderComments(comments) {
+      var countEl = document.getElementById('comment-count');
+      if (countEl) countEl.textContent = comments.length;
+
+      var list = document.getElementById('comment-list');
+      if (!list) return;
+
+      if (comments.length === 0) {
+        list.innerHTML = '<div class="comments-empty"><div class="comments-empty-icon">💬</div>Nog geen reacties. Wees de eerste!</div>';
+        return;
+      }
+
+      list.innerHTML = comments.map(function(c) {
+        var ini = (c.user_name || 'O').split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+        var isOwn = currentUser && c.user_id === currentUser.id;
+        return '<div class="comment-item" data-id="' + c.id + '">' +
+          '<div class="comment-avatar">' + ini + '</div>' +
+          '<div class="comment-body">' +
+          '<div class="comment-header">' +
+          '<span class="comment-author">' + escapeHtml(c.user_name) + '</span>' +
+          '<span class="comment-time">' + timeAgo(c.created_at) + '</span>' +
+          '</div>' +
+          '<div class="comment-text">' + escapeHtml(c.content) + '</div>' +
+          (isOwn ? '<div class="comment-actions"><button type="button" class="comment-action-btn delete" data-comment-id="' + c.id + '">Verwijderen</button></div>' : '') +
+          '</div></div>';
+      }).join('');
+
+      list.querySelectorAll('.comment-action-btn.delete').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          deleteComment(btn.getAttribute('data-comment-id'));
+        });
+      });
+    }
+
+    function postComment() {
+      var input = document.getElementById('comment-input');
+      var content = (input.value || '').trim();
+      if (!content || !currentUser) return;
+
+      var btn = document.getElementById('btn-post-comment');
+      btn.disabled = true;
+      btn.textContent = 'Plaatsen…';
+
+      sb.from('news_comments').insert({
+        article_id: currentArticleId,
+        user_id: currentUser.id,
+        user_name: currentUserName,
+        content: content
+      }).then(function(res) {
+        btn.textContent = 'Plaatsen';
+        if (res.error) {
+          if (res.error.code === '42P01' || (res.error.message && res.error.message.indexOf('does not exist') !== -1)) {
+            showCommentsSetup(); return;
+          }
+          showToast('❌ Kon reactie niet plaatsen');
+          btn.disabled = false;
+          return;
+        }
+        input.value = '';
+        btn.disabled = true;
+        showToast('✅ Reactie geplaatst');
+        loadComments();
+      }).catch(function() {
+        btn.textContent = 'Plaatsen';
+        btn.disabled = false;
+        showToast('❌ Er ging iets mis');
+      });
+    }
+
+    function deleteComment(commentId) {
+      if (!confirm('Weet je zeker dat je deze reactie wilt verwijderen?')) return;
+      sb.from('news_comments').delete().eq('id', commentId).then(function(res) {
+        if (res.error) { showToast('❌ Kon reactie niet verwijderen'); return; }
+        showToast('✅ Reactie verwijderd');
+        loadComments();
+      }).catch(function() { showToast('❌ Er ging iets mis'); });
     }
   </script>
 </body>
