@@ -595,7 +595,9 @@
     /* ── Supabase clients ── */
     var sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
     var adminSb = window.SUPABASE_SERVICE_ROLE_KEY
-      ? supabase.createClient(window.SUPABASE_URL, window.SUPABASE_SERVICE_ROLE_KEY)
+      ? supabase.createClient(window.SUPABASE_URL, window.SUPABASE_SERVICE_ROLE_KEY, {
+          auth: { autoRefreshToken: false, persistSession: false }
+        })
       : null;
 
     /* ── SQL for setup ── */
@@ -623,7 +625,13 @@
       "  ON CONFLICT (id) DO NOTHING;\n\n" +
       "CREATE POLICY \"Public read news-images\" ON storage.objects\n" +
       "  FOR SELECT TO public USING (bucket_id = 'news-images');\n\n" +
-      "CREATE POLICY \"Service role upload news-images\" ON storage.objects\n" +
+      "CREATE POLICY \"Authenticated upload news-images\" ON storage.objects\n" +
+      "  FOR INSERT TO authenticated WITH CHECK (bucket_id = 'news-images');\n\n" +
+      "CREATE POLICY \"Authenticated update news-images\" ON storage.objects\n" +
+      "  FOR UPDATE TO authenticated USING (bucket_id = 'news-images');\n\n" +
+      "CREATE POLICY \"Authenticated delete news-images\" ON storage.objects\n" +
+      "  FOR DELETE TO authenticated USING (bucket_id = 'news-images');\n\n" +
+      "CREATE POLICY \"Service role full news-images\" ON storage.objects\n" +
       "  FOR ALL TO service_role USING (bucket_id = 'news-images') WITH CHECK (bucket_id = 'news-images');";
 
     document.getElementById('sql-code').textContent = SETUP_SQL;
