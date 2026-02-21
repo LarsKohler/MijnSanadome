@@ -235,13 +235,31 @@
     .form-row .form-group { flex: 1; }
     .form-hint { font-size: 0.75rem; color: var(--sanadome-text-soft); margin-top: 4px; }
 
-    .thumb-preview {
-      width: 100%; height: 180px; border-radius: var(--radius-sm); background: #f1f5f9;
-      border: 2px dashed var(--sanadome-border); display: flex; align-items: center;
-      justify-content: center; overflow: hidden; margin-top: 8px; transition: all .2s;
+    .thumb-upload-zone {
+      width: 100%; min-height: 180px; border-radius: var(--radius-sm); background: #f8fafc;
+      border: 2px dashed var(--sanadome-border); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden; margin-top: 8px;
+      transition: all .2s; cursor: pointer; position: relative; gap: 8px; padding: 20px;
     }
-    .thumb-preview img { width: 100%; height: 100%; object-fit: cover; }
-    .thumb-preview.empty { color: var(--sanadome-text-soft); font-size: 0.82rem; }
+    .thumb-upload-zone:hover, .thumb-upload-zone.dragover { border-color: var(--sanadome-blue); background: var(--sanadome-blue-pale); }
+    .thumb-upload-zone img { width: 100%; height: 180px; object-fit: cover; border-radius: 6px; }
+    .thumb-upload-zone .upload-icon { color: var(--sanadome-text-soft); }
+    .thumb-upload-zone .upload-icon svg { width: 36px; height: 36px; }
+    .thumb-upload-zone .upload-text { font-size: 0.82rem; color: var(--sanadome-text-soft); text-align: center; }
+    .thumb-upload-zone .upload-text strong { color: var(--sanadome-blue); }
+    .thumb-upload-zone.has-image { padding: 0; }
+    .thumb-remove {
+      position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+      background: rgba(0,0,0,0.6); border: none; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: white;
+      font-size: 1rem; transition: all .15s; z-index: 2;
+    }
+    .thumb-remove:hover { background: #ef4444; }
+    .upload-progress {
+      width: 100%; height: 4px; background: var(--sanadome-border); border-radius: 2px;
+      overflow: hidden; margin-top: 8px; display: none;
+    }
+    .upload-progress-bar { height: 100%; background: var(--gradient-primary); border-radius: 2px; transition: width .3s; width: 0; }
 
     /* ── Rich text editor ── */
     .editor-toolbar {
@@ -469,11 +487,14 @@
           <!-- Thumbnail & status -->
           <div class="form-row">
             <div class="form-group">
-              <label for="input-thumb">Thumbnail URL</label>
-              <input type="url" id="input-thumb" placeholder="https://voorbeeld.nl/afbeelding.jpg">
-              <div class="thumb-preview empty" id="thumb-preview">
-                <span>Afbeelding preview</span>
+              <label>Thumbnail</label>
+              <input type="hidden" id="input-thumb" value="">
+              <input type="file" id="thumb-file" accept="image/*" style="display:none;">
+              <div class="thumb-upload-zone" id="thumb-upload-zone">
+                <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                <div class="upload-text"><strong>Klik of sleep</strong> een afbeelding hierheen<br>PNG, JPG, WebP · max 5MB</div>
               </div>
+              <div class="upload-progress" id="thumb-progress"><div class="upload-progress-bar" id="thumb-progress-bar"></div></div>
             </div>
             <div class="form-group" style="max-width:200px;">
               <label for="input-status">Status</label>
@@ -596,7 +617,14 @@
       "CREATE POLICY \"Authenticated users can read news\"\n" +
       "  ON public.news FOR SELECT TO authenticated USING (true);\n\n" +
       "CREATE POLICY \"Service role full access on news\"\n" +
-      "  ON public.news FOR ALL TO service_role USING (true) WITH CHECK (true);";
+      "  ON public.news FOR ALL TO service_role USING (true) WITH CHECK (true);\n\n" +
+      "-- Storage bucket (voer uit in SQL Editor):\n" +
+      "INSERT INTO storage.buckets (id, name, public) VALUES ('news-images', 'news-images', true)\n" +
+      "  ON CONFLICT (id) DO NOTHING;\n\n" +
+      "CREATE POLICY \"Public read news-images\" ON storage.objects\n" +
+      "  FOR SELECT TO public USING (bucket_id = 'news-images');\n\n" +
+      "CREATE POLICY \"Service role upload news-images\" ON storage.objects\n" +
+      "  FOR ALL TO service_role USING (bucket_id = 'news-images') WITH CHECK (bucket_id = 'news-images');";
 
     document.getElementById('sql-code').textContent = SETUP_SQL;
 
@@ -659,24 +687,85 @@
         editorContent.focus();
       }
       if (btn.id === 'btn-image') {
-        var imgUrl = prompt('Afbeelding URL:', 'https://');
-        if (imgUrl) document.execCommand('insertImage', false, imgUrl);
-        editorContent.focus();
+        var editorImgInput = document.createElement('input');
+        editorImgInput.type = 'file'; editorImgInput.accept = 'image/*';
+        editorImgInput.addEventListener('change', function() {
+          if (!editorImgInput.files[0]) return;
+          showToast('⏳ Afbeelding uploaden…');
+          uploadImage(editorImgInput.files[0], 'content').then(function(url) {
+            editorContent.focus();
+            document.execCommand('insertImage', false, url);
+            showToast('✅ Afbeelding ingevoegd');
+          }).catch(function(err) { showToast('❌ Upload mislukt: ' + err, 4000); });
+        });
+        editorImgInput.click();
       }
     });
 
-    /* ── Thumbnail preview ── */
+    /* ── Image upload helper ── */
+    var BUCKET = 'news-images';
+    function uploadImage(file, pathPrefix) {
+      if (!adminSb) return Promise.reject('Service role key ontbreekt');
+      if (!file || !file.type.startsWith('image/')) return Promise.reject('Ongeldig bestandstype');
+      if (file.size > 5 * 1024 * 1024) return Promise.reject('Bestand is groter dan 5MB');
+      var ext = file.name.split('.').pop().toLowerCase() || 'jpg';
+      var name = (pathPrefix || 'img') + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+      return adminSb.storage.from(BUCKET).upload(name, file, {
+        contentType: file.type, upsert: false
+      }).then(function(res) {
+        if (res.error) throw res.error.message;
+        var pub = adminSb.storage.from(BUCKET).getPublicUrl(name);
+        return pub.data.publicUrl;
+      });
+    }
+
+    /* ── Thumbnail upload zone ── */
     var thumbInput = document.getElementById('input-thumb');
-    var thumbPreview = document.getElementById('thumb-preview');
-    thumbInput.addEventListener('input', function() {
-      var url = thumbInput.value.trim();
-      if (url) {
-        thumbPreview.innerHTML = '<img src="' + escapeHtml(url) + '" alt="Preview" onerror="this.parentNode.innerHTML=\'<span>Ongeldige URL</span>\';this.parentNode.classList.add(\'empty\');">';
-        thumbPreview.classList.remove('empty');
-      } else {
-        thumbPreview.innerHTML = '<span>Afbeelding preview</span>';
-        thumbPreview.classList.add('empty');
-      }
+    var thumbFile = document.getElementById('thumb-file');
+    var thumbZone = document.getElementById('thumb-upload-zone');
+    var thumbProgress = document.getElementById('thumb-progress');
+    var thumbProgressBar = document.getElementById('thumb-progress-bar');
+
+    function showThumbPreview(url) {
+      thumbInput.value = url;
+      thumbZone.classList.add('has-image');
+      thumbZone.innerHTML = '<button type="button" class="thumb-remove" title="Verwijderen">&times;</button>' +
+        '<img src="' + escapeHtml(url) + '" alt="Preview">';
+      thumbZone.querySelector('.thumb-remove').addEventListener('click', function(e) {
+        e.stopPropagation();
+        clearThumb();
+      });
+    }
+    function clearThumb() {
+      thumbInput.value = '';
+      thumbZone.classList.remove('has-image');
+      thumbZone.innerHTML = '<div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>' +
+        '<div class="upload-text"><strong>Klik of sleep</strong> een afbeelding hierheen<br>PNG, JPG, WebP · max 5MB</div>';
+    }
+    function handleThumbUpload(file) {
+      thumbProgress.style.display = '';
+      thumbProgressBar.style.width = '30%';
+      uploadImage(file, 'thumbnails').then(function(url) {
+        thumbProgressBar.style.width = '100%';
+        setTimeout(function() { thumbProgress.style.display = 'none'; thumbProgressBar.style.width = '0'; }, 500);
+        showThumbPreview(url);
+        showToast('✅ Thumbnail geüpload');
+      }).catch(function(err) {
+        thumbProgress.style.display = 'none'; thumbProgressBar.style.width = '0';
+        showToast('❌ Upload mislukt: ' + err, 4000);
+      });
+    }
+
+    thumbZone.addEventListener('click', function() { thumbFile.click(); });
+    thumbFile.addEventListener('change', function() {
+      if (thumbFile.files[0]) handleThumbUpload(thumbFile.files[0]);
+      thumbFile.value = '';
+    });
+    thumbZone.addEventListener('dragover', function(e) { e.preventDefault(); thumbZone.classList.add('dragover'); });
+    thumbZone.addEventListener('dragleave', function() { thumbZone.classList.remove('dragover'); });
+    thumbZone.addEventListener('drop', function(e) {
+      e.preventDefault(); thumbZone.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) handleThumbUpload(e.dataTransfer.files[0]);
     });
 
     /* ── Auth check ── */
@@ -892,8 +981,7 @@
       document.getElementById('btn-submit').textContent = 'Publiceren';
       newsForm.reset();
       editorContent.innerHTML = '';
-      thumbPreview.innerHTML = '<span>Afbeelding preview</span>';
-      thumbPreview.classList.add('empty');
+      clearThumb();
       document.getElementById('input-status').value = 'concept';
       document.getElementById('input-pinned').checked = false;
       openModal(modalEditor);
@@ -910,13 +998,14 @@
 
       document.getElementById('input-title').value = article.title || '';
       document.getElementById('input-promo').value = article.promo_text || '';
-      document.getElementById('input-thumb').value = article.thumbnail_url || '';
+      if (article.thumbnail_url) {
+        showThumbPreview(article.thumbnail_url);
+      } else {
+        clearThumb();
+      }
       document.getElementById('input-status').value = article.status || 'concept';
       document.getElementById('input-pinned').checked = !!article.pinned;
       editorContent.innerHTML = article.content || '';
-
-      // Trigger thumb preview
-      thumbInput.dispatchEvent(new Event('input'));
 
       openModal(modalEditor);
     }
