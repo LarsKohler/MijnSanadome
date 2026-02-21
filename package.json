@@ -4,7 +4,8 @@
   "description": "HRMS login voor Sanadome Hotel & Spa",
   "private": true,
   "scripts": {
+    "setup:local": "node scripts/setup-local-config.js",
     "build": "node scripts/build.js",
-    "dev": "npx serve ."
+    "dev": "npm run setup:local && npx serve ."
   }
 }

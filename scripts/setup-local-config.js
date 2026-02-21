@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const distDir = path.join(__dirname, '..', 'dist');
 const rootDir = path.join(__dirname, '..');
 const envLocalPath = path.join(rootDir, '.env.local');
+const configPath = path.join(rootDir, 'config.js');
 
 function parseEnvFile(content) {
   const values = {};
@@ -34,33 +34,26 @@ if (fs.existsSync(envLocalPath)) {
   envFromFile = parseEnvFile(fs.readFileSync(envLocalPath, 'utf8'));
 }
 
-const url = process.env.SUPABASE_URL || envFromFile.SUPABASE_URL || '';
-const key =
+const supabaseUrl = process.env.SUPABASE_URL || envFromFile.SUPABASE_URL || '';
+const supabaseAnonKey =
   process.env.SUPABASE_ANON_KEY ||
   process.env.SUPABASE_PUBLISHABLE_KEY ||
   envFromFile.SUPABASE_ANON_KEY ||
   envFromFile.SUPABASE_PUBLISHABLE_KEY ||
   '';
 
-if (!fs.existsSync(distDir)) {
-  fs.mkdirSync(distDir, { recursive: true });
-}
-
-const serviceRoleKey =
+const supabaseServiceRoleKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   envFromFile.SUPABASE_SERVICE_ROLE_KEY ||
   '';
 
-const configContent = `// Gegenereerd bij build (Vercel). Niet bewerken.
-window.SUPABASE_URL = ${JSON.stringify(url)};
-window.SUPABASE_ANON_KEY = ${JSON.stringify(key)};
-window.SUPABASE_SERVICE_ROLE_KEY = ${JSON.stringify(serviceRoleKey)};
-`;
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Supabase-gegevens ontbreken.');
+  console.error('Zet SUPABASE_URL en SUPABASE_ANON_KEY (of SUPABASE_PUBLISHABLE_KEY) in .env.local of als environment variables.');
+  process.exit(1);
+}
 
-fs.writeFileSync(path.join(distDir, 'config.js'), configContent, 'utf8');
-fs.copyFileSync(path.join(rootDir, 'index.html'), path.join(distDir, 'index.html'));
-fs.copyFileSync(path.join(rootDir, 'dashboard.html'), path.join(distDir, 'dashboard.html'));
-fs.copyFileSync(path.join(rootDir, 'gebruikers.html'), path.join(distDir, 'gebruikers.html'));
-fs.copyFileSync(path.join(rootDir, 'rechten.html'), path.join(distDir, 'rechten.html'));
+const configContent = `// Lokaal gegenereerd. Niet committen.\nwindow.SUPABASE_URL = ${JSON.stringify(supabaseUrl)};\nwindow.SUPABASE_ANON_KEY = ${JSON.stringify(supabaseAnonKey)};\nwindow.SUPABASE_SERVICE_ROLE_KEY = ${JSON.stringify(supabaseServiceRoleKey)};\n`;
 
-console.log('Build voltooid: dist/');
+fs.writeFileSync(configPath, configContent, 'utf8');
+console.log('config.js aangemaakt voor lokaal gebruik.');

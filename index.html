@@ -441,14 +441,25 @@
         greetingEl.textContent = greeting + ', log in op het portaal';
       }
 
-      if (typeof window.SUPABASE_URL === 'undefined' || typeof window.SUPABASE_ANON_KEY === 'undefined') {
+      var supabaseUrl = window.SUPABASE_URL;
+      var supabaseKey = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
+
+      if (!supabaseUrl || !supabaseKey) {
         console.error('Supabase-config ontbreekt. Zorg dat config.js bestaat (zie config.example.js).');
         document.getElementById('login-error').textContent = 'Configuratie ontbreekt. Neem contact op met beheer.';
         document.getElementById('login-error').hidden = false;
         return;
       }
 
-      var supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      var supabase;
+      try {
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+      } catch (err) {
+        document.getElementById('login-error').textContent = 'Configuratie is ongeldig. Neem contact op met beheer.';
+        document.getElementById('login-error').hidden = false;
+        return;
+      }
+
       var form = document.getElementById('login-form');
       var btn = document.getElementById('btn-login');
       var errEl = document.getElementById('login-error');
@@ -461,6 +472,12 @@
         errEl.textContent = '';
         errEl.hidden = true;
       }
+
+      supabase.auth.getSession().then(function(res) {
+        if (res && res.data && res.data.session && res.data.session.user) {
+          window.location.href = 'dashboard.html';
+        }
+      }).catch(function() {});
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -480,6 +497,12 @@
               } else {
                 showError(res.error.message || 'Inloggen mislukt.');
               }
+              btn.disabled = false;
+              btn.textContent = 'Inloggen';
+              return;
+            }
+            if (!res.data || !res.data.session || !res.data.user) {
+              showError('Inloggen mislukt. Er is geen geldige sessie ontvangen.');
               btn.disabled = false;
               btn.textContent = 'Inloggen';
               return;
