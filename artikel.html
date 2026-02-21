@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel · MijnSanadome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sanadome-blue: #3b82c4;
+      --sanadome-blue-light: #60a5e8;
+      --sanadome-blue-pale: #eff6ff;
+      --sanadome-blue-mist: #f0f7ff;
+      --sanadome-text: #0f172a;
+      --sanadome-text-soft: #64748b;
+      --sanadome-border: #e2e8f0;
+      --white: #ffffff;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --sidebar-w: 270px;
+      --topbar-h: 68px;
+      --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-card-hover: 0 8px 30px rgba(59,130,196,0.10), 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-elevated: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --gradient-primary: linear-gradient(135deg, #3b82c4 0%, #60a5e8 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      min-height: 100vh; background: #f1f5f9;
+      color: var(--sanadome-text); font-size: 15px; line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Sidebar ── */
+    .app-sidebar {
+      width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--white);
+      border-right: 1px solid var(--sanadome-border); display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; height: 100vh; z-index: 100;
+    }
+    .sidebar-brand {
+      padding: 22px 22px 18px; display: flex; align-items: center; gap: 14px;
+      border-bottom: 1px solid var(--sanadome-border);
+    }
+    .brand-icon {
+      width: 40px; height: 40px; background: var(--gradient-primary); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-icon svg { width: 20px; height: 20px; color: white; }
+    .brand-text h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 700; color: var(--sanadome-text); line-height: 1.2; }
+    .brand-text span { font-size: 0.7rem; color: var(--sanadome-text-soft); font-weight: 500; }
+    .sidebar-nav { flex: 1; padding: 16px 14px; overflow-y: auto; }
+    .nav-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--sanadome-text-soft); padding: 16px 12px 6px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--radius-sm);
+      color: var(--sanadome-text-soft); text-decoration: none; font-size: 0.88rem; font-weight: 500;
+      transition: all .15s; margin-bottom: 2px; cursor: pointer;
+    }
+    .nav-item:hover { background: var(--sanadome-blue-pale); color: var(--sanadome-blue); }
+    .nav-item.active { background: var(--sanadome-blue-pale); color: var(--sanadome-blue); font-weight: 600; }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar-user {
+      padding: 16px 18px; border-top: 1px solid var(--sanadome-border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sidebar-avatar {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.78rem; color: white;
+    }
+    .sidebar-user-info { flex: 1; min-width: 0; }
+    .sidebar-user-info .name { font-weight: 600; font-size: 0.82rem; color: var(--sanadome-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-user-info .role { font-size: 0.7rem; color: var(--sanadome-text-soft); }
+    .btn-logout {
+      background: none; border: none; cursor: pointer; color: var(--sanadome-text-soft);
+      padding: 6px; border-radius: 8px; transition: all .15s;
+    }
+    .btn-logout:hover { color: #ef4444; background: #fef2f2; }
+    .btn-logout svg { width: 18px; height: 18px; }
+
+    /* ── Main content ── */
+    .app-main {
+      margin-left: var(--sidebar-w); flex: 1; min-height: 100vh;
+    }
+
+    /* ── Article layout ── */
+    .article-wrapper {
+      max-width: 800px; margin: 0 auto; padding: 40px 36px 80px;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px; color: var(--sanadome-text-soft);
+      text-decoration: none; font-size: 0.85rem; font-weight: 500; margin-bottom: 24px;
+      transition: color .15s; padding: 6px 0;
+    }
+    .back-link:hover { color: var(--sanadome-blue); }
+    .back-link svg { width: 18px; height: 18px; }
+
+    /* Hero image */
+    .article-hero {
+      width: 100%; max-height: 400px; object-fit: cover; border-radius: var(--radius);
+      margin-bottom: 28px; background: var(--sanadome-blue-pale);
+    }
+    .article-hero-placeholder {
+      width: 100%; height: 240px; border-radius: var(--radius);
+      background: var(--gradient-primary); margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+    }
+
+    /* Meta */
+    .article-meta {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 20px; font-size: 0.82rem; color: var(--sanadome-text-soft);
+    }
+    .article-meta-item { display: flex; align-items: center; gap: 6px; }
+    .article-meta-item svg { width: 16px; height: 16px; }
+    .article-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--sanadome-border); }
+    .article-badge {
+      padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .badge-pinned { background: #dbeafe; color: #1e40af; }
+
+    /* Title */
+    .article-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 800;
+      color: var(--sanadome-text); line-height: 1.25; margin-bottom: 8px;
+    }
+
+    /* Promo */
+    .article-promo {
+      font-size: 1.05rem; color: var(--sanadome-text-soft); line-height: 1.6;
+      margin-bottom: 28px; font-style: italic;
+      border-left: 3px solid var(--sanadome-blue); padding-left: 16px;
+    }
+
+    /* Content */
+    .article-content {
+      font-size: 0.95rem; line-height: 1.85; color: var(--sanadome-text);
+    }
+    .article-content h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 700; margin: 32px 0 12px; }
+    .article-content h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 600; margin: 24px 0 8px; }
+    .article-content p { margin-bottom: 16px; }
+    .article-content ul, .article-content ol { padding-left: 24px; margin-bottom: 16px; }
+    .article-content li { margin-bottom: 6px; }
+    .article-content blockquote {
+      border-left: 3px solid var(--sanadome-blue); padding: 12px 18px; margin: 16px 0;
+      background: var(--sanadome-blue-pale); border-radius: 0 8px 8px 0;
+      color: var(--sanadome-text-soft); font-style: italic;
+    }
+    .article-content img {
+      max-width: 100%; height: auto; border-radius: 12px; margin: 16px 0;
+    }
+    .article-content a { color: var(--sanadome-blue); text-decoration: underline; }
+
+    /* Divider */
+    .article-divider {
+      border: none; border-top: 1px solid var(--sanadome-border);
+      margin: 32px 0;
+    }
+
+    /* Share / actions */
+    .article-footer {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .article-footer-btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+      border: 1.5px solid var(--sanadome-border); background: var(--white);
+      border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;
+      color: var(--sanadome-text-soft); cursor: pointer; text-decoration: none;
+      transition: all .15s; font-family: inherit;
+    }
+    .article-footer-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); background: var(--sanadome-blue-pale); }
+    .article-footer-btn svg { width: 16px; height: 16px; }
+    .article-footer-btn.primary {
+      background: var(--gradient-primary); color: white; border-color: transparent;
+    }
+    .article-footer-btn.primary:hover { opacity: 0.9; }
+
+    /* Loading / error state */
+    .article-loading {
+      text-align: center; padding: 80px 20px; color: var(--sanadome-text-soft);
+    }
+    .article-loading .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--sanadome-border);
+      border-top-color: var(--sanadome-blue); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast {
+      position: fixed; bottom: 28px; right: 28px; padding: 14px 22px;
+      background: #1e293b; color: white; border-radius: 12px; font-size: 0.85rem;
+      font-weight: 500; z-index: 9999; transform: translateY(80px); opacity: 0;
+      transition: all .3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .app-sidebar { display: none; }
+      .app-main { margin-left: 0; }
+      .article-wrapper { padding: 20px 16px 60px; }
+      .article-title { font-size: 1.5rem; }
+      .article-hero { max-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Sidebar ── -->
+  <aside class="app-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="brand-text">
+        <h1>MijnSanadome</h1>
+        <span>Employee Portal</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Menu</div>
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="#placeholder-rooster" class="nav-item" data-permission="nav.rooster">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Mijn rooster
+      </a>
+      <a href="#placeholder-verlof" class="nav-item" data-permission="nav.verlof">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Verlof
+      </a>
+      <a href="#placeholder-documenten" class="nav-item" data-permission="nav.documenten">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Documenten
+      </a>
+      <a href="#placeholder-berichten" class="nav-item" data-permission="nav.berichten">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Berichten
+      </a>
+      <div class="nav-label">Beheer</div>
+      <a href="gebruikers.html" class="nav-item" data-permission="medewerkers.bekijken">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        Medewerkers
+      </a>
+      <a href="nieuws.html" class="nav-item" data-permission="nieuws.bekijken">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        Nieuwsbeheer
+      </a>
+      <a href="rechten.html" class="nav-item" data-permission="rechten.bekijken">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Rechten
+      </a>
+      <div class="nav-label">Account</div>
+      <a href="#placeholder-gegevens" class="nav-item" data-permission="nav.gegevens">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Mijn gegevens
+      </a>
+      <a href="#placeholder-hr" class="nav-item" data-permission="nav.hr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        HR &amp; handboek
+      </a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="user-avatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="name" id="user-name">Laden…</div>
+        <div class="role" id="user-role">—</div>
+      </div>
+      <button class="btn-logout" id="btn-logout" title="Uitloggen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="app-main">
+    <div class="article-wrapper" id="article-wrapper">
+      <div class="article-loading" id="article-loading">
+        <div class="spinner"></div>
+        <p>Artikel laden…</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    var sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+    function escapeHtml(s) {
+      var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
+    }
+    function fmtDate(d) {
+      return new Date(d).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+    function fmtTime(d) {
+      return new Date(d).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+    }
+    function stripHtml(html) {
+      var d = document.createElement('div'); d.innerHTML = html; return (d.textContent || d.innerText || '').trim();
+    }
+
+    /* ── Auth check ── */
+    sb.auth.getSession().then(function(res) {
+      if (!res.data.session) { window.location.href = 'index.html'; return; }
+      return sb.auth.getUser();
+    }).then(function(res) {
+      if (!res || !res.data.user) { window.location.href = 'index.html'; return; }
+      var user = res.data.user;
+      var meta = user.user_metadata || {};
+      var name = ((meta.first_name || '') + ' ' + (meta.last_name || '')).trim() || user.email;
+      var role = meta.role || 'Medewerker';
+
+      document.getElementById('user-name').textContent = name;
+      document.getElementById('user-role').textContent = role;
+      var ini = name.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+      document.getElementById('user-avatar').textContent = ini;
+
+      // Permission enforcement for sidebar
+      sb.from('role_permissions').select('permission, granted').eq('role', role).then(function(pr) {
+        if (!pr.error && pr.data && pr.data.length > 0) {
+          pr.data.forEach(function(r) {
+            if (!r.granted) {
+              document.querySelectorAll('[data-permission="' + r.permission + '"]').forEach(function(el) {
+                el.style.display = 'none';
+              });
+            }
+          });
+        }
+      }).catch(function() {});
+
+      document.getElementById('btn-logout').addEventListener('click', function() {
+        sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
+      });
+
+      loadArticle();
+    }).catch(function() {
+      window.location.href = 'index.html';
+    });
+
+    /* ── Load article ── */
+    function loadArticle() {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id');
+
+      if (!id) {
+        showError('Geen artikel-ID opgegeven.', true);
+        return;
+      }
+
+      sb.from('news').select('*').eq('id', id).single().then(function(res) {
+        if (res.error || !res.data) {
+          showError('Artikel niet gevonden.', true);
+          return;
+        }
+        renderArticle(res.data);
+      }).catch(function() {
+        showError('Er ging iets mis bij het laden.', true);
+      });
+    }
+
+    function showError(msg, showBack) {
+      var wrapper = document.getElementById('article-wrapper');
+      wrapper.innerHTML = '<div class="article-loading">' +
+        '<div style="font-size:3rem;margin-bottom:16px;">📰</div>' +
+        '<p style="font-size:1rem;font-weight:600;margin-bottom:8px;">' + escapeHtml(msg) + '</p>' +
+        (showBack ? '<a href="dashboard.html" class="back-link" style="display:inline-flex;margin-top:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Terug naar dashboard</a>' : '') +
+        '</div>';
+    }
+
+    function renderArticle(article) {
+      var wrapper = document.getElementById('article-wrapper');
+      var wordCount = stripHtml(article.content || '').split(/\s+/).filter(Boolean).length;
+      var readTime = Math.max(1, Math.round(wordCount / 200));
+      var date = fmtDate(article.created_at);
+      var time = fmtTime(article.created_at);
+
+      // Update page title
+      document.title = (article.title || 'Artikel') + ' · MijnSanadome';
+
+      var html = '';
+
+      // Back link
+      html += '<a href="dashboard.html" class="back-link">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>' +
+        'Terug naar dashboard</a>';
+
+      // Hero image
+      if (article.thumbnail_url) {
+        html += '<img class="article-hero" src="' + escapeHtml(article.thumbnail_url) + '" alt="" onerror="this.style.display=\'none\'">';
+      }
+
+      // Title
+      html += '<h1 class="article-title">' + escapeHtml(article.title) + '</h1>';
+
+      // Meta
+      html += '<div class="article-meta">';
+      if (article.pinned) {
+        html += '<span class="article-badge badge-pinned">📌 Vastgepind</span>';
+        html += '<div class="article-meta-dot"></div>';
+      }
+      html += '<span class="article-meta-item">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +
+        escapeHtml(article.author_name || 'Onbekend') + '</span>';
+      html += '<div class="article-meta-dot"></div>';
+      html += '<span class="article-meta-item">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
+        date + ' om ' + time + '</span>';
+      html += '<div class="article-meta-dot"></div>';
+      html += '<span class="article-meta-item">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+        readTime + ' min lezen</span>';
+      html += '</div>';
+
+      // Promo text
+      if (article.promo_text) {
+        html += '<div class="article-promo">' + escapeHtml(article.promo_text) + '</div>';
+      }
+
+      // Content
+      html += '<div class="article-content">' + (article.content || '') + '</div>';
+
+      // Footer
+      html += '<hr class="article-divider">';
+      html += '<div class="article-footer">';
+      html += '<a href="dashboard.html" class="article-footer-btn">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>' +
+        'Terug naar dashboard</a>';
+      html += '<button type="button" class="article-footer-btn" onclick="navigator.clipboard.writeText(window.location.href).then(function(){document.getElementById(\'toast\').textContent=\'✅ Link gekopieerd\';document.getElementById(\'toast\').classList.add(\'show\');setTimeout(function(){document.getElementById(\'toast\').classList.remove(\'show\');},2500);})">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+        'Link kopiëren</button>';
+      html += '</div>';
+
+      wrapper.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
