@@ -154,8 +154,8 @@
 
     /* ── Article body layout ── */
     .article-layout {
-      max-width: 1100px; margin: 0 auto; padding: 36px 48px 80px;
-      display: grid; grid-template-columns: 1fr 320px; gap: 48px;
+      max-width: 1200px; margin: 0 auto; padding: 36px 48px 80px;
+      display: grid; grid-template-columns: 1fr 300px; gap: 40px;
     }
     .article-main { min-width: 0; }
 
@@ -163,14 +163,6 @@
     .article-card {
       background: var(--white); border-radius: var(--radius); padding: 40px 44px;
       box-shadow: var(--shadow-card); border: 1px solid var(--sanadome-border);
-    }
-
-    /* Promo text */
-    .article-promo {
-      font-size: 1.05rem; color: var(--sanadome-text-soft); line-height: 1.7;
-      margin-bottom: 28px; font-style: italic; position: relative;
-      padding: 20px 24px; background: var(--sanadome-blue-pale); border-radius: 12px;
-      border-left: 4px solid var(--sanadome-blue);
     }
 
     /* Content */
@@ -187,105 +179,6 @@
     }
     .article-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 20px 0; }
     .article-content a { color: var(--sanadome-blue); text-decoration: underline; }
-
-    /* ── Author card ── */
-    .author-card {
-      display: flex; align-items: center; gap: 16px; padding: 20px 24px;
-      background: #f8fafc; border-radius: 12px; margin-top: 36px;
-      border: 1px solid var(--sanadome-border);
-    }
-    .author-avatar {
-      width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-primary);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.9rem; color: white; flex-shrink: 0;
-    }
-    .author-info h4 { font-size: 0.9rem; font-weight: 600; color: var(--sanadome-text); margin-bottom: 2px; }
-    .author-info span { font-size: 0.78rem; color: var(--sanadome-text-soft); }
-
-    /* ── Comments section ── */
-    .comments-section {
-      background: var(--white); border-radius: var(--radius); padding: 32px 44px;
-      box-shadow: var(--shadow-card); border: 1px solid var(--sanadome-border);
-      margin-top: 24px;
-    }
-    .comments-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 24px;
-    }
-    .comments-header h3 {
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 700;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .comment-count-badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      min-width: 24px; height: 24px; padding: 0 8px; border-radius: 12px;
-      background: var(--sanadome-blue-pale); color: var(--sanadome-blue);
-      font-size: 0.75rem; font-weight: 700;
-    }
-
-    /* Comment form */
-    .comment-form {
-      display: flex; gap: 12px; margin-bottom: 28px; align-items: flex-start;
-    }
-    .comment-form-avatar {
-      width: 36px; height: 36px; border-radius: 50%; background: var(--gradient-primary);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.72rem; color: white; flex-shrink: 0; margin-top: 2px;
-    }
-    .comment-form-body { flex: 1; }
-    .comment-input {
-      width: 100%; padding: 12px 16px; border: 1.5px solid var(--sanadome-border);
-      border-radius: 12px; font-family: inherit; font-size: 0.88rem;
-      resize: vertical; min-height: 80px; transition: border-color .15s;
-      background: #f8fafc; color: var(--sanadome-text); line-height: 1.5;
-    }
-    .comment-input:focus { outline: none; border-color: var(--sanadome-blue); background: var(--white); }
-    .comment-input::placeholder { color: var(--sanadome-text-soft); }
-    .comment-form-actions {
-      display: flex; justify-content: flex-end; margin-top: 10px; gap: 8px;
-    }
-    .btn-comment {
-      padding: 8px 20px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
-      cursor: pointer; font-family: inherit; border: none; transition: all .15s;
-    }
-    .btn-comment-primary {
-      background: var(--gradient-primary); color: white;
-    }
-    .btn-comment-primary:hover { opacity: 0.9; }
-    .btn-comment-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* Comment items */
-    .comment-list { display: flex; flex-direction: column; gap: 0; }
-    .comment-item {
-      display: flex; gap: 12px; padding: 18px 0; align-items: flex-start;
-      border-top: 1px solid #f1f5f9;
-    }
-    .comment-item:first-child { border-top: none; }
-    .comment-avatar {
-      width: 34px; height: 34px; border-radius: 50%; background: var(--gradient-primary);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.7rem; color: white; flex-shrink: 0;
-    }
-    .comment-body { flex: 1; min-width: 0; }
-    .comment-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap;
-    }
-    .comment-author { font-weight: 600; font-size: 0.85rem; color: var(--sanadome-text); }
-    .comment-time { font-size: 0.74rem; color: var(--sanadome-text-soft); }
-    .comment-text { font-size: 0.88rem; line-height: 1.6; color: var(--sanadome-text); white-space: pre-wrap; }
-    .comment-actions { margin-top: 6px; display: flex; gap: 12px; }
-    .comment-action-btn {
-      background: none; border: none; font-size: 0.76rem; font-weight: 500;
-      color: var(--sanadome-text-soft); cursor: pointer; font-family: inherit;
-      padding: 2px 0; transition: color .15s;
-    }
-    .comment-action-btn:hover { color: var(--sanadome-blue); }
-    .comment-action-btn.delete:hover { color: #ef4444; }
-
-    .comments-empty {
-      text-align: center; padding: 32px 16px; color: var(--sanadome-text-soft); font-size: 0.88rem;
-    }
-    .comments-empty-icon { font-size: 2rem; margin-bottom: 8px; }
 
     /* ── Sidebar panel ── */
     .article-sidebar { display: flex; flex-direction: column; gap: 20px; }
@@ -335,18 +228,6 @@
     .related-date { font-size: 0.72rem; color: var(--sanadome-text-soft); }
     .related-empty { font-size: 0.82rem; color: var(--sanadome-text-soft); text-align: center; padding: 12px 0; }
 
-    /* Share buttons */
-    .share-buttons { display: flex; flex-direction: column; gap: 8px; }
-    .share-btn {
-      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-      border: 1.5px solid var(--sanadome-border); background: var(--white);
-      border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 500;
-      color: var(--sanadome-text-soft); cursor: pointer; font-family: inherit;
-      transition: all .15s; text-decoration: none; width: 100%;
-    }
-    .share-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); background: var(--sanadome-blue-pale); }
-    .share-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-
     /* ── Loading ── */
     .article-loading {
       text-align: center; padding: 100px 20px; color: var(--sanadome-text-soft);
@@ -367,24 +248,6 @@
     }
     .toast.show { transform: translateY(0); opacity: 1; }
 
-    /* ── Setup banner ── */
-    .setup-banner {
-      padding: 24px; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px;
-      text-align: center;
-    }
-    .setup-banner h4 { font-size: 0.95rem; color: #92400e; margin-bottom: 8px; }
-    .setup-banner p { font-size: 0.82rem; color: #a16207; margin-bottom: 12px; }
-    .setup-banner pre {
-      background: #1e293b; color: #e2e8f0; padding: 14px 16px; border-radius: 8px;
-      font-size: 0.75rem; text-align: left; overflow-x: auto; margin-bottom: 12px;
-      line-height: 1.5;
-    }
-    .setup-banner button {
-      padding: 8px 20px; border: none; border-radius: 8px; font-size: 0.82rem;
-      font-weight: 600; background: var(--gradient-primary); color: white;
-      cursor: pointer; font-family: inherit;
-    }
-
     /* ── Responsive ── */
     @media (max-width: 1024px) {
       .article-layout { grid-template-columns: 1fr; padding: 24px 24px 60px; }
@@ -399,7 +262,6 @@
       .back-bar { padding: 12px 20px; }
       .article-layout { padding: 20px 16px 60px; gap: 24px; }
       .article-card { padding: 24px 20px; }
-      .comments-section { padding: 24px 20px; }
     }
   </style>
 </head>
@@ -489,8 +351,6 @@
     var sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
     var currentUser = null;
     var currentUserName = '';
-    var currentUserIni = '?';
-    var currentArticleId = null;
 
     function escapeHtml(s) {
       var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
@@ -506,19 +366,6 @@
     }
     function stripHtml(html) {
       var d = document.createElement('div'); d.innerHTML = html; return (d.textContent || d.innerText || '').trim();
-    }
-    function timeAgo(dateStr) {
-      var now = new Date();
-      var then = new Date(dateStr);
-      var diff = Math.floor((now - then) / 1000);
-      if (diff < 60) return 'Zojuist';
-      if (diff < 3600) return Math.floor(diff / 60) + ' min geleden';
-      if (diff < 86400) return Math.floor(diff / 3600) + ' uur geleden';
-      if (diff < 604800) {
-        var days = Math.floor(diff / 86400);
-        return days + ' dag' + (days > 1 ? 'en' : '') + ' geleden';
-      }
-      return fmtDateShort(dateStr);
     }
     function showToast(msg) {
       var t = document.getElementById('toast');
@@ -540,8 +387,8 @@
 
       document.getElementById('user-name').textContent = currentUserName;
       document.getElementById('user-role').textContent = role;
-      currentUserIni = currentUserName.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
-      document.getElementById('user-avatar').textContent = currentUserIni;
+      var ini = currentUserName.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+      document.getElementById('user-avatar').textContent = ini;
 
       sb.from('role_permissions').select('permission, granted').eq('role', role).then(function(pr) {
         if (!pr.error && pr.data && pr.data.length > 0) {
@@ -568,7 +415,6 @@
     function loadArticle() {
       var params = new URLSearchParams(window.location.search);
       var id = params.get('id');
-      currentArticleId = id;
 
       if (!id) { showError('Geen artikel-ID opgegeven.'); return; }
 
@@ -576,7 +422,6 @@
         if (res.error || !res.data) { showError('Artikel niet gevonden.'); return; }
         renderArticle(res.data);
         loadRelatedArticles(id);
-        loadComments();
       }).catch(function() {
         showError('Er ging iets mis bij het laden.');
       });
@@ -634,28 +479,8 @@
       /* Left column */
       html += '<div class="article-main">';
       html += '<div class="article-card">';
-      if (article.promo_text) {
-        html += '<div class="article-promo">' + escapeHtml(article.promo_text) + '</div>';
-      }
       html += '<div class="article-content">' + (article.content || '<p style="color:var(--sanadome-text-soft);font-style:italic;">Dit artikel heeft nog geen inhoud.</p>') + '</div>';
-      html += '<div class="author-card">';
-      html += '<div class="author-avatar">' + authorIni + '</div>';
-      html += '<div class="author-info"><h4>Geschreven door ' + escapeHtml(article.author_name || 'Onbekend') + '</h4>';
-      html += '<span>Gepubliceerd op ' + date + ' om ' + time + '</span></div></div>';
       html += '</div>'; // .article-card
-
-      /* Comments */
-      html += '<div class="comments-section" id="comments-section">';
-      html += '<div class="comments-header"><h3>Reacties <span class="comment-count-badge" id="comment-count">0</span></h3></div>';
-      html += '<div class="comment-form" id="comment-form">';
-      html += '<div class="comment-form-avatar">' + currentUserIni + '</div>';
-      html += '<div class="comment-form-body">';
-      html += '<textarea class="comment-input" id="comment-input" placeholder="Schrijf een reactie…" rows="3"></textarea>';
-      html += '<div class="comment-form-actions">';
-      html += '<button type="button" class="btn-comment btn-comment-primary" id="btn-post-comment" disabled>Plaatsen</button>';
-      html += '</div></div></div>';
-      html += '<div class="comment-list" id="comment-list"><div class="comments-empty"><div class="comments-empty-icon">💬</div>Nog geen reacties. Wees de eerste!</div></div>';
-      html += '</div>';
       html += '</div>'; // .article-main
 
       /* ── Right sidebar ── */
@@ -674,14 +499,6 @@
       }
       html += '</div></div>';
 
-      /* Share card */
-      html += '<div class="sidebar-card">';
-      html += '<div class="sidebar-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Delen</div>';
-      html += '<div class="share-buttons">';
-      html += '<button type="button" class="share-btn" id="btn-copy-link-sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Link kopiëren</button>';
-      html += '<button type="button" class="share-btn" id="btn-email-share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Via e-mail delen</button>';
-      html += '</div></div>';
-
       /* Related card */
       html += '<div class="sidebar-card">';
       html += '<div class="sidebar-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg> Meer nieuws</div>';
@@ -695,25 +512,6 @@
 
       /* ── Event listeners ── */
       document.getElementById('btn-copy-link').addEventListener('click', copyLink);
-      document.getElementById('btn-copy-link-sidebar').addEventListener('click', copyLink);
-      document.getElementById('btn-email-share').addEventListener('click', function() {
-        var subject = encodeURIComponent(article.title || 'Nieuwsartikel');
-        var body = encodeURIComponent('Bekijk dit artikel: ' + window.location.href);
-        window.open('mailto:?subject=' + subject + '&body=' + body);
-      });
-
-      var commentInput = document.getElementById('comment-input');
-      var btnPost = document.getElementById('btn-post-comment');
-      commentInput.addEventListener('input', function() {
-        btnPost.disabled = !commentInput.value.trim();
-      });
-      btnPost.addEventListener('click', postComment);
-      commentInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          if (commentInput.value.trim()) postComment();
-        }
-      });
     }
 
     function copyLink() {
@@ -752,126 +550,6 @@
         });
     }
 
-    /* ── Comments ── */
-    function loadComments() {
-      sb.from('news_comments').select('*')
-        .eq('article_id', currentArticleId)
-        .order('created_at', { ascending: true })
-        .then(function(res) {
-          if (res.error) {
-            if (res.error.code === '42P01' || (res.error.message && res.error.message.indexOf('does not exist') !== -1)) {
-              showCommentsSetup();
-            }
-            return;
-          }
-          renderComments(res.data || []);
-        }).catch(function() {});
-    }
-
-    function showCommentsSetup() {
-      var section = document.getElementById('comments-section');
-      if (!section) return;
-      section.innerHTML = '<div class="setup-banner">' +
-        '<h4>💬 Reacties instellen</h4>' +
-        '<p>Maak de <code>news_comments</code> tabel aan in Supabase:</p>' +
-        '<pre>CREATE TABLE news_comments (\n' +
-        '  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n' +
-        '  article_id UUID NOT NULL REFERENCES news(id) ON DELETE CASCADE,\n' +
-        '  user_id UUID NOT NULL,\n' +
-        '  user_name TEXT NOT NULL,\n' +
-        '  content TEXT NOT NULL,\n' +
-        '  created_at TIMESTAMPTZ DEFAULT now()\n' +
-        ');\n\n' +
-        'ALTER TABLE news_comments ENABLE ROW LEVEL SECURITY;\n\n' +
-        'CREATE POLICY "Iedereen kan reacties lezen"\n' +
-        '  ON news_comments FOR SELECT\n' +
-        '  TO authenticated USING (true);\n\n' +
-        'CREATE POLICY "Gebruikers kunnen reacties plaatsen"\n' +
-        '  ON news_comments FOR INSERT\n' +
-        '  TO authenticated WITH CHECK (auth.uid() = user_id);\n\n' +
-        'CREATE POLICY "Gebruikers kunnen eigen reacties verwijderen"\n' +
-        '  ON news_comments FOR DELETE\n' +
-        '  TO authenticated USING (auth.uid() = user_id);</pre>' +
-        '<button type="button" onclick="loadComments()">🔄 Opnieuw proberen</button></div>';
-    }
-
-    function renderComments(comments) {
-      var countEl = document.getElementById('comment-count');
-      if (countEl) countEl.textContent = comments.length;
-
-      var list = document.getElementById('comment-list');
-      if (!list) return;
-
-      if (comments.length === 0) {
-        list.innerHTML = '<div class="comments-empty"><div class="comments-empty-icon">💬</div>Nog geen reacties. Wees de eerste!</div>';
-        return;
-      }
-
-      list.innerHTML = comments.map(function(c) {
-        var ini = (c.user_name || 'O').split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
-        var isOwn = currentUser && c.user_id === currentUser.id;
-        return '<div class="comment-item" data-id="' + c.id + '">' +
-          '<div class="comment-avatar">' + ini + '</div>' +
-          '<div class="comment-body">' +
-          '<div class="comment-header">' +
-          '<span class="comment-author">' + escapeHtml(c.user_name) + '</span>' +
-          '<span class="comment-time">' + timeAgo(c.created_at) + '</span>' +
-          '</div>' +
-          '<div class="comment-text">' + escapeHtml(c.content) + '</div>' +
-          (isOwn ? '<div class="comment-actions"><button type="button" class="comment-action-btn delete" data-comment-id="' + c.id + '">Verwijderen</button></div>' : '') +
-          '</div></div>';
-      }).join('');
-
-      list.querySelectorAll('.comment-action-btn.delete').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          deleteComment(btn.getAttribute('data-comment-id'));
-        });
-      });
-    }
-
-    function postComment() {
-      var input = document.getElementById('comment-input');
-      var content = (input.value || '').trim();
-      if (!content || !currentUser) return;
-
-      var btn = document.getElementById('btn-post-comment');
-      btn.disabled = true;
-      btn.textContent = 'Plaatsen…';
-
-      sb.from('news_comments').insert({
-        article_id: currentArticleId,
-        user_id: currentUser.id,
-        user_name: currentUserName,
-        content: content
-      }).then(function(res) {
-        btn.textContent = 'Plaatsen';
-        if (res.error) {
-          if (res.error.code === '42P01' || (res.error.message && res.error.message.indexOf('does not exist') !== -1)) {
-            showCommentsSetup(); return;
-          }
-          showToast('❌ Kon reactie niet plaatsen');
-          btn.disabled = false;
-          return;
-        }
-        input.value = '';
-        btn.disabled = true;
-        showToast('✅ Reactie geplaatst');
-        loadComments();
-      }).catch(function() {
-        btn.textContent = 'Plaatsen';
-        btn.disabled = false;
-        showToast('❌ Er ging iets mis');
-      });
-    }
-
-    function deleteComment(commentId) {
-      if (!confirm('Weet je zeker dat je deze reactie wilt verwijderen?')) return;
-      sb.from('news_comments').delete().eq('id', commentId).then(function(res) {
-        if (res.error) { showToast('❌ Kon reactie niet verwijderen'); return; }
-        showToast('✅ Reactie verwijderd');
-        loadComments();
-      }).catch(function() { showToast('❌ Er ging iets mis'); });
-    }
   </script>
 </body>
 </html>
