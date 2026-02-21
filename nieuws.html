@@ -951,7 +951,7 @@
         var readTime = Math.max(1, Math.round(wordCount / 200));
 
         return '<div class="news-card">' +
-          '<a href="artikel.html?id=' + n.id + '" style="text-decoration:none;color:inherit;display:block;cursor:pointer;">' +
+          '<a href="artikel?id=' + n.id + '" style="text-decoration:none;color:inherit;display:block;cursor:pointer;">' +
           '<div class="news-card-thumb">' +
             (n.thumbnail_url ? '<img src="' + escapeHtml(n.thumbnail_url) + '" alt="" onerror="this.style.display=\'none\';this.parentNode.innerHTML+=\'📰\';">' : '📰') +
             '<span class="news-card-status ' + statusClass + '">' + (n.pinned ? '📌 ' : '') + statusLabel + '</span>' +

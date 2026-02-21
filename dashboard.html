@@ -1156,7 +1156,7 @@
               var rt = Math.max(1, Math.round(wc / 200));
               var heroExcerpt = hero.promo_text || (hero.content || '').replace(/<[^>]*>/g, '').substring(0, 120);
               var heroDate = new Date(hero.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' });
-              html += '<a href="artikel.html?id=' + hero.id + '" class="news-hero" style="text-decoration:none;color:inherit;display:block;">';
+              html += '<a href="artikel?id=' + hero.id + '" class="news-hero" style="text-decoration:none;color:inherit;display:block;">';
               if (hero.thumbnail_url) {
                 html += '<img class="news-hero-img" src="' + hero.thumbnail_url + '" alt="">';
               } else {
@@ -1182,7 +1182,7 @@
                   var n = res.data[i];
                   var nDate = new Date(n.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' });
                   var nExcerpt = n.promo_text || (n.content || '').replace(/<[^>]*>/g, '').substring(0, 100);
-                  html += '<li><a href="artikel.html?id=' + n.id + '" style="display:flex;align-items:flex-start;gap:14px;text-decoration:none;color:inherit;">';
+                  html += '<li><a href="artikel?id=' + n.id + '" style="display:flex;align-items:flex-start;gap:14px;text-decoration:none;color:inherit;">';
                   if (n.thumbnail_url) {
                     html += '<img class="news-thumb" src="' + n.thumbnail_url + '" alt="">';
                   } else {
