@@ -32,7 +32,13 @@
       min-height: 100vh; background: #f1f5f9;
       color: var(--sanadome-text); font-size: 15px; line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      opacity: 0; transition: opacity .18s ease;
     }
+    body.app-ready { opacity: 1; }
+    .app-loader { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: #f1f5f9; }
+    .app-loader .spinner { width: 36px; height: 36px; border: 3px solid var(--sanadome-border); border-top-color: var(--sanadome-blue); border-radius: 50%; animation: spin .6s linear infinite; }
+    body.app-ready .app-loader { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Sidebar ── */
     .app-sidebar {
@@ -303,6 +309,7 @@
   </style>
 </head>
 <body>
+<div class="app-loader"><div class="spinner"></div></div>
 
   <!-- ── Sidebar ── -->
   <aside class="app-sidebar">
@@ -476,6 +483,7 @@
           if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
         });
         loadArticle();
+        document.body.classList.add('app-ready');
       }).catch(function() { window.location.href = 'dashboard.html'; });
 
       document.getElementById('btn-logout').addEventListener('click', function() {

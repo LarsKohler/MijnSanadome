@@ -28,7 +28,12 @@
       --gradient-primary: linear-gradient(135deg, #3b82c4 0%, #60a5e8 100%);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #f4f7fb; color: var(--sanadome-text); min-height: 100vh; }
+    body { font-family: 'DM Sans', sans-serif; background: #f4f7fb; color: var(--sanadome-text); min-height: 100vh; opacity: 0; transition: opacity .18s ease; }
+    body.app-ready { opacity: 1; }
+    .app-loader { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: #f4f7fb; }
+    .app-loader .spinner { width: 36px; height: 36px; border: 3px solid var(--sanadome-border); border-top-color: var(--sanadome-blue); border-radius: 50%; animation: spin .6s linear infinite; }
+    body.app-ready .app-loader { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Sidebar ── */
     .sidebar {
@@ -388,6 +393,7 @@
   </style>
 </head>
 <body>
+  <div class="app-loader"><div class="spinner"></div></div>
 
   <!-- ── Sidebar ── -->
   <aside class="sidebar">
@@ -892,6 +898,7 @@
           document.getElementById('btn-add-news').title = 'Service role key ontbreekt';
         }
         initPage();
+        document.body.classList.add('app-ready');
       }).catch(function() {
         window._userPerms = getDefaultPerms(myRole);
         window.location.href = 'dashboard.html';

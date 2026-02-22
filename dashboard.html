@@ -36,7 +36,13 @@
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      opacity: 0; transition: opacity .18s ease;
     }
+    body.app-ready { opacity: 1; }
+    .app-loader { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: #f1f5f9; }
+    .app-loader .spinner { width: 36px; height: 36px; border: 3px solid var(--sanadome-border); border-top-color: var(--sanadome-blue); border-radius: 50%; animation: spin .6s linear infinite; }
+    body.app-ready .app-loader { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .app-layout {
       display: flex;
@@ -1005,6 +1011,7 @@
   </style>
 </head>
 <body>
+  <div class="app-loader"><div class="spinner"></div></div>
   <div class="app-layout">
     <aside class="app-sidebar">
       <a href="#" class="sidebar-logo" aria-label="MijnSanadome">
@@ -1313,12 +1320,14 @@
             document.querySelectorAll('[data-permission]').forEach(function(el) {
               if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
             });
+            document.body.classList.add('app-ready');
           }).catch(function() {
             // Fail closed: apply default perms on error
             var fallbackPerms = getDefaultPerms(userRole);
             document.querySelectorAll('[data-permission]').forEach(function(el) {
               if (fallbackPerms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
             });
+            document.body.classList.add('app-ready');
           });
 
           // Load news dynamically
