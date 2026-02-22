@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="view-transition" content="same-origin">
+  <script>try{if(sessionStorage.getItem('msn_nav'))document.documentElement.className='has-nav-cache';}catch(e){}</script>
   <title>Dashboard · MijnSanadome</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +45,8 @@
     .app-loader .spinner { width: 36px; height: 36px; border: 3px solid var(--sanadome-border); border-top-color: var(--sanadome-blue); border-radius: 50%; animation: spin .6s linear infinite; }
     body.app-ready .app-loader { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    html.has-nav-cache body { opacity: 1 !important; transition: none !important; }
+    html.has-nav-cache .app-loader { display: none !important; }
 
     .app-layout {
       display: flex;

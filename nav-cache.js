@@ -96,14 +96,27 @@
   }
 
   /**
-   * Prefetch interne pagina-links
+   * Prerender interne pagina's via Speculation Rules API (Chrome/Edge 109+).
+   * Fallback: prefetch voor andere browsers.
    */
-  function prefetchPages() {
+  function prerenderPages() {
     var pages = ['dashboard.html', 'gebruikers.html', 'nieuws.html', 'debiteuren.html',
       'rechten.html', 'profiel.html', 'onboarding.html', 'artikel.html'];
     var current = location.pathname.split('/').pop() || 'dashboard.html';
-    pages.forEach(function (p) {
-      if (p === current) return;
+    var targets = pages.filter(function (p) { return p !== current; });
+
+    // Speculation Rules API – prerenders volledig in achtergrond
+    if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+      var rules = { prerender: [{ urls: targets, eagerness: 'moderate' }] };
+      var script = document.createElement('script');
+      script.type = 'speculationrules';
+      script.textContent = JSON.stringify(rules);
+      document.head.appendChild(script);
+      return;
+    }
+
+    // Fallback: prefetch
+    targets.forEach(function (p) {
       var link = document.createElement('link');
       link.rel = 'prefetch';
       link.href = p;
@@ -112,11 +125,11 @@
     });
   }
 
-  // Start prefetch na idle
+  // Start prerender/prefetch na idle
   if ('requestIdleCallback' in window) {
-    requestIdleCallback(prefetchPages);
+    requestIdleCallback(prerenderPages);
   } else {
-    setTimeout(prefetchPages, 200);
+    setTimeout(prerenderPages, 200);
   }
 
   window.NavCache = { save: save, load: load, clear: clear, applyUI: applyUI };
