@@ -444,10 +444,23 @@
         document.getElementById('user-avatar').textContent = ini;
       }
 
+      var ALL_PERMS = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','dashboard.rooster','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','nieuws.bekijken','nieuws.aanmaken','nieuws.bewerken','nieuws.verwijderen','rechten.bekijken','rechten.bewerken','debiteuren.bekijken','debiteuren.beheren','debiteuren.importeren'];
+      function getDefaultPerms(r) {
+        var p = {};
+        ALL_PERMS.forEach(function(k) {
+          if (r === 'Manager') p[k] = true;
+          else if (r === 'Assistent Manager') p[k] = k !== 'rechten.bewerken' && k !== 'medewerkers.verwijderen';
+          else if (r === 'Senior Medewerker') p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken' || k === 'debiteuren.bekijken';
+          else p[k] = k.startsWith('dashboard.') || k.startsWith('nav.');
+        });
+        return p;
+      }
       sb.from('role_permissions').select('permission, granted').eq('role', role).then(function(pr) {
         var perms = {};
         if (!pr.error && pr.data && pr.data.length > 0) {
           pr.data.forEach(function(r) { perms[r.permission] = r.granted; });
+        } else {
+          perms = getDefaultPerms(role);
         }
         return sb.from('user_permissions').select('permission, granted').eq('user_id', currentUser.id).then(function(upr) {
           if (!upr.error && upr.data && upr.data.length > 0) {
@@ -456,16 +469,18 @@
           return perms;
         }).catch(function() { return perms; });
       }).then(function(perms) {
+        if (perms['nieuws.bekijken'] === false) {
+          window.location.href = 'dashboard.html'; return;
+        }
         document.querySelectorAll('[data-permission]').forEach(function(el) {
           if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
         });
-      }).catch(function() {});
+        loadArticle();
+      }).catch(function() { window.location.href = 'dashboard.html'; });
 
       document.getElementById('btn-logout').addEventListener('click', function() {
         sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
       });
-
-      loadArticle();
     }).catch(function() {
       window.location.href = 'index.html';
     });

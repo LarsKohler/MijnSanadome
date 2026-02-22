@@ -1119,20 +1119,19 @@
         sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
       });
 
-      // Load and enforce permissions
-      enforcePermissions();
-
-      // Setup page tabs
-      setupPageTabs();
-
-      // Load onboarding data
-      loadOnboardingData();
+      // Load and enforce permissions, then init page
+      enforcePermissions(function() {
+        // Setup page tabs
+        setupPageTabs();
+        // Load onboarding data
+        loadOnboardingData();
+      });
     }).catch(function() {
       window.location.href = 'index.html';
     });
 
     /* ═══ Permission enforcement ═══ */
-    function enforcePermissions() {
+    function enforcePermissions(onReady) {
       function getDefaultPerms(role) {
         var ALL = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','dashboard.rooster','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','nieuws.bekijken','nieuws.aanmaken','nieuws.bewerken','nieuws.verwijderen','rechten.bekijken','rechten.bewerken','debiteuren.bekijken','debiteuren.beheren','debiteuren.importeren'];
         var p = {};
@@ -1158,10 +1157,15 @@
           return perms;
         }).catch(function() { return perms; });
       }).then(function(perms) {
+        // Only managers and assistant managers can access onboarding
+        if (currentRole !== 'Manager' && currentRole !== 'Assistent Manager' && perms['medewerkers.bekijken'] === false) {
+          window.location.href = 'dashboard.html'; return;
+        }
         document.querySelectorAll('[data-permission]').forEach(function(el) {
           if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
         });
-      }).catch(function() {});
+        if (onReady) onReady();
+      }).catch(function() { window.location.href = 'dashboard.html'; });
     }
 
     /* ═══ Toast notificaties ═══ */

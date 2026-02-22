@@ -846,18 +846,19 @@
             }
             // Store permissions for card rendering
             window._userPerms = perms;
-          }).catch(function() { window._userPerms = getDefaultPerms(myRole); });
-
-          // Show admin warning if no service key
-          if (!adminSb) {
-            document.getElementById('admin-warning').style.display = 'flex';
-            document.getElementById('btn-add-user').disabled = true;
-            document.getElementById('btn-add-user').style.opacity = '0.5';
-            grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔒</div><h3>Geen toegang</h3><p>Service role key is vereist voor gebruikersbeheer.</p></div>';
-            return;
-          }
-
-          initPage();
+            // Show admin warning if no service key
+            if (!adminSb) {
+              document.getElementById('admin-warning').style.display = 'flex';
+              document.getElementById('btn-add-user').disabled = true;
+              document.getElementById('btn-add-user').style.opacity = '0.5';
+              grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔒</div><h3>Geen toegang</h3><p>Service role key is vereist voor gebruikersbeheer.</p></div>';
+              return;
+            }
+            initPage();
+          }).catch(function() {
+            window._userPerms = getDefaultPerms(myRole);
+            window.location.href = 'dashboard.html';
+          });
         });
       }).catch(function() { window.location.href = 'index.html'; });
 

@@ -872,7 +872,13 @@
           document.querySelectorAll('[data-permission]').forEach(function(el) {
             if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
           });
-        }).catch(function() {});
+        }).catch(function() {
+          // Fail closed: apply default perms on error
+          var fallbackPerms = getDefaultPerms(userRole);
+          document.querySelectorAll('[data-permission]').forEach(function(el) {
+            if (fallbackPerms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
+          });
+        });
       }
 
       // ── Tabs ──

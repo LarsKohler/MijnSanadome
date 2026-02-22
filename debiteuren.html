@@ -2184,7 +2184,9 @@ CREATE SEQUENCE IF NOT EXISTS dossier_nr_seq START 1;
         var importBtn = document.getElementById('btn-import-rapport');
         if (importBtn) importBtn.style.display = 'none';
       }
-    }).catch(function() {});
+      // Load data only after permission check passes
+      loadDossiers();
+    }).catch(function() { window.location.href = 'dashboard.html'; });
 
     // Logout
     document.getElementById('btn-logout').addEventListener('click', function() {
@@ -2258,8 +2260,6 @@ CREATE SEQUENCE IF NOT EXISTS dossier_nr_seq START 1;
       }
     });
 
-    // Load data
-    loadDossiers();
   }).catch(function() {
     window.location.href = 'index.html';
   });

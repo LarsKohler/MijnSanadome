@@ -402,7 +402,7 @@
     </div>
     <nav class="sidebar-nav">
       <div class="nav-label">Menu</div>
-      <a href="dashboard.html" class="nav-item" data-permission="nav.dashboard">
+      <a href="dashboard.html" class="nav-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         Dashboard
       </a>
@@ -885,15 +885,17 @@
           if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
         });
         window._userPerms = perms;
-      }).catch(function() { window._userPerms = getDefaultPerms(myRole); });
-
-      if (!adminSb) {
-        document.getElementById('btn-add-news').disabled = true;
-        document.getElementById('btn-add-news').style.opacity = '0.5';
-        document.getElementById('btn-add-news').title = 'Service role key ontbreekt';
-      }
-
-      initPage();
+        // Init page only after permissions are loaded
+        if (!adminSb) {
+          document.getElementById('btn-add-news').disabled = true;
+          document.getElementById('btn-add-news').style.opacity = '0.5';
+          document.getElementById('btn-add-news').title = 'Service role key ontbreekt';
+        }
+        initPage();
+      }).catch(function() {
+        window._userPerms = getDefaultPerms(myRole);
+        window.location.href = 'dashboard.html';
+      });
     });
 
     /* ── Init ── */
