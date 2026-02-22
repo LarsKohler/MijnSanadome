@@ -256,6 +256,7 @@
       justify-content: center;
       flex-shrink: 0;
       box-shadow: 0 2px 8px rgba(59, 130, 196, 0.25);
+      overflow: hidden;
     }
     .topbar-user-info { text-align: left; }
     .topbar-user-name {
@@ -313,6 +314,7 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
+      overflow: hidden;
       background: var(--gradient-primary);
       color: var(--white);
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -443,12 +445,15 @@
     .widget-row-3 { grid-template-columns: repeat(3, 1fr); }
     .widget-row-2 { grid-template-columns: 1fr 1fr; }
     .widget-row-2-1 { grid-template-columns: 2fr 1fr; }
+    .widget-row-2-1-r { grid-template-columns: 1fr 1fr 1fr; }
     @media (max-width: 1024px) {
       .widget-row-3 { grid-template-columns: 1fr 1fr; }
       .widget-row-2, .widget-row-2-1 { grid-template-columns: 1fr; }
+      .widget-row-2-1-r { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 640px) {
       .widget-row-3 { grid-template-columns: 1fr; }
+      .widget-row-2-1-r { grid-template-columns: 1fr; }
     }
 
     .widget {
@@ -806,6 +811,197 @@
       .app-main { margin-left: 0; }
       .topbar-search-wrap { max-width: 180px; }
     }
+
+    /* ── Rooster widget ── */
+    .rooster-widget { min-width: 0; }
+    .rooster-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid rgba(226, 232, 240, 0.7);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+    .rooster-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--sanadome-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(241, 245, 249, 0.4) 0%, transparent 100%);
+    }
+    .rooster-header-left { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .rooster-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: var(--sanadome-text);
+    }
+    .rooster-date-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.2rem 0.6rem; font-size: 0.7rem; font-weight: 600;
+      background: var(--sanadome-blue-pale); color: var(--sanadome-blue);
+      border-radius: 999px;
+    }
+    .rooster-live-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+      animation: rooster-pulse 2s infinite;
+    }
+    @keyframes rooster-pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+    }
+    .rooster-refresh-btn {
+      padding: 0.3rem 0.65rem; font-size: 0.72rem; font-weight: 600; font-family: inherit;
+      background: transparent; border: 1.5px solid var(--sanadome-border); border-radius: 8px;
+      color: var(--sanadome-text-soft); cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .rooster-refresh-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+
+    .rooster-body { padding: 0.75rem 1rem; }
+
+    /* Status sections */
+    .rooster-columns {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      .rooster-columns { grid-template-columns: 1fr; }
+    }
+    .rooster-col-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 0.72rem; color: var(--sanadome-text-soft); text-transform: uppercase;
+      letter-spacing: 0.04em; margin-bottom: 0.35rem;
+    }
+    .rooster-section { margin-bottom: 0; }
+
+    .rooster-list { display: flex; flex-direction: column; gap: 0.25rem; }
+    .rooster-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0.5rem; border-radius: var(--radius-sm);
+      background: #f8fafc; transition: all 0.15s;
+    }
+    .rooster-item:hover { background: var(--sanadome-blue-mist); }
+    .rooster-item.is-active { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .rooster-item.is-upcoming { background: var(--sanadome-blue-pale); border: 1px solid #bfdbfe; }
+    .rooster-item.is-finished { opacity: 0.6; }
+
+    .rooster-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--gradient-primary); color: var(--white);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.6rem;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .rooster-name { font-weight: 600; font-size: 0.78rem; color: var(--sanadome-text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rooster-shift-info { text-align: right; }
+    .rooster-shift-code {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 28px; padding: 0.15rem 0.45rem; font-size: 0.72rem; font-weight: 700;
+      border-radius: 6px; letter-spacing: 0.02em;
+    }
+    .shift-fo { background: #dbeafe; color: #1e40af; }
+    .shift-res { background: #fef3c7; color: #92400e; }
+    .shift-custom { background: #ede9fe; color: #5b21b6; }
+    .rooster-status-tag {
+      font-size: 0.62rem; font-weight: 600; padding: 0.1rem 0.4rem;
+      border-radius: 999px; background: #d1fae5; color: #065f46;
+      white-space: nowrap; margin-right: 0.4rem;
+    }
+    .rooster-shift-time {
+      font-size: 0.65rem; color: var(--sanadome-text-soft); margin-top: 0.05rem; white-space: nowrap;
+    }
+    .rooster-shift-dept {
+      font-size: 0.6rem; color: var(--sanadome-text-soft); font-weight: 500; letter-spacing: 0.02em;
+    }
+
+    .rooster-empty {
+      text-align: center; padding: 1rem; color: var(--sanadome-text-soft); font-size: 0.8rem;
+    }
+    .rooster-error {
+      text-align: center; padding: 1rem; color: #dc2626; font-size: 0.78rem;
+      background: #fef2f2; border-radius: var(--radius-sm);
+    }
+    .rooster-loading {
+      text-align: center; padding: 1.5rem; color: var(--sanadome-text-soft); font-size: 0.8rem;
+    }
+
+    /* Rooster beheer modal */
+    .rooster-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.45);
+      z-index: 9000; align-items: center; justify-content: center;
+    }
+    .rooster-modal-overlay.open { display: flex; }
+    .rooster-modal {
+      background: var(--white); border-radius: var(--radius); box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto;
+    }
+    .rooster-modal-header {
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--sanadome-border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .rooster-modal-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 1rem;
+    }
+    .rooster-modal-close {
+      background: none; border: none; font-size: 1.3rem; cursor: pointer;
+      color: var(--sanadome-text-soft); padding: 0.2rem 0.4rem; border-radius: 6px;
+    }
+    .rooster-modal-close:hover { background: #f1f5f9; }
+    .rooster-modal-body { padding: 1.25rem 1.5rem; }
+    .rooster-modal-body label {
+      display: block; font-weight: 600; font-size: 0.82rem; margin-bottom: 0.3rem;
+      color: var(--sanadome-text);
+    }
+    .rooster-modal-body input, .rooster-modal-body select {
+      width: 100%; padding: 0.55rem 0.75rem; border: 1.5px solid var(--sanadome-border);
+      border-radius: 8px; font-size: 0.85rem; font-family: inherit; margin-bottom: 0.85rem;
+      box-sizing: border-box;
+    }
+    .rooster-modal-body input:focus, .rooster-modal-body select:focus {
+      outline: none; border-color: var(--sanadome-blue); box-shadow: 0 0 0 3px rgba(59,130,196,0.12);
+    }
+    .rm-row { display: flex; gap: 0.5rem; align-items: flex-end; }
+    .rm-row > :first-child { flex: 1; }
+    .rm-row > :nth-child(2) { flex: 1; }
+    .rm-add-btn {
+      padding: 0.55rem 1rem; background: var(--sanadome-blue); color: var(--white);
+      border: none; border-radius: 8px; font-weight: 600; font-size: 0.82rem;
+      cursor: pointer; font-family: inherit; white-space: nowrap; margin-bottom: 0.85rem;
+    }
+    .rm-add-btn:hover { opacity: 0.9; }
+    .rm-sheet-list { list-style: none; padding: 0; margin: 0; }
+    .rm-sheet-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+      padding: 0.6rem 0.75rem; border-radius: 8px; background: #f8fafc;
+      margin-bottom: 0.4rem; font-size: 0.82rem;
+    }
+    .rm-sheet-item.is-active { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .rm-sheet-month { font-weight: 700; min-width: 100px; }
+    .rm-sheet-url {
+      flex: 1; font-size: 0.72rem; color: var(--sanadome-text-soft);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .rm-sheet-active-badge {
+      font-size: 0.65rem; font-weight: 600; padding: 0.15rem 0.4rem;
+      border-radius: 999px; background: #d1fae5; color: #065f46; white-space: nowrap;
+    }
+    .rm-del-btn {
+      background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem;
+      padding: 0.1rem 0.3rem; border-radius: 4px;
+    }
+    .rm-del-btn:hover { background: #fef2f2; }
+    .rm-msg { font-size: 0.78rem; padding: 0.5rem; border-radius: 6px; margin-bottom: 0.75rem; }
+    .rm-msg.success { background: #f0fdf4; color: #065f46; }
+    .rm-msg.error { background: #fef2f2; color: #dc2626; }
+    .rm-setup-box {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+      padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.78rem; color: #92400e;
+    }
+    .rm-setup-box code {
+      display: block; background: #fef3c7; padding: 0.5rem; border-radius: 4px;
+      font-size: 0.7rem; margin-top: 0.5rem; overflow-x: auto; white-space: pre;
+    }
   </style>
 </head>
 <body>
@@ -829,6 +1025,10 @@
         <a href="#" class="nav-item active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           Dashboard
+        </a>
+        <a href="onboarding.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Onboarding
         </a>
         <a href="#placeholder-rooster" class="nav-item" data-permission="nav.rooster">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -855,14 +1055,18 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
           Nieuwsbeheer
         </a>
+        <a href="debiteuren.html" class="nav-item" data-permission="debiteuren.bekijken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Debiteuren
+        </a>
         <a href="rechten.html" class="nav-item" data-permission="rechten.bekijken">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Rechten
         </a>
         <div class="nav-label">Account</div>
-        <a href="#placeholder-gegevens" class="nav-item" data-permission="nav.gegevens">
+        <a href="profiel.html" class="nav-item" data-permission="nav.gegevens">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Mijn gegevens
+          Mijn Profiel
         </a>
         <a href="#placeholder-hr" class="nav-item" data-permission="nav.hr">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -883,13 +1087,13 @@
           <button type="button" class="topbar-icon-btn" aria-label="Instellingen">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </button>
-          <div class="topbar-user">
+          <a href="profiel.html" class="topbar-user" style="text-decoration:none;color:inherit;">
             <div class="topbar-avatar" id="user-avatar">—</div>
             <div class="topbar-user-info">
               <span class="topbar-user-name" id="user-name">Laden…</span>
               <span class="topbar-user-role">Medewerker</span>
             </div>
-          </div>
+          </a>
           <button type="button" class="btn-logout" id="btn-logout">Uitloggen</button>
         </div>
       </header>
@@ -918,7 +1122,7 @@
           </div>
         </section>
 
-        <!-- Row 1: Nieuws (breed) | Info sidebar -->
+        <!-- Row 1: Nieuws (breed) | Rooster sidebar -->
         <div class="section-label">Overzicht</div>
         <div class="widget-row widget-row-2-1">
           <!-- News section -->
@@ -933,59 +1137,22 @@
             <a href="nieuws.html" class="news-see-all">Alle nieuws bekijken →</a>
           </div>
 
-          <!-- Stacked info widgets -->
-          <div style="display:flex;flex-direction:column;gap:1.25rem;">
-            <!-- Contactgegevens -->
-            <div class="widget" data-permission="dashboard.contactgegevens">
-              <div class="widget-header">
-                <span class="widget-title">Contactgegevens</span>
-              </div>
-              <div class="widget-body">
-                <ul class="contact-list">
-                  <li>
-                    <span class="icon">✉️</span>
-                    <a href="#" id="display-email">—</a>
-                  </li>
-                  <li>
-                    <span class="icon">🔗</span>
-                    <span>LinkedIn · placeholder</span>
-                  </li>
-                  <li>
-                    <span class="icon">📞</span>
-                    <span>+31 6 12345678</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <!-- Dienstverband -->
-            <div class="widget" data-permission="dashboard.dienstverband">
-              <div class="widget-header">
-                <span class="widget-title">Dienstverband</span>
-              </div>
-              <div class="widget-body">
-                <div style="display:flex;flex-direction:column;gap:0.85rem;">
-                  <div style="display:flex;align-items:center;gap:0.85rem;">
-                    <div class="stat-icon blue" style="width:34px;height:34px;font-size:0.85rem;">📋</div>
-                    <div>
-                      <div style="font-size:0.72rem;color:var(--sanadome-text-soft);font-weight:500;">In dienst sinds</div>
-                      <div style="font-size:0.875rem;font-weight:600;color:var(--sanadome-text);">10 maart 2021</div>
-                    </div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:0.85rem;">
-                    <div class="stat-icon green" style="width:34px;height:34px;font-size:0.85rem;">⏰</div>
-                    <div>
-                      <div style="font-size:0.72rem;color:var(--sanadome-text-soft);font-weight:500;">Type contract</div>
-                      <div style="font-size:0.875rem;font-weight:600;color:var(--sanadome-text);">Parttime</div>
-                    </div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:0.85rem;">
-                    <div class="stat-icon amber" style="width:34px;height:34px;font-size:0.85rem;">🏢</div>
-                    <div>
-                      <div style="font-size:0.72rem;color:var(--sanadome-text-soft);font-weight:500;">Afdeling</div>
-                      <div style="font-size:0.875rem;font-weight:600;color:var(--sanadome-text);">Sanadome · Nijmegen</div>
-                    </div>
-                  </div>
+          <!-- Rooster widget -->
+          <div class="rooster-widget" data-permission="dashboard.rooster">
+            <div class="rooster-card">
+              <div class="rooster-header">
+                <div class="rooster-header-left">
+                  <span class="rooster-title">📅 Rooster</span>
+                  <span class="rooster-live-dot" title="Live verbonden"></span>
                 </div>
+                <button class="rooster-refresh-btn" onclick="loadRooster()" title="Ververs">↻</button>
+                <button class="rooster-refresh-btn" onclick="openRoosterBeheer()" title="Roosterbeheer" data-permission="rechten.bewerken" style="font-size:0.82rem;">⚙</button>
+              </div>
+              <div class="rooster-body" id="rooster-body">
+                <div class="rooster-loading">⏳ Laden…</div>
+              </div>
+              <div style="padding:0 1rem 0.5rem;">
+                <span class="rooster-date-badge" id="rooster-date-label"></span>
               </div>
             </div>
           </div>
@@ -1094,26 +1261,37 @@
           var name = user.user_metadata?.full_name || user.user_metadata?.name || (email !== '—' ? email.split('@')[0] : 'Medewerker');
           var userRole = (user.user_metadata && user.user_metadata.role) || 'Medewerker';
 
-          document.getElementById('display-email').textContent = email;
-          document.getElementById('user-name').textContent = name;
+          var elEmail = document.getElementById('display-email');
+          if (elEmail) elEmail.textContent = email;
+          var elUserName = document.getElementById('user-name');
+          if (elUserName) elUserName.textContent = name;
 
           // Greeting based on time of day
           var hour = new Date().getHours();
           var greeting = hour < 12 ? 'Goedemorgen' : hour < 18 ? 'Goedemiddag' : 'Goedenavond';
-          document.getElementById('profile-name').textContent = greeting + ', ' + name;
+          var elProfile = document.getElementById('profile-name');
+          if (elProfile) elProfile.textContent = greeting + ', ' + name;
 
           var initials = (name && name.length) ? name.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('') : (email !== '—' ? email[0].toUpperCase() : '?');
-          document.getElementById('user-avatar').textContent = initials;
-          document.getElementById('profile-initials').textContent = initials;
+          var avatarUrl = user.user_metadata && user.user_metadata.avatar_url;
+          var elAvatar = document.getElementById('user-avatar');
+          var elInitials = document.getElementById('profile-initials');
+          if (avatarUrl) {
+            if (elAvatar) elAvatar.innerHTML = '<img src="' + avatarUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+            if (elInitials) elInitials.innerHTML = '<img src="' + avatarUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+          } else {
+            if (elAvatar) elAvatar.textContent = initials;
+            if (elInitials) elInitials.textContent = initials;
+          }
 
           // Load and enforce permissions
           function getDefaultPerms(role) {
-            var ALL = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','nieuws.bekijken','nieuws.aanmaken','nieuws.bewerken','nieuws.verwijderen','rechten.bekijken','rechten.bewerken'];
+            var ALL = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','dashboard.rooster','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','nieuws.bekijken','nieuws.aanmaken','nieuws.bewerken','nieuws.verwijderen','rechten.bekijken','rechten.bewerken','debiteuren.bekijken','debiteuren.beheren','debiteuren.importeren'];
             var p = {};
             ALL.forEach(function(k) {
               if (role === 'Manager') p[k] = true;
               else if (role === 'Assistent Manager') p[k] = k !== 'rechten.bewerken' && k !== 'medewerkers.verwijderen';
-              else if (role === 'Senior Medewerker') p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken';
+              else if (role === 'Senior Medewerker') p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken' || k === 'debiteuren.bekijken';
               else p[k] = k.startsWith('dashboard.') || k.startsWith('nav.');
             });
             return p;
@@ -1125,6 +1303,13 @@
             } else {
               perms = getDefaultPerms(userRole);
             }
+            return supabase.from('user_permissions').select('permission, granted').eq('user_id', user.id).then(function(upr) {
+              if (!upr.error && upr.data && upr.data.length > 0) {
+                upr.data.forEach(function(r) { perms[r.permission] = r.granted; });
+              }
+              return perms;
+            }).catch(function() { return perms; });
+          }).then(function(perms) {
             document.querySelectorAll('[data-permission]').forEach(function(el) {
               if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
             });
@@ -1206,6 +1391,517 @@
         window.location.href = 'index.html';
       });
     })();
+
+    /* ═══ Rooster Widget ═══ */
+    // Fallback URL (februari 2026) — used if no Supabase data exists
+    var ROOSTER_FALLBACK_SHEETS = [
+      { year: 2026, month: 2, csv_url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTBgl5_l6eNZyQIN4DiieiAQSgJA2N091ypd_oE-gKMtVG6L729C4vT0UqVRw8xMWhDUuCh_3H7uijF/pub?output=csv' }
+    ];
+
+    // Convert pubhtml URL to CSV URL
+    function toCsvUrl(url) {
+      if (!url) return '';
+      url = url.trim();
+      // Already csv
+      if (url.indexOf('pub?output=csv') >= 0 || url.indexOf('pub?gid=') >= 0) return url;
+      // pubhtml -> csv
+      url = url.replace(/\/pubhtml.*$/, '/pub?output=csv');
+      url = url.replace(/\/pub\s*$/, '/pub?output=csv');
+      if (url.indexOf('pub?output=csv') < 0 && url.indexOf('/pub') >= 0) {
+        url = url.replace(/\/pub.*$/, '/pub?output=csv');
+      }
+      return url;
+    }
+
+    // Get Supabase client for rooster operations
+    function getRoosterSupabase() {
+      var url = window.SUPABASE_URL;
+      var key = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
+      if (!url || !key) return null;
+      return window.supabase.createClient(url, key);
+    }
+
+    // Load all rooster sheets from Supabase
+    function loadRoosterSheets() {
+      var sb = getRoosterSupabase();
+      if (!sb) return Promise.resolve(ROOSTER_FALLBACK_SHEETS);
+      return sb.from('rooster_sheets').select('*').order('year', { ascending: true }).order('month', { ascending: true })
+        .then(function(res) {
+          if (res.error || !res.data || res.data.length === 0) {
+            return ROOSTER_FALLBACK_SHEETS;
+          }
+          return res.data.map(function(r) {
+            return { id: r.id, year: r.year, month: r.month, csv_url: toCsvUrl(r.sheet_url) };
+          });
+        }).catch(function() { return ROOSTER_FALLBACK_SHEETS; });
+    }
+
+    // Find the correct CSV URL for the current date
+    function findCurrentSheetUrl(sheets) {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = now.getMonth() + 1; // 1-indexed
+      // Exact match for current month
+      for (var i = 0; i < sheets.length; i++) {
+        if (sheets[i].year === y && sheets[i].month === m) return sheets[i].csv_url;
+      }
+      // Fallback: find the sheet whose month range covers today (last day check)
+      // Or just return the latest available sheet
+      var sorted = sheets.slice().sort(function(a, b) {
+        return (b.year * 12 + b.month) - (a.year * 12 + a.month);
+      });
+      if (sorted.length > 0) return sorted[0].csv_url;
+      return null;
+    }
+
+    var SHIFT_DEFS = {
+      // Front Office
+      'O':  { start: '07:00', end: '15:00', dept: 'Front Office' },
+      'DM': { start: '08:00', end: '16:00', dept: 'Front Office' },
+      'D':  { start: '10:00', end: '18:00', dept: 'Front Office' },
+      'AV': { start: '11:00', end: '19:00', dept: 'Front Office' },
+      'A':  { start: '15:00', end: '23:00', dept: 'Front Office' },
+      // Reserveringen
+      '1':  { start: '08:00', end: '16:00', dept: 'Reserveringen' },
+      'R':  { start: '10:00', end: '18:00', dept: 'Reserveringen' },
+      '2':  { start: '14:00', end: '22:00', dept: 'Reserveringen' },
+      '8':  { start: '09:00', end: '17:00', dept: 'Reserveringen' },
+      '9':  { start: '13:00', end: '21:00', dept: 'Reserveringen' },
+      // Overig
+      'N':    { start: '23:00', end: '07:00', dept: 'Nacht' },
+      'DUTY': { start: '00:00', end: '23:59', dept: 'Duty' }
+    };
+
+    var ABSENT_CODES = { 'X': 'Vrij', 'V': 'Vakantie', 'XV': 'Vrij', 'Z': 'Ziek', 'RC': 'RC', '': 'Geen dienst' };
+    var SKIP_NAMES = ['john', 'extern', 'bijzonderheden', 'duty'];
+
+    function parseCSV(text) {
+      var rows = [];
+      var current = '';
+      var inQuotes = false;
+      for (var i = 0; i < text.length; i++) {
+        var ch = text[i];
+        if (ch === '"') {
+          if (inQuotes && text[i + 1] === '"') { current += '"'; i++; }
+          else inQuotes = !inQuotes;
+        } else if (ch === ',' && !inQuotes) {
+          rows.push(current); current = '';
+        } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+          rows.push(current); current = '';
+          if (ch === '\r' && text[i + 1] === '\n') i++;
+          rows.push('\n');
+        } else {
+          current += ch;
+        }
+      }
+      if (current) rows.push(current);
+
+      var lines = [];
+      var line = [];
+      rows.forEach(function(v) {
+        if (v === '\n') { lines.push(line); line = []; }
+        else line.push(v.trim());
+      });
+      if (line.length > 0) lines.push(line);
+      return lines;
+    }
+
+    function parseShift(code) {
+      if (!code || code.trim() === '') return null;
+      code = code.trim();
+
+      // Strip asterisk
+      var cleanCode = code.replace(/\*$/, '');
+
+      // Check absent first
+      if (ABSENT_CODES[cleanCode] !== undefined) {
+        return { type: 'absent', label: ABSENT_CODES[cleanCode], code: code };
+      }
+
+      // Known shift code
+      if (SHIFT_DEFS[cleanCode]) {
+        var def = SHIFT_DEFS[cleanCode];
+        return { type: 'shift', code: code, start: def.start, end: def.end, dept: def.dept };
+      }
+
+      // Custom time range patterns: "9-16", "9-16/17", "17-21", "11-20:00", "11-16"
+      var m = code.match(/^(\d{1,2})(?::(\d{2}))?[\-–](\d{1,2})(?::(\d{2}))?(?:\/\d+)?$/);
+      if (m) {
+        var sh = m[1].padStart(2, '0') + ':' + (m[2] || '00');
+        var eh = m[3].padStart(2, '0') + ':' + (m[4] || '00');
+        return { type: 'shift', code: code, start: sh, end: eh, dept: 'Custom' };
+      }
+
+      // Unknown but present — treat as special
+      return { type: 'special', code: code, label: code };
+    }
+
+    function timeToMinutes(t) {
+      var p = t.split(':');
+      return parseInt(p[0]) * 60 + parseInt(p[1]);
+    }
+
+    function getInitials(name) {
+      return name.split(/\s+/).map(function(w) { return w[0]; }).filter(Boolean).slice(0, 2).join('').toUpperCase();
+    }
+
+    function getDeptClass(dept) {
+      if (!dept) return 'shift-custom';
+      if (dept === 'Front Office') return 'shift-fo';
+      if (dept === 'Reserveringen') return 'shift-res';
+      return 'shift-custom';
+    }
+
+    function stripNameNumber(name) {
+      return name.replace(/\s+\d+$/, '');
+    }
+
+    function renderRoosterItems(list, currentMinutes) {
+      return list.map(function(item) {
+        var isActive = item.startMin !== undefined && currentMinutes >= item.startMin && currentMinutes < item.endMin;
+        var statusTag = isActive ? '<span class="rooster-status-tag">Aan het werk</span>' : '';
+        var timeTag = item.timeLabel ? '<div class="rooster-shift-time">' + item.timeLabel + '</div>' : '';
+        var shiftClass = item.dept ? getDeptClass(item.dept) : 'shift-custom';
+        var itemClass = isActive ? 'rooster-item is-active' : 'rooster-item';
+        var displayName = stripNameNumber(item.name);
+        return '<div class="' + itemClass + '">' +
+          '<div class="rooster-avatar">' + getInitials(displayName) + '</div>' +
+          '<div class="rooster-name">' + displayName + '</div>' +
+          '<div class="rooster-shift-info">' +
+            statusTag +
+            '<span class="rooster-shift-code ' + shiftClass + '">' + item.code + '</span>' +
+            timeTag +
+          '</div></div>';
+      }).join('');
+    }
+
+    function loadRooster() {
+      var body = document.getElementById('rooster-body');
+      var dateLabel = document.getElementById('rooster-date-label');
+      if (!body) return;
+      body.innerHTML = '<div class="rooster-loading">⏳ Rooster laden…</div>';
+
+      var now = new Date();
+      var todayDay = now.getDate();
+      var todayMonth = now.getMonth(); // 0-indexed
+      var currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      var dayNames = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+      var monthNames = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+      if (dateLabel) {
+        dateLabel.textContent = dayNames[now.getDay()] + ' ' + todayDay + ' ' + monthNames[todayMonth];
+      }
+
+      loadRoosterSheets().then(function(sheets) {
+        var csvUrl = findCurrentSheetUrl(sheets);
+        if (!csvUrl) {
+          body.innerHTML = '<div class="rooster-empty">Geen rooster gevonden voor deze maand.</div>';
+          return;
+        }
+        return fetch(csvUrl)
+        .then(function(r) { if (!r.ok) throw new Error('Fetch failed'); return r.text(); })
+        .then(function(text) {
+          var lines = parseCSV(text);
+          if (lines.length < 3) throw new Error('Onvoldoende data');
+
+          // Row 0: header row with dates — first cell is month name, rest are day numbers
+          var headerRow = lines[0];
+          // Row 1: day-of-week abbreviations
+          // Rows 2+: employee data
+
+          // Find column index for today
+          var colIdx = -1;
+          for (var c = 1; c < headerRow.length; c++) {
+            var dayNum = parseInt(headerRow[c]);
+            if (dayNum === todayDay) { colIdx = c; break; }
+          }
+
+          if (colIdx === -1) {
+            body.innerHTML = '<div class="rooster-empty">Vandaag (' + todayDay + ' ' + monthNames[todayMonth] + ') staat niet in het huidige rooster.</div>';
+            return;
+          }
+
+          var active = [], upcoming = [], finished = [], absent = [], special = [];
+
+          for (var r = 2; r < lines.length; r++) {
+            var row = lines[r];
+            if (!row || row.length === 0) continue;
+            var empName = (row[0] || '').trim();
+            if (!empName) continue;
+            if (SKIP_NAMES.indexOf(empName.toLowerCase()) >= 0) continue;
+
+            var rawCode = colIdx < row.length ? (row[colIdx] || '').trim() : '';
+            if (!rawCode) continue;
+
+            var shift = parseShift(rawCode);
+            if (!shift) continue;
+
+            if (shift.type === 'absent') {
+              absent.push({ name: empName, code: shift.label, timeLabel: '', dept: '' });
+            } else if (shift.type === 'special') {
+              special.push({ name: empName, code: shift.code, timeLabel: '', dept: '' });
+            } else {
+              // shift.type === 'shift'
+              var startMin = timeToMinutes(shift.start);
+              var endMin = timeToMinutes(shift.end);
+
+              // Handle night shifts (end < start means crosses midnight)
+              var isNight = endMin <= startMin;
+
+              var item = {
+                name: empName,
+                code: shift.code.replace(/\*$/, ''),
+                timeLabel: shift.start + ' – ' + shift.end,
+                dept: shift.dept,
+                startMin: startMin,
+                endMin: endMin
+              };
+
+              if (isNight) {
+                // Night shift: active from start until midnight, or from midnight until end
+                if (currentMinutes >= startMin || currentMinutes < endMin) {
+                  active.push(item);
+                } else if (currentMinutes < startMin) {
+                  upcoming.push(item);
+                } else {
+                  finished.push(item);
+                }
+              } else {
+                if (currentMinutes >= startMin && currentMinutes < endMin) {
+                  active.push(item);
+                } else if (currentMinutes < startMin) {
+                  upcoming.push(item);
+                } else {
+                  finished.push(item);
+                }
+              }
+            }
+          }
+
+          // Sort by start time
+          var allShifts = active.concat(upcoming).concat(finished);
+          allShifts.sort(function(a, b) { return a.startMin - b.startMin; });
+
+          // Split by department
+          var foList = allShifts.filter(function(i) { return i.dept === 'Front Office'; });
+          var resList = allShifts.filter(function(i) { return i.dept === 'Reserveringen'; });
+          var otherList = allShifts.filter(function(i) { return i.dept !== 'Front Office' && i.dept !== 'Reserveringen'; });
+
+          var html = '';
+
+          if (foList.length || resList.length) {
+            html += '<div class="rooster-columns">';
+            // Front Office column
+            html += '<div class="rooster-section">';
+            html += '<div class="rooster-col-title">Front Office</div>';
+            if (foList.length) {
+              html += '<div class="rooster-list">' + renderRoosterItems(foList, currentMinutes) + '</div>';
+            } else {
+              html += '<div style="font-size:0.75rem;color:var(--sanadome-text-soft);padding:0.3rem 0;">Niemand ingepland</div>';
+            }
+            html += '</div>';
+            // Reserveringen column
+            html += '<div class="rooster-section">';
+            html += '<div class="rooster-col-title">Reserveringen</div>';
+            if (resList.length) {
+              html += '<div class="rooster-list">' + renderRoosterItems(resList, currentMinutes) + '</div>';
+            } else {
+              html += '<div style="font-size:0.75rem;color:var(--sanadome-text-soft);padding:0.3rem 0;">Niemand ingepland</div>';
+            }
+            html += '</div>';
+            html += '</div>';
+          }
+
+          // Other / special
+          if (otherList.length || special.length) {
+            var extras = otherList.concat(special);
+            html += '<div style="margin-top:0.5rem;">';
+            html += '<div class="rooster-col-title">Overig</div>';
+            html += '<div class="rooster-list">' + renderRoosterItems(extras, currentMinutes) + '</div>';
+            html += '</div>';
+          }
+
+          if (!foList.length && !resList.length && !otherList.length && !special.length) {
+            html = '<div class="rooster-empty">Geen roosterdata gevonden voor vandaag.</div>';
+          }
+
+          body.innerHTML = html;
+        });
+      }).catch(function(err) {
+          console.error('Rooster fout:', err);
+          body.innerHTML = '<div class="rooster-error">⚠️ Kon het rooster niet laden. Probeer het opnieuw.<br><small>' + (err.message || '') + '</small></div>';
+      });
+    }
+
+    // Load rooster on page load
+    loadRooster();
+    // Auto-refresh every 5 minutes
+    setInterval(loadRooster, 5 * 60 * 1000);
+
+    /* ═══ Rooster Beheer Modal ═══ */
+    var MONTH_NAMES = ['','Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+
+    function openRoosterBeheer() {
+      document.getElementById('rooster-modal-overlay').classList.add('open');
+      // Set default month/year to current
+      var now = new Date();
+      document.getElementById('rm-month').value = now.getMonth() + 1;
+      document.getElementById('rm-year').value = now.getFullYear();
+      loadRoosterSheetList();
+      checkRoosterTable();
+    }
+    function closeRoosterBeheer() {
+      document.getElementById('rooster-modal-overlay').classList.remove('open');
+    }
+    // Close on overlay click
+    document.getElementById('rooster-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeRoosterBeheer();
+    });
+
+    function showRmMsg(text, type) {
+      var el = document.getElementById('rm-msg');
+      el.innerHTML = '<div class="rm-msg ' + type + '">' + text + '</div>';
+      setTimeout(function() { el.innerHTML = ''; }, 4000);
+    }
+
+    function checkRoosterTable() {
+      var sb = getRoosterSupabase();
+      if (!sb) return;
+      sb.from('rooster_sheets').select('id').limit(1).then(function(res) {
+        var hint = document.getElementById('rm-setup-hint');
+        if (res.error && res.error.message && res.error.message.indexOf('does not exist') >= 0) {
+          hint.innerHTML = '<div class="rm-setup-box">⚠️ De tabel <b>rooster_sheets</b> bestaat nog niet. Maak deze aan in Supabase SQL Editor:<code>CREATE TABLE rooster_sheets (\n  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n  year INTEGER NOT NULL,\n  month INTEGER NOT NULL CHECK (month >= 1 AND month <= 12),\n  sheet_url TEXT NOT NULL,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(year, month)\n);\n\nALTER TABLE rooster_sheets ENABLE ROW LEVEL SECURITY;\nCREATE POLICY "Iedereen kan lezen" ON rooster_sheets FOR SELECT USING (true);\nCREATE POLICY "Auth users kunnen schrijven" ON rooster_sheets FOR ALL USING (auth.role() = \'authenticated\');</code></div>';
+        } else {
+          hint.innerHTML = '';
+        }
+      });
+    }
+
+    function loadRoosterSheetList() {
+      var list = document.getElementById('rm-sheet-list');
+      var sb = getRoosterSupabase();
+      if (!sb) {
+        list.innerHTML = '<li style="font-size:0.8rem;color:var(--sanadome-text-soft);padding:0.5rem;">Supabase niet beschikbaar</li>';
+        return;
+      }
+      sb.from('rooster_sheets').select('*').order('year', { ascending: false }).order('month', { ascending: false })
+        .then(function(res) {
+          if (res.error) {
+            list.innerHTML = '<li style="font-size:0.8rem;color:var(--sanadome-text-soft);padding:0.5rem;">Kon lijst niet laden. Maak eerst de tabel aan.</li>';
+            return;
+          }
+          if (!res.data || res.data.length === 0) {
+            list.innerHTML = '<li style="font-size:0.8rem;color:var(--sanadome-text-soft);padding:0.5rem;">Nog geen maanden toegevoegd. De fallback (feb 2026) wordt gebruikt.</li>';
+            return;
+          }
+          var now = new Date();
+          var curY = now.getFullYear(), curM = now.getMonth() + 1;
+          list.innerHTML = res.data.map(function(r) {
+            var isActive = r.year === curY && r.month === curM;
+            var cls = isActive ? 'rm-sheet-item is-active' : 'rm-sheet-item';
+            var badge = isActive ? '<span class="rm-sheet-active-badge">Actief</span>' : '';
+            var shortUrl = (r.sheet_url || '').length > 50 ? '…' + r.sheet_url.slice(-40) : r.sheet_url;
+            return '<li class="' + cls + '">' +
+              '<span class="rm-sheet-month">' + MONTH_NAMES[r.month] + ' ' + r.year + '</span>' +
+              badge +
+              '<span class="rm-sheet-url" title="' + (r.sheet_url || '') + '">' + shortUrl + '</span>' +
+              '<button class="rm-del-btn" onclick="deleteRoosterSheet(\'' + r.id + '\')" title="Verwijderen">🗑</button>' +
+              '</li>';
+          }).join('');
+        });
+    }
+
+    function saveRoosterSheet() {
+      var month = parseInt(document.getElementById('rm-month').value);
+      var year = parseInt(document.getElementById('rm-year').value);
+      var url = document.getElementById('rm-url').value.trim();
+
+      if (!url) { showRmMsg('Vul een URL in.', 'error'); return; }
+      if (!url.includes('docs.google.com/spreadsheets')) {
+        showRmMsg('Dit lijkt geen geldige Google Sheets URL.', 'error'); return;
+      }
+
+      var sb = getRoosterSupabase();
+      if (!sb) { showRmMsg('Supabase niet beschikbaar.', 'error'); return; }
+
+      // Upsert: update if year+month exists, insert otherwise
+      sb.from('rooster_sheets').upsert(
+        { year: year, month: month, sheet_url: url },
+        { onConflict: 'year,month' }
+      ).then(function(res) {
+        if (res.error) {
+          showRmMsg('Fout bij opslaan: ' + res.error.message, 'error');
+          return;
+        }
+        showRmMsg(MONTH_NAMES[month] + ' ' + year + ' opgeslagen!', 'success');
+        document.getElementById('rm-url').value = '';
+        loadRoosterSheetList();
+        loadRooster(); // Refresh widget
+      });
+    }
+
+    function deleteRoosterSheet(id) {
+      if (!confirm('Weet je zeker dat je deze maand wilt verwijderen?')) return;
+      var sb = getRoosterSupabase();
+      if (!sb) return;
+      sb.from('rooster_sheets').delete().eq('id', id).then(function(res) {
+        if (res.error) {
+          showRmMsg('Fout bij verwijderen: ' + res.error.message, 'error');
+          return;
+        }
+        showRmMsg('Verwijderd.', 'success');
+        loadRoosterSheetList();
+        loadRooster();
+      });
+    }
   </script>
+  <!-- Rooster beheer modal -->
+  <div class="rooster-modal-overlay" id="rooster-modal-overlay">
+    <div class="rooster-modal">
+      <div class="rooster-modal-header">
+        <span class="rooster-modal-title">📅 Roosterbeheer</span>
+        <button class="rooster-modal-close" onclick="closeRoosterBeheer()">✕</button>
+      </div>
+      <div class="rooster-modal-body">
+        <div id="rm-msg"></div>
+        <div id="rm-setup-hint"></div>
+        <p style="font-size:0.8rem;color:var(--sanadome-text-soft);margin:0 0 1rem;">
+          Voeg per maand een Google Sheets link toe. Het rooster wisselt automatisch naar de juiste maand.
+        </p>
+        <div class="rm-row">
+          <div>
+            <label for="rm-month">Maand</label>
+            <select id="rm-month">
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maart</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Augustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </div>
+          <div>
+            <label for="rm-year">Jaar</label>
+            <input type="number" id="rm-year" value="2026" min="2024" max="2030">
+          </div>
+        </div>
+        <label for="rm-url">Google Sheets URL (pubhtml of pub?output=csv)</label>
+        <input type="url" id="rm-url" placeholder="https://docs.google.com/spreadsheets/d/e/…/pubhtml">
+        <button class="rm-add-btn" onclick="saveRoosterSheet()">💾 Opslaan</button>
+        <hr style="border:none;border-top:1px solid var(--sanadome-border);margin:0.75rem 0;">
+        <label style="margin-bottom:0.5rem;">Opgeslagen maanden</label>
+        <ul class="rm-sheet-list" id="rm-sheet-list">
+          <li style="font-size:0.8rem;color:var(--sanadome-text-soft);padding:0.5rem;">Laden…</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

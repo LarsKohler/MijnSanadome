@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debiteurenbeheer · MijnSanadome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sanadome-blue: #3b82c4;
+      --sanadome-blue-light: #60a5e8;
+      --sanadome-blue-pale: #eff6ff;
+      --sanadome-blue-mist: #f0f7ff;
+      --sanadome-text: #0f172a;
+      --sanadome-text-soft: #64748b;
+      --sanadome-border: #e2e8f0;
+      --white: #ffffff;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --sidebar-w: 270px;
+      --topbar-h: 68px;
+      --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-card-hover: 0 8px 30px rgba(59,130,196,0.10), 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-elevated: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --gradient-primary: linear-gradient(135deg, #3b82c4 0%, #60a5e8 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      min-height: 100vh; background: #f1f5f9;
+      color: var(--sanadome-text); font-size: 15px; line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app-layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .app-sidebar {
+      width: var(--sidebar-w); min-width: var(--sidebar-w);
+      background: var(--white); border-right: 1px solid var(--sanadome-border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 1.25rem 1.5rem; text-decoration: none; color: var(--sanadome-text);
+      border-bottom: 1px solid var(--sanadome-border);
+    }
+    .sidebar-logo svg { width: 36px; height: 36px; flex-shrink: 0; }
+    .sidebar-logo-text {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 1.2rem; letter-spacing: -0.02em; color: var(--sanadome-text);
+    }
+    .sidebar-logo-text span { color: var(--sanadome-blue); }
+    .sidebar-nav { flex: 1; padding: 1rem 0.75rem; overflow-y: auto; }
+    .nav-label {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--sanadome-text-soft);
+      padding: 0 0.75rem; margin-bottom: 0.5rem; margin-top: 0.75rem;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.6rem 0.75rem; border-radius: var(--radius-sm);
+      color: var(--sanadome-text-soft); text-decoration: none;
+      font-weight: 500; font-size: 0.9rem; margin-bottom: 2px;
+      transition: all 0.15s ease; position: relative;
+    }
+    .nav-item:hover { background: var(--sanadome-blue-mist); color: var(--sanadome-text); }
+    .nav-item.active { background: var(--sanadome-blue-pale); color: var(--sanadome-blue); }
+    .nav-item.active::before {
+      content: ''; position: absolute; left: -0.75rem; top: 50%;
+      transform: translateY(-50%); width: 3px; height: 24px;
+      border-radius: 0 3px 3px 0; background: var(--sanadome-blue);
+    }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: 0.7; }
+    .nav-item.active svg { opacity: 1; }
+
+    /* ── Main area ── */
+    .app-main { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ── Topbar ── */
+    .topbar {
+      height: var(--topbar-h);
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(226,232,240,0.6);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; gap: 1rem; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-search-wrap { position: relative; flex: 1; max-width: 380px; }
+    .topbar-search {
+      width: 100%; padding: 0.55rem 1rem 0.55rem 2.75rem;
+      font-family: inherit; font-size: 0.875rem; color: var(--sanadome-text);
+      background: #f1f5f9; border: 1.5px solid transparent;
+      border-radius: var(--radius-sm); outline: none; transition: all 0.2s ease;
+    }
+    .topbar-search::placeholder { color: var(--sanadome-text-soft); }
+    .topbar-search:focus { background: var(--white); border-color: var(--sanadome-blue); box-shadow: 0 0 0 3px rgba(59,130,196,0.1); }
+    .topbar-search-wrap::before {
+      content: ''; position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
+      width: 18px; height: 18px; border: 2px solid var(--sanadome-text-soft); border-radius: 50%; opacity: 0.5;
+    }
+    .topbar-search-wrap::after {
+      content: ''; position: absolute; left: 1.45rem; top: 58%;
+      width: 6px; height: 2px; background: var(--sanadome-text-soft);
+      transform: rotate(45deg); opacity: 0.5;
+    }
+    .topbar-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .topbar-icon-btn {
+      width: 40px; height: 40px; border: none; background: transparent;
+      border-radius: var(--radius-sm); color: var(--sanadome-text-soft);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease; position: relative;
+    }
+    .topbar-icon-btn:hover { background: var(--sanadome-blue-mist); color: var(--sanadome-blue); }
+    .topbar-icon-btn svg { width: 20px; height: 20px; }
+    .topbar-user {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.35rem 0.5rem 0.35rem 0.75rem; border-radius: var(--radius-sm);
+      margin-left: 0.5rem; border: 1px solid transparent;
+      transition: background 0.15s; text-decoration: none; color: inherit;
+    }
+    .topbar-user:hover { background: var(--sanadome-blue-mist); }
+    .topbar-avatar {
+      width: 38px; height: 38px; border-radius: 50%; overflow: hidden;
+      background: var(--gradient-primary); color: var(--white);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(59,130,196,0.25);
+    }
+    .topbar-user-info { text-align: left; }
+    .topbar-user-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--sanadome-text); display: block; line-height: 1.3; }
+    .topbar-user-role { font-size: 0.75rem; color: var(--sanadome-text-soft); display: block; }
+    .btn-logout {
+      padding: 0.45rem 0.85rem; font-size: 0.8rem; font-family: inherit; font-weight: 600;
+      color: var(--white); background: var(--gradient-primary); border: none;
+      border-radius: var(--radius-sm); cursor: pointer; margin-left: 0.5rem;
+      transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(59,130,196,0.2);
+    }
+    .btn-logout:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,196,0.3); }
+
+    /* ── Page content ── */
+    .page-content { flex: 1; padding: 2rem; }
+
+    /* ── Page header ── */
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .page-header h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.6rem; font-weight: 800; }
+    .page-header p { color: var(--sanadome-text-soft); font-size: 0.88rem; margin-top: 2px; }
+    .btn-add {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.65rem 1.25rem; font-size: 0.88rem; font-family: inherit; font-weight: 600;
+      color: var(--white); background: var(--gradient-primary); border: none;
+      border-radius: var(--radius-sm); cursor: pointer;
+      box-shadow: 0 2px 8px rgba(59,130,196,0.25);
+      transition: all 0.2s ease;
+    }
+    .btn-add:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,196,0.3); }
+    .btn-add svg { width: 18px; height: 18px; }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin-bottom: 1.75rem;
+    }
+    .stat-card {
+      background: var(--white); border-radius: var(--radius); padding: 1.25rem;
+      border: 1px solid var(--sanadome-border); box-shadow: var(--shadow-card);
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .stat-icon svg { width: 24px; height: 24px; }
+    .stat-icon.blue { background: var(--sanadome-blue-pale); color: var(--sanadome-blue); }
+    .stat-icon.orange { background: #fff7ed; color: #ea580c; }
+    .stat-icon.red { background: #fef2f2; color: #dc2626; }
+    .stat-icon.green { background: #f0fdf4; color: #16a34a; }
+    .stat-info .stat-value { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; line-height: 1.2; }
+    .stat-info .stat-label { font-size: 0.78rem; color: var(--sanadome-text-soft); font-weight: 500; }
+
+    /* ── Filters ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .filter-pills { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .pill {
+      padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;
+      border: 1.5px solid var(--sanadome-border); background: var(--white);
+      cursor: pointer; transition: all 0.15s; font-family: inherit; color: var(--sanadome-text-soft);
+    }
+    .pill:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+    .pill.active { background: var(--sanadome-blue); border-color: var(--sanadome-blue); color: var(--white); }
+    .search-input {
+      padding: 0.45rem 0.85rem 0.45rem 2.2rem; border: 1.5px solid var(--sanadome-border);
+      border-radius: var(--radius-sm); font-size: 0.85rem; font-family: inherit;
+      background: var(--white); outline: none; transition: border-color 0.2s;
+      min-width: 200px;
+    }
+    .search-input:focus { border-color: var(--sanadome-blue); }
+    .search-wrap { position: relative; margin-left: auto; }
+    .search-wrap::before {
+      content: ''; position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%);
+      width: 14px; height: 14px; border: 2px solid var(--sanadome-text-soft); border-radius: 50%; opacity: 0.45;
+    }
+    .search-wrap::after {
+      content: ''; position: absolute; left: 1.15rem; top: 62%;
+      width: 5px; height: 2px; background: var(--sanadome-text-soft);
+      transform: rotate(45deg); opacity: 0.45;
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--white); border-radius: var(--radius); border: 1px solid var(--sanadome-border);
+      box-shadow: var(--shadow-card); overflow: hidden;
+    }
+    .table-wrap table { width: 100%; border-collapse: collapse; }
+    .table-wrap th {
+      text-align: left; padding: 0.85rem 1.25rem; font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--sanadome-text-soft);
+      background: #f8fafc; border-bottom: 1.5px solid var(--sanadome-border);
+    }
+    .table-wrap td {
+      padding: 0.9rem 1.25rem; font-size: 0.88rem; border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    .table-wrap tr:last-child td { border-bottom: none; }
+    .table-wrap tr:hover td { background: #fafbfc; }
+    .table-wrap .amount { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+    .table-wrap .guest-name { font-weight: 600; color: var(--sanadome-text); }
+    .table-wrap .guest-email { font-size: 0.78rem; color: var(--sanadome-text-soft); }
+    .table-wrap .res-nr { font-family: monospace; font-size: 0.82rem; color: var(--sanadome-blue); font-weight: 600; }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.72rem;
+      font-weight: 600; white-space: nowrap;
+    }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+    .badge-nieuw { background: #eff6ff; color: #2563eb; }
+    .badge-nieuw::before { background: #2563eb; }
+    .badge-herinnering1 { background: #fff7ed; color: #ea580c; }
+    .badge-herinnering1::before { background: #ea580c; }
+    .badge-herinnering2 { background: #fef3c7; color: #b45309; }
+    .badge-herinnering2::before { background: #b45309; }
+    .badge-aanmaning { background: #fef2f2; color: #dc2626; }
+    .badge-aanmaning::before { background: #dc2626; }
+    .badge-betaald { background: #f0fdf4; color: #16a34a; }
+    .badge-betaald::before { background: #16a34a; }
+    .badge-afgesloten { background: #f1f5f9; color: #64748b; }
+    .badge-afgesloten::before { background: #64748b; }
+
+    /* Due indicator */
+    .due-tag {
+      font-size: 0.72rem; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .due-tag.overdue { color: #dc2626; }
+    .due-tag.soon { color: #ea580c; }
+    .due-tag.ok { color: var(--sanadome-text-soft); }
+
+    /* Row actions */
+    .row-actions { display: flex; gap: 0.35rem; }
+    .row-btn {
+      width: 32px; height: 32px; border: none; background: transparent;
+      border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--sanadome-text-soft); transition: all 0.15s;
+    }
+    .row-btn:hover { background: var(--sanadome-blue-mist); color: var(--sanadome-blue); }
+    .row-btn svg { width: 16px; height: 16px; }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--sanadome-text-soft); }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-state h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; color: var(--sanadome-text); margin-bottom: 0.5rem; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(4px);
+      z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--white); border-radius: var(--radius); width: 100%;
+      box-shadow: var(--shadow-elevated); max-height: 90vh; display: flex; flex-direction: column;
+      animation: modalIn 0.2s ease;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: none; } }
+    .modal-sm { max-width: 520px; }
+    .modal-md { max-width: 640px; }
+    .modal-lg { max-width: 900px; }
+    .modal-xl { max-width: 1100px; }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--sanadome-border);
+    }
+    .modal-header h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .modal-close {
+      width: 32px; height: 32px; border: none; background: transparent;
+      border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--sanadome-text-soft); transition: all 0.15s;
+    }
+    .modal-close:hover { background: #fef2f2; color: #dc2626; }
+    .modal-close svg { width: 18px; height: 18px; }
+    .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+    .modal-footer {
+      padding: 1rem 1.5rem; border-top: 1px solid var(--sanadome-border);
+      display: flex; justify-content: flex-end; gap: 0.75rem;
+    }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block; font-size: 0.8rem; font-weight: 600; color: var(--sanadome-text);
+      margin-bottom: 0.35rem;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 0.6rem 0.85rem; border: 1.5px solid var(--sanadome-border);
+      border-radius: var(--radius-sm); font-size: 0.88rem; font-family: inherit;
+      background: var(--white); outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--sanadome-blue); box-shadow: 0 0 0 3px rgba(59,130,196,0.08);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-hint { font-size: 0.72rem; color: var(--sanadome-text-soft); margin-top: 0.25rem; }
+
+    .btn-primary {
+      padding: 0.6rem 1.25rem; font-size: 0.88rem; font-family: inherit; font-weight: 600;
+      color: var(--white); background: var(--gradient-primary); border: none;
+      border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(59,130,196,0.2);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-secondary {
+      padding: 0.6rem 1.25rem; font-size: 0.88rem; font-family: inherit; font-weight: 500;
+      color: var(--sanadome-text-soft); background: var(--white); border: 1.5px solid var(--sanadome-border);
+      border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+    .btn-danger {
+      padding: 0.6rem 1.25rem; font-size: 0.88rem; font-family: inherit; font-weight: 600;
+      color: var(--white); background: #dc2626; border: none;
+      border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-success {
+      padding: 0.6rem 1.25rem; font-size: 0.88rem; font-family: inherit; font-weight: 600;
+      color: var(--white); background: #16a34a; border: none;
+      border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-success:hover { background: #15803d; }
+    .btn-warning {
+      padding: 0.6rem 1.25rem; font-size: 0.88rem; font-family: inherit; font-weight: 600;
+      color: var(--white); background: #ea580c; border: none;
+      border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-warning:hover { background: #c2410c; }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+    .btn-outline-primary {
+      padding: 0.6rem 1.25rem; font-size: 0.88rem; font-family: inherit; font-weight: 600;
+      color: var(--sanadome-blue); background: transparent; border: 1.5px solid var(--sanadome-blue);
+      border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s;
+    }
+    .btn-outline-primary:hover { background: var(--sanadome-blue-pale); }
+
+    /* ── Detail panel (dossier view) ── */
+    .detail-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(4px);
+      z-index: 1000; display: none;
+    }
+    .detail-overlay.active { display: block; }
+    .detail-panel {
+      position: fixed; top: 0; right: 0; width: 680px; max-width: 100vw; height: 100vh;
+      background: var(--white); z-index: 1001; display: none; flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+      animation: slideIn 0.25s ease;
+    }
+    .detail-panel.active { display: flex; }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .detail-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--sanadome-border);
+      background: #f8fafc;
+    }
+    .detail-header h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .detail-body { flex: 1; overflow-y: auto; padding: 1.5rem; }
+
+    /* Info grid */
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem;
+      margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--sanadome-border);
+    }
+    .info-item .info-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--sanadome-text-soft); margin-bottom: 0.15rem; }
+    .info-item .info-value { font-size: 0.92rem; font-weight: 500; }
+
+    /* Progress / workflow */
+    .workflow-bar {
+      display: flex; align-items: center; gap: 0; margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem; border-bottom: 1px solid var(--sanadome-border);
+    }
+    .wf-step {
+      flex: 1; text-align: center; position: relative; padding: 0.5rem 0.25rem;
+    }
+    .wf-step .wf-dot {
+      width: 28px; height: 28px; border-radius: 50%; margin: 0 auto 0.35rem;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--sanadome-border); background: var(--white);
+      font-size: 0.7rem; font-weight: 700; color: var(--sanadome-text-soft);
+      transition: all 0.2s;
+    }
+    .wf-step.done .wf-dot { background: #16a34a; border-color: #16a34a; color: white; }
+    .wf-step.active .wf-dot { background: var(--sanadome-blue); border-color: var(--sanadome-blue); color: white; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,196,0.3); } 50% { box-shadow: 0 0 0 6px rgba(59,130,196,0); } }
+    .wf-step .wf-label { font-size: 0.68rem; font-weight: 500; color: var(--sanadome-text-soft); }
+    .wf-step.done .wf-label, .wf-step.active .wf-label { color: var(--sanadome-text); font-weight: 600; }
+    .wf-line {
+      flex: 0 0 1px; height: 2px; background: var(--sanadome-border); margin-top: -1.5rem;
+      flex-grow: 0; width: 20px;
+    }
+    .wf-line.done { background: #16a34a; }
+
+    /* Action bar inside detail */
+    .detail-actions {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem; border-bottom: 1px solid var(--sanadome-border);
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex; border-bottom: 2px solid var(--sanadome-border); margin-bottom: 1.25rem;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.25rem; font-size: 0.85rem; font-weight: 500; font-family: inherit;
+      border: none; background: transparent; cursor: pointer; color: var(--sanadome-text-soft);
+      border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s;
+    }
+    .tab-btn:hover { color: var(--sanadome-text); }
+    .tab-btn.active { color: var(--sanadome-blue); border-bottom-color: var(--sanadome-blue); font-weight: 600; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Activity log */
+    .activity-list { list-style: none; position: relative; }
+    .activity-list::before {
+      content: ''; position: absolute; left: 17px; top: 0; bottom: 0;
+      width: 2px; background: #e2e8f0;
+    }
+    .activity-item {
+      display: flex; gap: 0.85rem; padding: 0.5rem 0;
+      position: relative;
+    }
+    .activity-icon-wrap {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1; font-size: 0.85rem;
+    }
+    .activity-icon-wrap.create { background: var(--sanadome-blue-pale); color: var(--sanadome-blue); }
+    .activity-icon-wrap.reminder { background: #fff7ed; color: #ea580c; }
+    .activity-icon-wrap.payment { background: #f0fdf4; color: #16a34a; }
+    .activity-icon-wrap.note { background: #f5f3ff; color: #8b5cf6; }
+    .activity-icon-wrap.escalate { background: #fef2f2; color: #dc2626; }
+    .activity-icon-wrap.close { background: #f1f5f9; color: #64748b; }
+    .activity-icon-wrap.delete { background: #fef2f2; color: #dc2626; }
+    .activity-icon-wrap.reopen { background: #ecfeff; color: #0891b2; }
+    .activity-icon-wrap.postpone { background: #fff7ed; color: #ea580c; }
+    .activity-card {
+      flex: 1; background: #f8fafc; border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem; border-left: 3px solid #e2e8f0;
+    }
+    .activity-card.create { border-left-color: var(--sanadome-blue); }
+    .activity-card.reminder { border-left-color: #ea580c; }
+    .activity-card.payment { border-left-color: #16a34a; }
+    .activity-card.note { border-left-color: #8b5cf6; }
+    .activity-card.escalate { border-left-color: #dc2626; }
+    .activity-card.close { border-left-color: #64748b; }
+    .activity-card.delete { border-left-color: #dc2626; }
+    .activity-card.reopen { border-left-color: #0891b2; }
+    .activity-card.postpone { border-left-color: #ea580c; }
+    .activity-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+    .activity-card-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+    .activity-card-title.create { color: var(--sanadome-blue); }
+    .activity-card-title.reminder { color: #ea580c; }
+    .activity-card-title.payment { color: #16a34a; }
+    .activity-card-title.escalate { color: #dc2626; }
+    .activity-card-title.note { color: #8b5cf6; }
+    .activity-card-title.close { color: #64748b; }
+    .activity-card-title.delete { color: #dc2626; }
+    .activity-card-title.reopen { color: #0891b2; }
+    .activity-card-title.postpone { color: #ea580c; }
+    .activity-text { font-size: 0.85rem; line-height: 1.5; }
+    .activity-meta { font-size: 0.72rem; color: var(--sanadome-text-soft); margin-top: 0.35rem; display: flex; gap: 0.75rem; align-items: center; }
+    .activity-user { font-weight: 600; }
+
+    /* Notes */
+    /* Note badge in overview table */
+    .note-badge {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      font-size: 0.68rem; font-weight: 700; color: #8b5cf6;
+      background: #f5f3ff; border-radius: 999px; padding: 0.1rem 0.45rem;
+      margin-left: 0.4rem; vertical-align: middle; line-height: 1;
+    }
+
+    /* Postpone modal select */
+    .postpone-options { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; }
+    .postpone-options button {
+      padding: 0.65rem 1rem; font-size: 0.88rem; font-family: inherit; font-weight: 600;
+      border: 1.5px solid #e2e8f0; border-radius: var(--radius-sm); background: var(--white);
+      cursor: pointer; transition: all 0.15s; text-align: left;
+    }
+    .postpone-options button:hover { border-color: #ea580c; background: #fff7ed; color: #ea580c; }
+
+    /* Control date in detail */
+    .control-date-row {
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .control-date-old {
+      text-decoration: line-through; color: var(--sanadome-text-soft); font-size: 0.85rem;
+    }
+    .control-date-new {
+      font-weight: 700; color: #ea580c; font-size: 0.92rem;
+    }
+    .control-date-icon {
+      font-size: 0.85rem;
+    }
+
+    /* Manual address toggle */
+    .btn-link {
+      background: none; border: none; color: var(--sanadome-blue); font-size: 0.78rem;
+      font-family: inherit; font-weight: 600; cursor: pointer; padding: 0; margin-top: 0.25rem;
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .btn-link:hover { color: #2563eb; }
+
+    .note-card {
+      background: #f8fafc; border-radius: var(--radius-sm); padding: 1rem;
+      margin-bottom: 0.75rem; border: 1px solid #f1f5f9;
+    }
+    .note-card .note-meta { font-size: 0.72rem; color: var(--sanadome-text-soft); margin-bottom: 0.35rem; display: flex; justify-content: space-between; }
+    .note-card .note-text { font-size: 0.88rem; line-height: 1.6; }
+    .note-form { display: flex; gap: 0.75rem; align-items: flex-end; }
+    .note-form textarea { flex: 1; min-height: 60px; }
+
+    /* Toast */
+    .toast {
+      position: fixed; top: calc(var(--topbar-h) + 1rem); right: 2rem;
+      padding: 0.65rem 1.1rem; border-radius: var(--radius-sm); font-size: 0.82rem;
+      font-weight: 500; z-index: 9999; opacity: 0; transform: translateY(-10px);
+      pointer-events: none; transition: all 0.3s ease; max-width: 360px;
+      box-shadow: var(--shadow-elevated);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .toast.success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .toast.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    /* Setup banner */
+    .setup-banner {
+      background: var(--white); border: 2px dashed var(--sanadome-blue); border-radius: var(--radius);
+      padding: 2rem; margin-bottom: 1.5rem; text-align: center;
+    }
+    .setup-banner h3 { font-family: 'Plus Jakarta Sans', sans-serif; margin-bottom: 0.5rem; }
+    .setup-banner pre {
+      text-align: left; background: #0f172a; color: #e2e8f0; padding: 1rem; border-radius: var(--radius-sm);
+      font-size: 0.75rem; overflow-x: auto; margin: 1rem 0; max-height: 300px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-all;
+    }
+    .setup-banner button {
+      padding: 0.6rem 1.5rem; background: var(--gradient-primary); color: white; border: none;
+      border-radius: var(--radius-sm); font-family: inherit; font-weight: 600; cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .info-grid { grid-template-columns: 1fr; }
+      .detail-panel { width: 100vw; }
+    }
+    @media (max-width: 768px) {
+      .app-sidebar { display: none; }
+      .app-main { margin-left: 0; }
+      .topbar-search-wrap { max-width: 160px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .page-content { padding: 1.25rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .table-wrap { overflow-x: auto; }
+      .table-wrap table { min-width: 700px; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <aside class="app-sidebar">
+    <a href="dashboard.html" class="sidebar-logo" aria-label="MijnSanadome">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+        <path d="M12 28V16l8 7 8-7v12h-3V19l-5 4.5-5-4.5v9H12z" fill="white"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#4a7c9c"/><stop offset="1" stop-color="#6b9bb8"/></linearGradient></defs>
+      </svg>
+      <span class="sidebar-logo-text">Mijn<span>Sanadome</span></span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Menu</div>
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Dashboard
+      </a>
+      <a href="#placeholder-rooster" class="nav-item" data-permission="nav.rooster">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Mijn rooster
+      </a>
+      <a href="#placeholder-verlof" class="nav-item" data-permission="nav.verlof">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Verlof
+      </a>
+      <a href="#placeholder-documenten" class="nav-item" data-permission="nav.documenten">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Documenten
+      </a>
+      <a href="#placeholder-berichten" class="nav-item" data-permission="nav.berichten">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Berichten
+      </a>
+      <div class="nav-label">Beheer</div>
+      <a href="gebruikers.html" class="nav-item" data-permission="medewerkers.bekijken">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        Medewerkers
+      </a>
+      <a href="nieuws.html" class="nav-item" data-permission="nieuws.bekijken">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        Nieuwsbeheer
+      </a>
+      <a href="debiteuren.html" class="nav-item active" data-permission="debiteuren.bekijken">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Debiteuren
+      </a>
+      <a href="rechten.html" class="nav-item" data-permission="rechten.bekijken">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Rechten
+      </a>
+      <div class="nav-label">Account</div>
+      <a href="profiel.html" class="nav-item" data-permission="nav.gegevens">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Mijn Profiel
+      </a>
+      <a href="#placeholder-hr" class="nav-item" data-permission="nav.hr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        HR &amp; handboek
+      </a>
+    </nav>
+  </aside>
+
+  <div class="app-main">
+    <header class="topbar">
+      <div class="topbar-search-wrap">
+        <input type="search" class="topbar-search" placeholder="Zoeken in MijnSanadome…" aria-label="Zoeken">
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="topbar-icon-btn" aria-label="Meldingen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <a href="profiel.html" class="topbar-user">
+          <div class="topbar-avatar" id="user-avatar">—</div>
+          <div class="topbar-user-info">
+            <span class="topbar-user-name" id="user-name">Laden…</span>
+            <span class="topbar-user-role" id="user-role-label">Medewerker</span>
+          </div>
+        </a>
+        <button type="button" class="btn-logout" id="btn-logout">Uitloggen</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <!-- Setup banner (hidden by default) -->
+      <div class="setup-banner" id="setup-banner" style="display:none;">
+        <h3>💰 Debiteurentabellen ontbreken</h3>
+        <p>Voer de volgende SQL uit in de <strong>Supabase SQL Editor</strong>:</p>
+        <pre id="sql-code"></pre>
+        <button onclick="location.reload()">🔄 Opnieuw proberen</button>
+      </div>
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div>
+          <h1>Debiteurenbeheer</h1>
+          <p>Beheer openstaande rekeningen en herinneringen</p>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center;">
+          <button type="button" class="btn-outline-primary btn-sm" id="btn-import-rapport" style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;font-size:0.82rem;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Rapport importeren
+          </button>
+          <button type="button" class="btn-add" id="btn-new-dossier">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nieuw dossier
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+          <div class="stat-info"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Totaal dossiers</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="stat-info"><div class="stat-value" id="stat-open">0</div><div class="stat-label">Openstaand</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="stat-info"><div class="stat-value" id="stat-amount">€ 0</div><div class="stat-label">Openstaand bedrag</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="stat-info"><div class="stat-value" id="stat-paid">0</div><div class="stat-label">Betaald (deze maand)</div></div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="filter-pills" id="filter-pills">
+          <button class="pill active" data-filter="all">Alle</button>
+          <button class="pill" data-filter="nieuw">Nieuw</button>
+          <button class="pill" data-filter="herinnering_1">1e Herinnering</button>
+          <button class="pill" data-filter="herinnering_2">2e Herinnering</button>
+          <button class="pill" data-filter="aanmaning">Aanmaning</button>
+          <button class="pill" data-filter="betaald">Betaald</button>
+          <button class="pill" data-filter="afgesloten">Afgesloten</button>
+        </div>
+        <div class="search-wrap">
+          <input type="text" class="search-input" id="search-input" placeholder="Zoek op naam, res.nr…">
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Dossier</th>
+              <th>Gast</th>
+              <th>Reservering</th>
+              <th>Bedrag</th>
+              <th>Status</th>
+              <th>Volgende actie</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="dossier-table"></tbody>
+        </table>
+        <div class="empty-state" id="empty-state" style="display:none;">
+          <div class="empty-icon">📋</div>
+          <h3>Geen dossiers gevonden</h3>
+          <p>Maak een nieuw dossier aan of pas je filters aan.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ── New Dossier Modal ── -->
+<div class="modal-overlay" id="modal-new">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h2>Nieuw dossier aanmaken</h2>
+      <button class="modal-close" id="close-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <form id="form-new" autocomplete="off">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-guest-name">Gastnaam *</label>
+            <input type="text" id="f-guest-name" required placeholder="Volledige naam">
+          </div>
+          <div class="form-group">
+            <label for="f-guest-email">E-mail *</label>
+            <input type="email" id="f-guest-email" required placeholder="gast@email.nl">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-guest-phone">Telefoonnummer</label>
+            <input type="tel" id="f-guest-phone" placeholder="+31 6 12345678">
+          </div>
+          <div class="form-group">
+            <label for="f-reservation">Reserveringsnummer *</label>
+            <input type="text" id="f-reservation" required placeholder="bv. RES-2026-001234">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-amount">Openstaand bedrag (€) *</label>
+            <input type="number" id="f-amount" required min="0.01" step="0.01" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label for="f-invoice-date">Factuurdatum *</label>
+            <input type="date" id="f-invoice-date" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="f-description">Omschrijving</label>
+          <textarea id="f-description" placeholder="Korte omschrijving van de openstaande rekening…" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-postcode">Postcode *</label>
+            <input type="text" id="f-postcode" required maxlength="7" placeholder="6532SZ" style="text-transform:uppercase;">
+            <div class="form-hint" id="postcode-status"></div>
+          </div>
+          <div class="form-group">
+            <label for="f-huisnummer">Huisnummer *</label>
+            <input type="text" id="f-huisnummer" required placeholder="90">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-toevoeging">Toevoeging</label>
+            <input type="text" id="f-toevoeging" placeholder="bv. A, bis, 2-hoog">
+          </div>
+          <div class="form-group">
+            <label for="f-straat">Straat</label>
+            <input type="text" id="f-straat" readonly placeholder="Wordt automatisch ingevuld" style="background:#f8fafc;">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-plaats">Plaats</label>
+            <input type="text" id="f-plaats" readonly placeholder="Wordt automatisch ingevuld" style="background:#f8fafc;">
+          </div>
+          <div class="form-group">
+            <label for="f-provincie">Provincie</label>
+            <input type="text" id="f-provincie" readonly placeholder="Wordt automatisch ingevuld" style="background:#f8fafc;">
+          </div>
+        </div>
+        <div style="margin-top:-0.25rem;margin-bottom:0.5rem;">
+          <button type="button" class="btn-link" id="toggle-manual-address">✏️ Handmatig invullen</button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" id="cancel-new">Annuleren</button>
+      <button type="button" class="btn-primary" id="submit-new">Dossier aanmaken</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Detail Panel (slide-in) ── -->
+<div class="detail-overlay" id="detail-overlay"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <div>
+      <h2 id="detail-title">Dossier</h2>
+      <div style="font-size:0.78rem;color:var(--sanadome-text-soft);margin-top:2px;" id="detail-subtitle"></div>
+    </div>
+    <button class="modal-close" id="close-detail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="detail-body">
+    <!-- Info grid -->
+    <div class="info-grid" id="detail-info"></div>
+
+    <!-- Workflow bar -->
+    <div class="workflow-bar" id="detail-workflow"></div>
+
+    <!-- Actions -->
+    <div class="detail-actions" id="detail-actions"></div>
+
+    <!-- Tabs -->
+    <div class="tab-bar" id="detail-tabs">
+      <button class="tab-btn active" data-tab="activity">Activiteitenlog</button>
+      <button class="tab-btn" data-tab="notes">Notities</button>
+    </div>
+    <div class="tab-panel active" id="tab-activity">
+      <ul class="activity-list" id="activity-list"></ul>
+    </div>
+    <div class="tab-panel" id="tab-notes">
+      <div id="notes-list"></div>
+      <div class="note-form" style="margin-top:1rem;">
+        <textarea id="note-input" placeholder="Nieuwe notitie schrijven…" style="flex:1;min-height:60px;padding:0.6rem 0.85rem;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.88rem;outline:none;resize:vertical;"></textarea>
+        <button class="btn-primary btn-sm" id="btn-add-note" style="align-self:flex-end;">Toevoegen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Import Rapport Modal -->
+<div class="modal-overlay" id="modal-import">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <h2>📥 Rapport importeren</h2>
+      <button class="modal-close" id="close-import"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" style="overflow-y:auto;">
+      <!-- Step 1: Upload -->
+      <div id="import-step-upload">
+        <div style="border:2px dashed var(--sanadome-border);border-radius:var(--radius);padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.2s;" id="import-dropzone">
+          <div style="font-size:2.5rem;margin-bottom:0.75rem;">📊</div>
+          <h3 style="margin-bottom:0.5rem;font-family:'Plus Jakarta Sans',sans-serif;">Sleep je Excel-rapport hierheen</h3>
+          <p style="color:var(--sanadome-text-soft);font-size:0.85rem;margin-bottom:1rem;">Of klik om een bestand te selecteren (.xlsx, .xls)</p>
+          <button type="button" class="btn-primary btn-sm" id="import-browse">Bestand kiezen</button>
+          <input type="file" id="import-file" accept=".xlsx,.xls" style="display:none;">
+        </div>
+        <div id="import-file-info" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#f0fdf4;border-radius:var(--radius-sm);border:1px solid #bbf7d0;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem;">
+          <span>✅</span>
+          <span id="import-file-name"></span>
+        </div>
+      </div>
+      <!-- Step 2: Preview -->
+      <div id="import-step-preview" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div>
+            <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;margin-bottom:0.25rem;" id="import-preview-title">Gevonden gasten met openstaand bedrag</h3>
+            <p style="color:var(--sanadome-text-soft);font-size:0.8rem;" id="import-preview-subtitle"></p>
+          </div>
+          <button type="button" class="btn-secondary btn-sm" id="import-back">← Ander bestand</button>
+        </div>
+        <div style="max-height:400px;overflow-y:auto;border:1px solid var(--sanadome-border);border-radius:var(--radius-sm);">
+          <table class="import-preview-table" style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+            <thead>
+              <tr style="background:#f8fafc;position:sticky;top:0;">
+                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:1px solid var(--sanadome-border);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--sanadome-text-soft);">
+                  <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;"><input type="checkbox" id="import-select-all" checked> Selecteer</label>
+                </th>
+                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:1px solid var(--sanadome-border);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--sanadome-text-soft);">Reservering</th>
+                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:1px solid var(--sanadome-border);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--sanadome-text-soft);">Gast</th>
+                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:1px solid var(--sanadome-border);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--sanadome-text-soft);">E-mail</th>
+                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:1px solid var(--sanadome-border);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--sanadome-text-soft);">Telefoon</th>
+                <th style="padding:0.6rem 0.75rem;text-align:right;border-bottom:1px solid var(--sanadome-border);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--sanadome-text-soft);">Bedrag</th>
+                <th style="padding:0.6rem 0.75rem;text-align:left;border-bottom:1px solid var(--sanadome-border);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--sanadome-text-soft);">Status</th>
+              </tr>
+            </thead>
+            <tbody id="import-preview-body"></tbody>
+          </table>
+        </div>
+        <div id="import-duplicates-info" style="display:none;margin-top:0.75rem;padding:0.6rem 1rem;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--radius-sm);font-size:0.8rem;color:#9a3412;"></div>
+      </div>
+      <!-- Step 3: Importing -->
+      <div id="import-step-progress" style="display:none;text-align:center;padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:1rem;">⏳</div>
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:0.5rem;">Dossiers aanmaken...</h3>
+        <p style="color:var(--sanadome-text-soft);font-size:0.85rem;" id="import-progress-text">0 van 0 verwerkt</p>
+        <div style="width:100%;max-width:400px;margin:1rem auto;height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden;">
+          <div id="import-progress-bar" style="height:100%;background:var(--gradient-primary);border-radius:999px;transition:width 0.3s;width:0%;"></div>
+        </div>
+      </div>
+      <!-- Step 4: Done -->
+      <div id="import-step-done" style="display:none;text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">✅</div>
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:0.5rem;">Import voltooid!</h3>
+        <p style="color:var(--sanadome-text-soft);font-size:0.85rem;" id="import-done-text"></p>
+      </div>
+    </div>
+    <div class="modal-footer" id="import-footer">
+      <button type="button" class="btn-secondary" id="import-cancel">Annuleren</button>
+      <button type="button" class="btn-primary" id="import-confirm" disabled>Importeer geselecteerde dossiers</button>
+    </div>
+  </div>
+</div>
+
+<!-- Postpone modal -->
+<div class="modal-overlay" id="modal-postpone">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>⏳ Uitstel van betaling</h2>
+      <button class="modal-close" onclick="document.getElementById('modal-postpone').classList.remove('active')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.92rem;line-height:1.6;">Kies hoe lang de gast uitstel krijgt voor betaling:</p>
+      <div class="postpone-options">
+        <button data-days="7" onclick="doPostpone(7)">📅 1 week uitstel</button>
+        <button data-days="14" onclick="doPostpone(14)">📅 2 weken uitstel</button>
+        <button data-days="30" onclick="doPostpone(30)">📅 1 maand uitstel</button>
+        <button data-days="60" onclick="doPostpone(60)">📅 2 maanden uitstel</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" onclick="document.getElementById('modal-postpone').classList.remove('active')">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="modal-delete-confirm">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>🗑️ Dossier verwijderen</h2>
+      <button class="modal-close" onclick="document.getElementById('modal-delete-confirm').classList.remove('active')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p id="delete-confirm-text" style="font-size:0.92rem;line-height:1.6;"></p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" id="delete-confirm-no">Annuleren</button>
+      <button type="button" class="btn-danger" id="delete-confirm-yes">Ja, verwijderen</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function() {
+  /* ── Config ── */
+  var supabaseUrl = window.SUPABASE_URL;
+  var supabaseKey = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
+  if (!supabaseUrl || !supabaseKey) { window.location.href = 'index.html'; return; }
+  var sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  /* ── SQL for setup ── */
+  var SQL_SETUP = `-- ══════════════════════════════════════════════
+-- Debiteurenbeheer – Supabase SQL Setup
+-- ══════════════════════════════════════════════
+
+-- 1. Dossiers tabel
+CREATE TABLE IF NOT EXISTS debtors (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  dossier_nr TEXT UNIQUE NOT NULL,
+  guest_name TEXT NOT NULL,
+  guest_email TEXT NOT NULL,
+  guest_phone TEXT,
+  guest_address TEXT,
+  guest_postcode TEXT,
+  guest_huisnummer TEXT,
+  reservation_nr TEXT NOT NULL,
+  amount NUMERIC(10,2) NOT NULL CHECK (amount > 0),
+  description TEXT,
+  invoice_date DATE NOT NULL,
+  status TEXT NOT NULL DEFAULT 'nieuw'
+    CHECK (status IN ('nieuw','herinnering_1','herinnering_2','aanmaning','betaald','afgesloten')),
+  next_action_date DATE,
+  paid_at TIMESTAMPTZ,
+  closed_at TIMESTAMPTZ,
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 2. Notities tabel
+CREATE TABLE IF NOT EXISTS debtor_notes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  debtor_id UUID NOT NULL REFERENCES debtors(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id),
+  user_name TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 3. Activiteitenlog tabel
+CREATE TABLE IF NOT EXISTS debtor_activity_log (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  debtor_id UUID NOT NULL REFERENCES debtors(id) ON DELETE CASCADE,
+  action TEXT NOT NULL,
+  description TEXT NOT NULL,
+  user_id UUID REFERENCES auth.users(id),
+  user_name TEXT NOT NULL DEFAULT 'Systeem',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 4. Auto-update updated_at
+CREATE OR REPLACE FUNCTION update_debtor_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_debtor_updated ON debtors;
+CREATE TRIGGER trg_debtor_updated
+  BEFORE UPDATE ON debtors
+  FOR EACH ROW EXECUTE FUNCTION update_debtor_updated_at();
+
+-- 5. Indexes
+CREATE INDEX IF NOT EXISTS idx_debtors_status ON debtors(status);
+CREATE INDEX IF NOT EXISTS idx_debtors_next_action ON debtors(next_action_date);
+CREATE INDEX IF NOT EXISTS idx_debtor_notes_debtor ON debtor_notes(debtor_id);
+CREATE INDEX IF NOT EXISTS idx_debtor_activity_debtor ON debtor_activity_log(debtor_id);
+
+-- 6. RLS Policies
+ALTER TABLE debtors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE debtor_notes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE debtor_activity_log ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can read debtors"
+  ON debtors FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Authenticated users can insert debtors"
+  ON debtors FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Authenticated users can update debtors"
+  ON debtors FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Authenticated users can delete debtors"
+  ON debtors FOR DELETE TO authenticated USING (true);
+
+CREATE POLICY "Authenticated users can read debtor_notes"
+  ON debtor_notes FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Authenticated users can insert debtor_notes"
+  ON debtor_notes FOR INSERT TO authenticated WITH CHECK (true);
+
+CREATE POLICY "Authenticated users can read debtor_activity_log"
+  ON debtor_activity_log FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Authenticated users can insert debtor_activity_log"
+  ON debtor_activity_log FOR INSERT TO authenticated WITH CHECK (true);
+
+-- 7. Sequence voor dossiernummers
+CREATE SEQUENCE IF NOT EXISTS dossier_nr_seq START 1;
+`;
+
+  /* ── State ── */
+  var allDossiers = [];
+  var currentFilter = 'all';
+  var searchQuery = '';
+  var currentUserId = null;
+  var currentUserName = '';
+  var openDossierId = null;
+  var noteCounts = {};
+  var postponeDossierId = null;
+
+  /* ── DOM refs ── */
+  var tableBody = document.getElementById('dossier-table');
+  var emptyState = document.getElementById('empty-state');
+  var toastEl = document.getElementById('toast');
+  var modalNew = document.getElementById('modal-new');
+  var detailPanel = document.getElementById('detail-panel');
+  var detailOverlay = document.getElementById('detail-overlay');
+  var setupBanner = document.getElementById('setup-banner');
+
+  /* ── Helpers ── */
+  function esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+  function fmt(n) { return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(n); }
+  function fmtDate(d) { if (!d) return '—'; var dt = new Date(d); return dt.toLocaleDateString('nl-NL', { day: '2-digit', month: 'short', year: 'numeric' }); }
+  function fmtDateTime(d) { if (!d) return '—'; var dt = new Date(d); return dt.toLocaleDateString('nl-NL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+  function daysUntil(d) { if (!d) return null; var now = new Date(); now.setHours(0,0,0,0); var target = new Date(d); target.setHours(0,0,0,0); return Math.ceil((target - now) / 86400000); }
+
+  function showToast(msg, type) {
+    toastEl.textContent = msg;
+    toastEl.className = 'toast ' + (type || 'success');
+    setTimeout(function() { toastEl.classList.add('show'); }, 10);
+    setTimeout(function() { toastEl.classList.remove('show'); }, 4000);
+  }
+
+  function openModal(el) { el.classList.add('active'); }
+  function closeModal(el) { el.classList.remove('active'); }
+
+  var STATUS_LABELS = {
+    'nieuw': 'Nieuw',
+    'herinnering_1': '1e Herinnering',
+    'herinnering_2': '2e Herinnering',
+    'aanmaning': 'Aanmaning',
+    'betaald': 'Betaald',
+    'afgesloten': 'Afgesloten'
+  };
+
+  var WORKFLOW_STEPS = ['nieuw', 'herinnering_1', 'herinnering_2', 'aanmaning', 'betaald'];
+
+  function statusBadge(status) {
+    return '<span class="badge badge-' + status + '">' + (STATUS_LABELS[status] || status) + '</span>';
+  }
+
+  /* ── Generate dossier number ── */
+  function generateDossierNr() {
+    var yr = new Date().getFullYear();
+    var rand = Math.floor(1000 + Math.random() * 9000);
+    return 'DEB-' + yr + '-' + rand;
+  }
+
+  /* ── Calculate next action date ── */
+  function calcNextAction(status, currentDate) {
+    var d = new Date(currentDate || Date.now());
+    if (status === 'nieuw') { d.setDate(d.getDate() + 7); return d.toISOString().split('T')[0]; }
+    if (status === 'herinnering_1') { d.setDate(d.getDate() + 7); return d.toISOString().split('T')[0]; }
+    if (status === 'herinnering_2') { d.setDate(d.getDate() + 14); return d.toISOString().split('T')[0]; }
+    return null;
+  }
+
+  /* ── Load dossiers ── */
+  function loadDossiers() {
+    Promise.all([
+      sb.from('debtors').select('*').order('created_at', { ascending: false }),
+      sb.from('debtor_notes').select('debtor_id')
+    ]).then(function(results) {
+      var res = results[0];
+      var notesRes = results[1];
+      if (res.error) {
+        if (res.error.message && res.error.message.indexOf('does not exist') !== -1) {
+          setupBanner.style.display = 'block';
+          document.getElementById('sql-code').textContent = SQL_SETUP;
+          return;
+        }
+        showToast('Fout bij laden: ' + res.error.message, 'error');
+        return;
+      }
+      allDossiers = res.data || [];
+      noteCounts = {};
+      if (!notesRes.error && notesRes.data) {
+        notesRes.data.forEach(function(n) {
+          noteCounts[n.debtor_id] = (noteCounts[n.debtor_id] || 0) + 1;
+        });
+      }
+      renderDossiers();
+      updateStats();
+    });
+  }
+
+  /* ── Render table ── */
+  function renderDossiers() {
+    var filtered = allDossiers;
+    if (currentFilter !== 'all') {
+      filtered = filtered.filter(function(d) { return d.status === currentFilter; });
+    }
+    if (searchQuery) {
+      var q = searchQuery.toLowerCase();
+      filtered = filtered.filter(function(d) {
+        return (d.guest_name || '').toLowerCase().indexOf(q) !== -1
+          || (d.reservation_nr || '').toLowerCase().indexOf(q) !== -1
+          || (d.dossier_nr || '').toLowerCase().indexOf(q) !== -1
+          || (d.guest_email || '').toLowerCase().indexOf(q) !== -1;
+      });
+    }
+
+    if (filtered.length === 0) {
+      tableBody.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    tableBody.innerHTML = filtered.map(function(d) {
+      var days = daysUntil(d.next_action_date);
+      var dueHtml = '';
+      if (d.status !== 'betaald' && d.status !== 'afgesloten' && d.status !== 'nieuw' && days !== null) {
+        if (days < 0) dueHtml = '<span class="due-tag overdue">⏰ ' + Math.abs(days) + ' dagen over</span>';
+        else if (days === 0) dueHtml = '<span class="due-tag overdue">⏰ Vandaag</span>';
+        else if (days <= 2) dueHtml = '<span class="due-tag soon">⏳ ' + days + ' dag' + (days > 1 ? 'en' : '') + '</span>';
+        else dueHtml = '<span class="due-tag ok">📅 ' + fmtDate(d.next_action_date) + '</span>';
+      } else if (d.status === 'betaald') {
+        dueHtml = '<span class="due-tag ok">✅ Afgehandeld</span>';
+      } else if (d.status === 'afgesloten') {
+        dueHtml = '<span class="due-tag ok">🔒 Gesloten</span>';
+      }
+
+      return '<tr data-id="' + d.id + '" style="cursor:pointer;">' +
+        '<td><strong style="font-size:0.82rem;">' + esc(d.dossier_nr) + '</strong><br><span style="font-size:0.72rem;color:var(--sanadome-text-soft);">' + fmtDate(d.created_at) + '</span></td>' +
+        '<td><div class="guest-name">' + esc(d.guest_name) + (noteCounts[d.id] ? ' <span class="note-badge" title="' + noteCounts[d.id] + ' notitie(s)">💬 ' + noteCounts[d.id] + '</span>' : '') + '</div><div class="guest-email">' + esc(d.guest_email) + '</div></td>' +
+        '<td><span class="res-nr">' + esc(d.reservation_nr) + '</span></td>' +
+        '<td class="amount">' + fmt(d.amount) + '</td>' +
+        '<td>' + statusBadge(d.status) + '</td>' +
+        '<td>' + dueHtml + '</td>' +
+        '<td><div class="row-actions">' +
+          '<button class="row-btn" title="Bekijken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+
+    // Row click handlers
+    tableBody.querySelectorAll('tr').forEach(function(row) {
+      row.addEventListener('click', function() {
+        openDetail(row.getAttribute('data-id'));
+      });
+    });
+  }
+
+  /* ── Update stats ── */
+  function updateStats() {
+    var open = allDossiers.filter(function(d) { return d.status !== 'betaald' && d.status !== 'afgesloten'; });
+    var openAmount = open.reduce(function(sum, d) { return sum + parseFloat(d.amount || 0); }, 0);
+    var now = new Date();
+    var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    var paidThisMonth = allDossiers.filter(function(d) {
+      return d.status === 'betaald' && d.paid_at && new Date(d.paid_at) >= monthStart;
+    });
+
+    document.getElementById('stat-total').textContent = allDossiers.length;
+    document.getElementById('stat-open').textContent = open.length;
+    document.getElementById('stat-amount').textContent = fmt(openAmount);
+    document.getElementById('stat-paid').textContent = paidThisMonth.length;
+  }
+
+  /* ── Filter & Search ── */
+  document.getElementById('filter-pills').addEventListener('click', function(e) {
+    var btn = e.target.closest('.pill');
+    if (!btn) return;
+    document.querySelectorAll('.pill').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    currentFilter = btn.getAttribute('data-filter');
+    renderDossiers();
+  });
+
+  document.getElementById('search-input').addEventListener('input', function(e) {
+    searchQuery = e.target.value.trim();
+    renderDossiers();
+  });
+
+  /* ── New Dossier ── */
+  document.getElementById('btn-new-dossier').addEventListener('click', function() {
+    document.getElementById('form-new').reset();
+    document.getElementById('f-invoice-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('postcode-status').innerHTML = '';
+    // Reset address fields to readonly/auto mode
+    ['f-straat', 'f-plaats', 'f-provincie'].forEach(function(fid) {
+      var el = document.getElementById(fid);
+      el.value = '';
+      el.setAttribute('readonly', true);
+      el.style.background = '#f8fafc';
+      el.placeholder = 'Wordt automatisch ingevuld';
+    });
+    var toggleBtn = document.getElementById('toggle-manual-address');
+    if (toggleBtn) toggleBtn.textContent = '✏️ Handmatig invullen';
+    openModal(modalNew);
+  });
+  document.getElementById('close-new').addEventListener('click', function() { closeModal(modalNew); });
+  document.getElementById('cancel-new').addEventListener('click', function() { closeModal(modalNew); });
+
+  document.getElementById('submit-new').addEventListener('click', function() {
+    var guestName = document.getElementById('f-guest-name').value.trim();
+    var guestEmail = document.getElementById('f-guest-email').value.trim();
+    var guestPhone = document.getElementById('f-guest-phone').value.trim();
+    var reservation = document.getElementById('f-reservation').value.trim();
+    var amount = parseFloat(document.getElementById('f-amount').value);
+    var invoiceDate = document.getElementById('f-invoice-date').value;
+    var description = document.getElementById('f-description').value.trim();
+    var postcode = document.getElementById('f-postcode').value.trim().toUpperCase();
+    var huisnummer = document.getElementById('f-huisnummer').value.trim();
+    var toevoeging = document.getElementById('f-toevoeging').value.trim();
+    var straat = document.getElementById('f-straat').value.trim();
+    var plaats = document.getElementById('f-plaats').value.trim();
+    var provincie = document.getElementById('f-provincie').value.trim();
+
+    if (!guestName || !guestEmail || !reservation || !amount || !invoiceDate || !postcode || !huisnummer) {
+      showToast('Vul alle verplichte velden in.', 'error'); return;
+    }
+    // Validate Dutch postcode format: 1234 AB or 1234AB
+    var pcClean = postcode.replace(/\s/g, '');
+    if (!/^[1-9][0-9]{3}[A-Z]{2}$/.test(pcClean)) {
+      showToast('Vul een geldige postcode in (bijv. 1234 AB).', 'error'); return;
+    }
+    var guestAddress = straat + ' ' + huisnummer + (toevoeging ? ' ' + toevoeging : '') + ', ' + postcode + ' ' + plaats + (provincie ? ' (' + provincie + ')' : '');
+
+    var btn = document.getElementById('submit-new');
+    btn.disabled = true; btn.textContent = 'Aanmaken…';
+
+    var dossierNr = generateDossierNr();
+
+    var record = {
+      dossier_nr: dossierNr,
+      guest_name: guestName,
+      guest_email: guestEmail,
+      guest_phone: guestPhone || null,
+      guest_address: guestAddress,
+      guest_postcode: pcClean.substring(0, 4) + ' ' + pcClean.substring(4),
+      guest_huisnummer: huisnummer + (toevoeging ? ' ' + toevoeging : ''),
+      reservation_nr: reservation,
+      amount: amount,
+      description: description || null,
+      invoice_date: invoiceDate,
+      status: 'nieuw',
+      next_action_date: null,
+      created_by: currentUserId
+    };
+
+    sb.from('debtors').insert([record]).select().then(function(res) {
+      btn.disabled = false; btn.textContent = 'Dossier aanmaken';
+      if (res.error) { showToast('Fout: ' + res.error.message, 'error'); return; }
+      var newRecord = res.data[0];
+
+      // Log activity
+      sb.from('debtor_activity_log').insert([{
+        debtor_id: newRecord.id,
+        action: 'create',
+        description: 'Dossier aangemaakt. Bedrag: ' + fmt(amount) + '. Reservering: ' + reservation,
+        user_id: currentUserId,
+        user_name: currentUserName
+      }]).then(function(logRes) {
+        if (logRes.error) console.error('Activity log error:', logRes.error);
+        closeModal(modalNew);
+        showToast('✅ Dossier ' + dossierNr + ' aangemaakt');
+        loadDossiers();
+      });
+    });
+  });
+
+  /* ── Detail Panel ── */
+  function openDetail(id) {
+    openDossierId = id;
+    detailPanel.classList.add('active');
+    detailOverlay.classList.add('active');
+    loadDetail(id);
+  }
+  function closeDetail() {
+    detailPanel.classList.remove('active');
+    detailOverlay.classList.remove('active');
+    openDossierId = null;
+  }
+  document.getElementById('close-detail').addEventListener('click', closeDetail);
+  detailOverlay.addEventListener('click', closeDetail);
+
+  function loadDetail(id) {
+    Promise.all([
+      sb.from('debtors').select('*').eq('id', id).single(),
+      sb.from('debtor_activity_log').select('*').eq('debtor_id', id).order('created_at', { ascending: false }),
+      sb.from('debtor_notes').select('*').eq('debtor_id', id).order('created_at', { ascending: false })
+    ]).then(function(results) {
+      if (results[0].error) { console.error('Debtor load error:', results[0].error); }
+      if (results[1].error) { console.error('Activity log load error:', results[1].error); }
+      if (results[2].error) { console.error('Notes load error:', results[2].error); }
+      var d = results[0].data;
+      var logs = results[1].data || [];
+      var notes = results[2].data || [];
+
+      if (!d) { showToast('Dossier niet gevonden', 'error'); closeDetail(); return; }
+
+      // Header
+      document.getElementById('detail-title').textContent = d.dossier_nr;
+      document.getElementById('detail-subtitle').innerHTML = statusBadge(d.status) + ' · ' + esc(d.guest_name);
+
+      // Info grid
+      document.getElementById('detail-info').innerHTML =
+        '<div class="info-item"><div class="info-label">Gast</div><div class="info-value">' + esc(d.guest_name) + '</div></div>' +
+        '<div class="info-item"><div class="info-label">E-mail</div><div class="info-value">' + esc(d.guest_email) + '</div></div>' +
+        '<div class="info-item"><div class="info-label">Telefoon</div><div class="info-value">' + (esc(d.guest_phone) || '—') + '</div></div>' +
+        '<div class="info-item"><div class="info-label">Adres</div><div class="info-value">' + (esc(d.guest_address) || '—') + '</div></div>' +
+        '<div class="info-item"><div class="info-label">Reserveringsnr.</div><div class="info-value"><span class="res-nr">' + esc(d.reservation_nr) + '</span></div></div>' +
+        '<div class="info-item"><div class="info-label">Bedrag</div><div class="info-value amount" style="color:#dc2626;">' + fmt(d.amount) + '</div></div>' +
+        '<div class="info-item"><div class="info-label">Factuurdatum</div><div class="info-value">' + fmtDate(d.invoice_date) + '</div></div>' +
+        '<div class="info-item"><div class="info-label">Aangemaakt</div><div class="info-value">' + fmtDateTime(d.created_at) + '</div></div>' +
+        (function() {
+          if (d.status === 'betaald' || d.status === 'afgesloten' || d.status === 'nieuw') return '';
+          if (!d.next_action_date) return '';
+          var lastPostpone = logs.find(function(l) { return l.action === 'postpone'; });
+          if (lastPostpone) {
+            var oldMatch = lastPostpone.description.match(/Originele datum: ([^.]+)/);
+            var oldDate = oldMatch ? oldMatch[1] : null;
+            return '<div class="info-item"><div class="info-label">Volgende controle</div><div class="info-value"><div class="control-date-row">' +
+              (oldDate ? '<span class="control-date-old">' + esc(oldDate) + '</span>' : '') +
+              '<span class="control-date-icon">⏳</span>' +
+              '<span class="control-date-new">' + fmtDate(d.next_action_date) + '</span>' +
+              '<span style="font-size:0.72rem;color:var(--sanadome-text-soft);">(uitstel)</span>' +
+            '</div></div></div>';
+          }
+          return '<div class="info-item"><div class="info-label">Volgende controle</div><div class="info-value" style="font-weight:600;">' + fmtDate(d.next_action_date) + '</div></div>';
+        })() +
+        (d.description ? '<div class="info-item" style="grid-column:1/-1;"><div class="info-label">Omschrijving</div><div class="info-value">' + esc(d.description) + '</div></div>' : '');
+
+      // Workflow bar
+      var stepIndex = WORKFLOW_STEPS.indexOf(d.status);
+      if (d.status === 'afgesloten') stepIndex = 99; // all done
+      var wfHtml = '';
+      WORKFLOW_STEPS.forEach(function(step, i) {
+        var cls = '';
+        if (d.status === 'afgesloten' || i < stepIndex) cls = 'done';
+        else if (i === stepIndex) cls = 'active';
+        if (i > 0) wfHtml += '<div class="wf-line' + (i <= stepIndex || d.status === 'afgesloten' ? ' done' : '') + '"></div>';
+        var icon = (i < stepIndex || d.status === 'afgesloten') ? '✓' : (i + 1);
+        wfHtml += '<div class="wf-step ' + cls + '"><div class="wf-dot">' + icon + '</div><div class="wf-label">' + STATUS_LABELS[step] + '</div></div>';
+      });
+      document.getElementById('detail-workflow').innerHTML = wfHtml;
+
+      // Actions
+      var actHtml = '';
+      if (d.status === 'nieuw') {
+        actHtml += '<button class="btn-primary btn-sm" data-action="reminder" data-id="' + d.id + '" data-target="herinnering_1">📧 1e Herinnering versturen</button>';
+        actHtml += '<button class="btn-success btn-sm" data-action="paid" data-id="' + d.id + '">✅ Markeer als betaald</button>';
+      } else if (d.status === 'herinnering_1') {
+        actHtml += '<button class="btn-primary btn-sm" data-action="reminder" data-id="' + d.id + '" data-target="herinnering_2">📧 2e Herinnering versturen</button>';
+        actHtml += '<button class="btn-success btn-sm" data-action="paid" data-id="' + d.id + '">✅ Markeer als betaald</button>';
+      } else if (d.status === 'herinnering_2') {
+        actHtml += '<button class="btn-danger btn-sm" data-action="reminder" data-id="' + d.id + '" data-target="aanmaning">⚠️ Aanmaning versturen</button>';
+        actHtml += '<button class="btn-success btn-sm" data-action="paid" data-id="' + d.id + '">✅ Markeer als betaald</button>';
+      } else if (d.status === 'aanmaning') {
+        actHtml += '<button class="btn-success btn-sm" data-action="paid" data-id="' + d.id + '">✅ Markeer als betaald</button>';
+        actHtml += '<button class="btn-secondary btn-sm" data-action="close" data-id="' + d.id + '">🔒 Dossier afsluiten</button>';
+      } else if (d.status === 'betaald') {
+        actHtml += '<button class="btn-secondary btn-sm" data-action="close" data-id="' + d.id + '">🔒 Dossier afsluiten</button>';
+      }
+      if (d.status !== 'betaald' && d.status !== 'afgesloten') {
+        actHtml += '<button class="btn-warning btn-sm" data-action="postpone" data-id="' + d.id + '">⏳ Uitstel van betaling</button>';
+        actHtml += '<button class="btn-secondary btn-sm" data-action="close" data-id="' + d.id + '">🔒 Afsluiten zonder betaling</button>';
+      }
+      if (d.status === 'afgesloten') {
+        actHtml += '<button class="btn-primary btn-sm" data-action="reopen" data-id="' + d.id + '">🔓 Dossier heropenen</button>';
+        actHtml += '<button class="btn-danger btn-sm" data-action="delete" data-id="' + d.id + '" data-nr="' + esc(d.dossier_nr) + '">🗑️ Dossier verwijderen</button>';
+      }
+      document.getElementById('detail-actions').innerHTML = actHtml;
+
+      // Activity log
+      var ACTION_ICONS = { create: '📋', reminder: '📧', payment: '✅', note: '📝', escalate: '⚠️', close: '🔒', delete: '🗑️', reopen: '🔓', postpone: '⏳' };
+      var ACTION_TITLES = { create: 'Dossier aangemaakt', reminder: 'Herinnering verstuurd', payment: 'Betaling ontvangen', note: 'Notitie', escalate: 'Aanmaning verstuurd', close: 'Dossier gesloten', delete: 'Dossier verwijderd', reopen: 'Dossier heropend', postpone: 'Uitstel verleend' };
+      document.getElementById('activity-list').innerHTML = logs.length === 0
+        ? '<li style="padding:1.5rem;color:var(--sanadome-text-soft);font-size:0.85rem;text-align:center;">Nog geen activiteit geregistreerd.</li>'
+        : logs.map(function(log) {
+          var cls = 'create';
+          if (log.action === 'reminder') cls = 'reminder';
+          else if (log.action === 'payment') cls = 'payment';
+          else if (log.action === 'note') cls = 'note';
+          else if (log.action === 'escalate') cls = 'escalate';
+          else if (log.action === 'close') cls = 'close';
+          else if (log.action === 'delete') cls = 'delete';
+          else if (log.action === 'reopen') cls = 'reopen';
+          else if (log.action === 'postpone') cls = 'postpone';
+          var icon = ACTION_ICONS[cls] || '📋';
+          var title = ACTION_TITLES[log.action] || log.action;
+          return '<li class="activity-item">' +
+            '<div class="activity-icon-wrap ' + cls + '">' + icon + '</div>' +
+            '<div class="activity-card ' + cls + '">' +
+              '<div class="activity-card-header">' +
+                '<span class="activity-card-title ' + cls + '">' + title + '</span>' +
+              '</div>' +
+              '<div class="activity-text">' + esc(log.description) + '</div>' +
+              '<div class="activity-meta">' +
+                '<span>👤 <span class="activity-user">' + esc(log.user_name) + '</span></span>' +
+                '<span>🕐 ' + fmtDateTime(log.created_at) + '</span>' +
+              '</div>' +
+            '</div></li>';
+        }).join('');
+
+      // Notes
+      document.getElementById('notes-list').innerHTML = notes.length === 0
+        ? '<div style="padding:1rem;color:var(--sanadome-text-soft);font-size:0.85rem;">Nog geen notities.</div>'
+        : notes.map(function(n) {
+          return '<div class="note-card">' +
+            '<div class="note-meta"><span><strong>' + esc(n.user_name) + '</strong></span><span>' + fmtDateTime(n.created_at) + '</span></div>' +
+            '<div class="note-text">' + esc(n.content).replace(/\n/g, '<br>') + '</div></div>';
+        }).join('');
+    });
+  }
+
+  // Tab switching
+  document.getElementById('detail-tabs').addEventListener('click', function(e) {
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    document.querySelectorAll('.tab-btn').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.getAttribute('data-tab')).classList.add('active');
+  });
+
+  /* ── Actions ── */
+  function sendReminder(id, newStatus) {
+    var actionLabel = STATUS_LABELS[newStatus];
+    var nextAction = calcNextAction(newStatus);
+    var dossier = allDossiers.find(function(d) { return d.id === id; });
+    var guestInfo = dossier ? dossier.guest_name + ' (' + dossier.guest_email + ')' : 'gast';
+    var dossierNr = dossier ? dossier.dossier_nr : '';
+    var bedrag = dossier ? fmt(dossier.amount) : '';
+
+    sb.from('debtors').update({
+      status: newStatus,
+      next_action_date: nextAction
+    }).eq('id', id).then(function(res) {
+      if (res.error) { showToast('Fout: ' + res.error.message, 'error'); return; }
+      var descParts = [actionLabel + ' verstuurd naar ' + guestInfo + '.'];
+      if (bedrag) descParts.push('Openstaand bedrag: ' + bedrag + '.');
+      if (dossierNr) descParts.push('Dossier: ' + dossierNr + '.');
+      descParts.push('Volgende controle: ' + fmtDate(nextAction) + '.');
+      sb.from('debtor_activity_log').insert([{
+        debtor_id: id,
+        action: newStatus === 'aanmaning' ? 'escalate' : 'reminder',
+        description: descParts.join(' '),
+        user_id: currentUserId,
+        user_name: currentUserName
+      }]).then(function(logRes) {
+        if (logRes.error) console.error('Activity log error:', logRes.error);
+        showToast('✅ ' + actionLabel + ' verstuurd');
+        loadDossiers();
+        loadDetail(id);
+      });
+    });
+  };
+
+  function markPaid(id) {
+    var dossier = allDossiers.find(function(d) { return d.id === id; });
+    var guestInfo = dossier ? dossier.guest_name : 'gast';
+    var bedrag = dossier ? fmt(dossier.amount) : '';
+
+    sb.from('debtors').update({
+      status: 'betaald',
+      paid_at: new Date().toISOString(),
+      next_action_date: null
+    }).eq('id', id).then(function(res) {
+      if (res.error) { showToast('Fout: ' + res.error.message, 'error'); return; }
+      sb.from('debtor_activity_log').insert([{
+        debtor_id: id,
+        action: 'payment',
+        description: 'Rekening van ' + guestInfo + ' gemarkeerd als betaald.' + (bedrag ? ' Bedrag: ' + bedrag + '.' : ''),
+        user_id: currentUserId,
+        user_name: currentUserName
+      }]).then(function(logRes) {
+        if (logRes.error) console.error('Activity log error:', logRes.error);
+        showToast('✅ Gemarkeerd als betaald');
+        loadDossiers();
+        loadDetail(id);
+      });
+    });
+  };
+
+  function closeDossier(id) {
+    var dossier = allDossiers.find(function(d) { return d.id === id; });
+    var reason = dossier && dossier.status === 'betaald' ? 'Dossier afgesloten na betaling.' : 'Dossier afgesloten zonder betaling.';
+
+    sb.from('debtors').update({
+      status: 'afgesloten',
+      closed_at: new Date().toISOString(),
+      next_action_date: null
+    }).eq('id', id).then(function(res) {
+      if (res.error) { showToast('Fout: ' + res.error.message, 'error'); return; }
+      sb.from('debtor_activity_log').insert([{
+        debtor_id: id,
+        action: 'close',
+        description: reason,
+        user_id: currentUserId,
+        user_name: currentUserName
+      }]).then(function(logRes) {
+        if (logRes.error) console.error('Activity log error:', logRes.error);
+        showToast('🔒 Dossier afgesloten');
+        loadDossiers();
+        loadDetail(id);
+      });
+    });
+  }
+
+  function deleteDossier(id, dossierNr) {
+    // Use custom confirm since browser confirm() may be blocked in iframes
+    showDeleteConfirm(id, dossierNr);
+  }
+
+  function doDeleteDossier(id, dossierNr) {
+    sb.from('debtors').delete().eq('id', id).then(function(res) {
+      if (res.error) { showToast('Fout: ' + res.error.message, 'error'); return; }
+      showToast('🗑️ Dossier ' + dossierNr + ' verwijderd');
+      closeDetail();
+      loadDossiers();
+    });
+  }
+
+  function reopenDossier(id) {
+    var dossier = allDossiers.find(function(d) { return d.id === id; });
+    var guestInfo = dossier ? dossier.guest_name : 'gast';
+
+    sb.from('debtors').update({
+      status: 'nieuw',
+      closed_at: null,
+      paid_at: null,
+      next_action_date: null
+    }).eq('id', id).then(function(res) {
+      if (res.error) { showToast('Fout: ' + res.error.message, 'error'); return; }
+      sb.from('debtor_activity_log').insert([{
+        debtor_id: id,
+        action: 'reopen',
+        description: 'Dossier van ' + guestInfo + ' heropend. Status teruggezet naar Nieuw.',
+        user_id: currentUserId,
+        user_name: currentUserName
+      }]).then(function(logRes) {
+        if (logRes.error) console.error('Activity log error:', logRes.error);
+        showToast('🔓 Dossier heropend');
+        loadDossiers();
+        loadDetail(id);
+      });
+    });
+  }
+
+  function showPostponeModal(id) {
+    postponeDossierId = id;
+    document.getElementById('modal-postpone').classList.add('active');
+  }
+
+  // Exposed globally for onclick in postpone modal buttons
+  window.doPostpone = function(days) {
+    if (!postponeDossierId) return;
+    var id = postponeDossierId;
+    var dossier = allDossiers.find(function(d) { return d.id === id; });
+    var guestInfo = dossier ? dossier.guest_name : 'gast';
+    var oldDate = dossier && dossier.next_action_date ? dossier.next_action_date : new Date().toISOString().split('T')[0];
+    var baseDate = new Date(oldDate);
+    baseDate.setDate(baseDate.getDate() + days);
+    var isoDate = baseDate.toISOString().split('T')[0];
+    var label = days === 7 ? '1 week' : days === 14 ? '2 weken' : days === 30 ? '1 maand' : days + ' dagen';
+
+    sb.from('debtors').update({
+      next_action_date: isoDate
+    }).eq('id', id).then(function(res) {
+      if (res.error) { showToast('Fout: ' + res.error.message, 'error'); return; }
+      sb.from('debtor_activity_log').insert([{
+        debtor_id: id,
+        action: 'postpone',
+        description: 'Uitstel van betaling verleend aan ' + guestInfo + ' voor ' + label + '. Originele datum: ' + fmtDate(oldDate) + '. Nieuwe deadline: ' + fmtDate(isoDate) + '.',
+        user_id: currentUserId,
+        user_name: currentUserName
+      }]).then(function(logRes) {
+        if (logRes.error) console.error('Activity log error:', logRes.error);
+        document.getElementById('modal-postpone').classList.remove('active');
+        postponeDossierId = null;
+        showToast('⏳ Uitstel van ' + label + ' verleend');
+        loadDossiers();
+        loadDetail(id);
+      });
+    });
+  };
+
+  function showDeleteConfirm(id, dossierNr) {
+    var overlay = document.getElementById('modal-delete-confirm');
+    document.getElementById('delete-confirm-text').textContent = 'Weet je zeker dat je dossier ' + dossierNr + ' permanent wilt verwijderen? Dit kan niet ongedaan worden gemaakt.';
+    overlay.classList.add('active');
+    document.getElementById('delete-confirm-yes').onclick = function() {
+      overlay.classList.remove('active');
+      doDeleteDossier(id, dossierNr);
+    };
+    document.getElementById('delete-confirm-no').onclick = function() {
+      overlay.classList.remove('active');
+    };
+  }
+
+  // ── Event delegation for detail-actions buttons ──
+  document.getElementById('detail-actions').addEventListener('click', function(e) {
+    var btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    var action = btn.getAttribute('data-action');
+    var id = btn.getAttribute('data-id');
+    if (action === 'reminder') {
+      sendReminder(id, btn.getAttribute('data-target'));
+    } else if (action === 'paid') {
+      markPaid(id);
+    } else if (action === 'close') {
+      closeDossier(id);
+    } else if (action === 'delete') {
+      deleteDossier(id, btn.getAttribute('data-nr'));
+    } else if (action === 'reopen') {
+      reopenDossier(id);
+    } else if (action === 'postpone') {
+      showPostponeModal(id);
+    }
+  });
+
+  /* ── Add note ── */
+  document.getElementById('btn-add-note').addEventListener('click', function() {
+    var content = document.getElementById('note-input').value.trim();
+    if (!content || !openDossierId) { showToast('Typ een notitie.', 'error'); return; }
+
+    var btn = document.getElementById('btn-add-note');
+    btn.disabled = true;
+
+    Promise.all([
+      sb.from('debtor_notes').insert([{
+        debtor_id: openDossierId,
+        user_id: currentUserId,
+        user_name: currentUserName,
+        content: content
+      }]),
+      sb.from('debtor_activity_log').insert([{
+        debtor_id: openDossierId,
+        action: 'note',
+        description: 'Notitie toegevoegd: "' + (content.length > 60 ? content.substring(0, 60) + '…' : content) + '"',
+        user_id: currentUserId,
+        user_name: currentUserName
+      }])
+    ]).then(function() {
+      btn.disabled = false;
+      document.getElementById('note-input').value = '';
+      showToast('✅ Notitie toegevoegd');
+      loadDetail(openDossierId);
+    });
+  });
+
+  /* ── Rapport Import ── */
+  var importModal = document.getElementById('modal-import');
+  var importData = []; // parsed rows ready to import
+  var importExistingNrs = []; // existing reservation_nr to detect duplicates
+
+  document.getElementById('btn-import-rapport').addEventListener('click', function() {
+    resetImport();
+    importModal.classList.add('active');
+  });
+  document.getElementById('close-import').addEventListener('click', function() { importModal.classList.remove('active'); });
+  document.getElementById('import-cancel').addEventListener('click', function() { importModal.classList.remove('active'); });
+
+  document.getElementById('import-dropzone').addEventListener('click', function() {
+    document.getElementById('import-file').click();
+  });
+  document.getElementById('import-browse').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('import-file').click();
+  });
+
+  // Drag & drop
+  var dropzone = document.getElementById('import-dropzone');
+  dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.style.borderColor = 'var(--sanadome-blue)'; dropzone.style.background = 'var(--sanadome-blue-pale)'; });
+  dropzone.addEventListener('dragleave', function() { dropzone.style.borderColor = ''; dropzone.style.background = ''; });
+  dropzone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropzone.style.borderColor = ''; dropzone.style.background = '';
+    if (e.dataTransfer.files.length > 0) handleImportFile(e.dataTransfer.files[0]);
+  });
+
+  document.getElementById('import-file').addEventListener('change', function() {
+    if (this.files.length > 0) handleImportFile(this.files[0]);
+  });
+
+  document.getElementById('import-back').addEventListener('click', function() {
+    document.getElementById('import-step-preview').style.display = 'none';
+    document.getElementById('import-step-upload').style.display = '';
+    document.getElementById('import-confirm').disabled = true;
+    importData = [];
+  });
+
+  document.getElementById('import-select-all').addEventListener('change', function() {
+    var checked = this.checked;
+    document.querySelectorAll('.import-row-check').forEach(function(cb) { cb.checked = checked; });
+    updateImportCount();
+  });
+
+  function resetImport() {
+    importData = [];
+    document.getElementById('import-step-upload').style.display = '';
+    document.getElementById('import-step-preview').style.display = 'none';
+    document.getElementById('import-step-progress').style.display = 'none';
+    document.getElementById('import-step-done').style.display = 'none';
+    document.getElementById('import-footer').style.display = '';
+    document.getElementById('import-confirm').disabled = true;
+    document.getElementById('import-file').value = '';
+    document.getElementById('import-file-info').style.display = 'none';
+    dropzone.style.borderColor = ''; dropzone.style.background = '';
+  }
+
+  function parseEurAmount(val) {
+    if (!val && val !== 0) return 0;
+    // SheetJS may return a number directly, or a string like "€631,82" or "€1.234,56"
+    if (typeof val === 'number') return val;
+    var s = String(val).replace(/[€\s\u00a0]/g, '');
+    // Check if it uses Dutch formatting (comma as decimal separator)
+    // Pattern: optional dots as thousand separators, comma as decimal
+    if (/,\d{1,2}$/.test(s)) {
+      // Dutch format: remove thousand dots, replace decimal comma with dot
+      s = s.replace(/\./g, '').replace(',', '.');
+    }
+    var n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function handleImportFile(file) {
+    if (!file.name.match(/\.xlsx?$/i)) {
+      showToast('Selecteer een Excel-bestand (.xlsx of .xls)', 'error');
+      return;
+    }
+    document.getElementById('import-file-info').style.display = 'flex';
+    document.getElementById('import-file-name').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var wb = XLSX.read(e.target.result, { type: 'array' });
+        // Find "Reservations" sheet
+        var sheetName = null;
+        wb.SheetNames.forEach(function(n) {
+          if (n.toLowerCase().indexOf('reservation') !== -1) sheetName = n;
+        });
+        if (!sheetName) {
+          // Fallback: use first sheet
+          sheetName = wb.SheetNames[0];
+        }
+        var ws = wb.Sheets[sheetName];
+        var data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: false });
+        parseReportData(data);
+      } catch (err) {
+        console.error('Excel parse error:', err);
+        showToast('Fout bij het lezen van het bestand: ' + err.message, 'error');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function parseReportData(rows) {
+    // Find "Positive balance" section
+    var startIdx = -1;
+    var headerIdx = -1;
+    for (var i = 0; i < rows.length; i++) {
+      var firstCell = String(rows[i][0] || '').trim().toLowerCase();
+      if (firstCell === 'positive balance') {
+        // Next row should be the header
+        headerIdx = i + 1;
+        startIdx = i + 2;
+        break;
+      }
+    }
+
+    if (startIdx === -1) {
+      showToast('Sectie "Positive balance" niet gevonden in het rapport.', 'error');
+      return;
+    }
+
+    // Map header columns
+    var headers = rows[headerIdx].map(function(h) { return String(h).trim().toLowerCase(); });
+    var colMap = {};
+    headers.forEach(function(h, idx) {
+      if (h === 'number') colMap.number = idx;
+      if (h === 'last name') colMap.lastName = idx;
+      if (h === 'first name') colMap.firstName = idx;
+      if (h === 'email') colMap.email = idx;
+      if (h === 'telephone') colMap.telephone = idx;
+      if (h === 'address') colMap.address = idx;
+      if (h === 'arrival') colMap.arrival = idx;
+      if (h === 'departure') colMap.departure = idx;
+      if (h === 'bills') colMap.bills = idx;
+    });
+
+    // Find the balance column — it's the last € column, typically "Balance of companions" or similar
+    // We look for columns with € values in the data rows
+    // The relevant balance is the LAST financial column with a non-zero value
+    // Based on the report structure, the balance column is the one AFTER "Balance of companions" header
+    // Let's find it by looking at header names related to balance
+    headers.forEach(function(h, idx) {
+      if (h === 'balance of companions') colMap.balance = idx;
+    });
+    // Fallback: look for any column with "balance" in name
+    if (colMap.balance === undefined) {
+      headers.forEach(function(h, idx) {
+        if (h.indexOf('balance') !== -1) colMap.balance = idx;
+      });
+    }
+
+    // Parse data rows until "Total" or empty section
+    var guests = [];
+    for (var r = startIdx; r < rows.length; r++) {
+      var row = rows[r];
+      var first = String(row[0] || '').trim().toLowerCase();
+      if (first === 'total' || first === '' || first === 'zero balance' || first === 'negative balance') break;
+
+      var balance = parseEurAmount(row[colMap.balance]);
+      if (balance <= 0) continue; // Only positive balances
+
+      var lastName = String(row[colMap.lastName] || '').trim();
+      var firstName = String(row[colMap.firstName] || '').trim();
+      var fullName = ((firstName ? firstName + ' ' : '') + lastName).trim();
+      var email = String(row[colMap.email] || '').trim();
+      var phone = String(row[colMap.telephone] || '').trim();
+      var address = String(row[colMap.address] || '').trim();
+      var reservationNr = String(row[colMap.number] || '').trim();
+      var arrival = String(row[colMap.arrival] || '').trim();
+      var departure = String(row[colMap.departure] || '').trim();
+      var bills = String(row[colMap.bills] || '').trim();
+
+      guests.push({
+        reservation_nr: reservationNr,
+        guest_name: fullName,
+        guest_email: email,
+        guest_phone: phone,
+        guest_address: address,
+        amount: balance,
+        arrival: arrival,
+        departure: departure,
+        bills: bills,
+        selected: true
+      });
+    }
+
+    if (guests.length === 0) {
+      showToast('Geen gasten met een positief openstaand bedrag gevonden.', 'error');
+      return;
+    }
+
+    importData = guests;
+
+    // Check for existing dossiers with same reservation_nr
+    var resNrs = guests.map(function(g) { return g.reservation_nr; });
+    sb.from('debtors').select('reservation_nr').in('reservation_nr', resNrs).then(function(res) {
+      var existing = {};
+      if (!res.error && res.data) {
+        res.data.forEach(function(d) { existing[d.reservation_nr] = true; });
+      }
+      importExistingNrs = existing;
+      renderImportPreview();
+    });
+  }
+
+  function renderImportPreview() {
+    var tbody = document.getElementById('import-preview-body');
+    var dupCount = 0;
+    tbody.innerHTML = importData.map(function(g, i) {
+      var isDup = importExistingNrs[g.reservation_nr];
+      if (isDup) { dupCount++; g.selected = false; }
+      var rowStyle = isDup ? 'background:#fff7ed;' : '';
+      return '<tr style="' + rowStyle + '">' +
+        '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid #f1f5f9;">' +
+          '<input type="checkbox" class="import-row-check" data-idx="' + i + '"' + (g.selected ? ' checked' : '') + (isDup ? ' title="Al een dossier aanwezig"' : '') + '>' +
+        '</td>' +
+        '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid #f1f5f9;font-weight:600;">' + esc(g.reservation_nr) + '</td>' +
+        '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid #f1f5f9;">' + esc(g.guest_name) + '</td>' +
+        '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid #f1f5f9;font-size:0.78rem;">' + esc(g.guest_email) + '</td>' +
+        '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid #f1f5f9;font-size:0.78rem;">' + esc(g.guest_phone) + '</td>' +
+        '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid #f1f5f9;text-align:right;font-weight:700;color:#dc2626;">' + fmt(g.amount) + '</td>' +
+        '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid #f1f5f9;">' +
+          (isDup ? '<span style="font-size:0.72rem;color:#9a3412;background:#fff7ed;padding:0.15rem 0.5rem;border-radius:999px;border:1px solid #fed7aa;">⚠️ Bestaat al</span>' :
+                   '<span style="font-size:0.72rem;color:#16a34a;background:#f0fdf4;padding:0.15rem 0.5rem;border-radius:999px;border:1px solid #bbf7d0;">✅ Nieuw</span>') +
+        '</td>' +
+      '</tr>';
+    }).join('');
+
+    // Show duplicates info
+    if (dupCount > 0) {
+      document.getElementById('import-duplicates-info').style.display = 'block';
+      document.getElementById('import-duplicates-info').innerHTML = '⚠️ <strong>' + dupCount + ' gast' + (dupCount > 1 ? 'en' : '') + '</strong> ha' + (dupCount > 1 ? 'dden' : 'd') + ' al een dossier en ' + (dupCount > 1 ? 'zijn' : 'is') + ' uitgevinkt. Je kunt ze alsnog selecteren om een nieuw dossier aan te maken.';
+    } else {
+      document.getElementById('import-duplicates-info').style.display = 'none';
+    }
+
+    document.getElementById('import-step-upload').style.display = 'none';
+    document.getElementById('import-step-preview').style.display = '';
+
+    // Attach checkbox listeners
+    document.querySelectorAll('.import-row-check').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        importData[parseInt(this.getAttribute('data-idx'))].selected = this.checked;
+        updateImportCount();
+      });
+    });
+
+    updateImportCount();
+  }
+
+  function updateImportCount() {
+    var selected = importData.filter(function(g) { return g.selected; });
+    var totalAmount = selected.reduce(function(sum, g) { return sum + g.amount; }, 0);
+    document.getElementById('import-preview-subtitle').textContent = selected.length + ' van ' + importData.length + ' geselecteerd · Totaal: ' + fmt(totalAmount);
+    document.getElementById('import-confirm').disabled = selected.length === 0;
+    document.getElementById('import-confirm').textContent = selected.length === 0 ? 'Selecteer dossiers' : 'Importeer ' + selected.length + ' dossier' + (selected.length > 1 ? 's' : '');
+  }
+
+  // Confirm import
+  document.getElementById('import-confirm').addEventListener('click', function() {
+    var selected = importData.filter(function(g) { return g.selected; });
+    if (selected.length === 0) return;
+
+    document.getElementById('import-step-preview').style.display = 'none';
+    document.getElementById('import-step-progress').style.display = '';
+    document.getElementById('import-footer').style.display = 'none';
+
+    var total = selected.length;
+    var done = 0;
+    var created = 0;
+    var today = new Date().toISOString().split('T')[0];
+
+    function processNext() {
+      if (done >= total) {
+        // Done!
+        document.getElementById('import-step-progress').style.display = 'none';
+        document.getElementById('import-step-done').style.display = '';
+        document.getElementById('import-done-text').textContent = created + ' dossier' + (created > 1 ? 's' : '') + ' succesvol aangemaakt.';
+        loadDossiers();
+        return;
+      }
+
+      var g = selected[done];
+      var dossierNr = generateDossierNr();
+
+      var record = {
+        dossier_nr: dossierNr,
+        guest_name: g.guest_name,
+        guest_email: g.guest_email || null,
+        guest_phone: g.guest_phone || null,
+        guest_address: g.guest_address || null,
+        reservation_nr: g.reservation_nr,
+        amount: g.amount,
+        description: (g.bills ? 'Factuur: ' + g.bills + '. ' : '') + (g.arrival && g.departure ? 'Verblijf: ' + g.arrival + ' t/m ' + g.departure + '.' : ''),
+        invoice_date: today,
+        status: 'nieuw',
+        next_action_date: null,
+        created_by: currentUserId
+      };
+
+      sb.from('debtors').insert([record]).select().then(function(res) {
+        if (res.error) {
+          console.error('Import error for ' + g.reservation_nr + ':', res.error);
+          done++;
+          updateProgress();
+          processNext();
+          return;
+        }
+        var newRec = res.data[0];
+        created++;
+        // Log activity
+        sb.from('debtor_activity_log').insert([{
+          debtor_id: newRec.id,
+          action: 'create',
+          description: 'Dossier aangemaakt via rapport-import. Gast: ' + g.guest_name + ', Bedrag: ' + fmt(g.amount) + ', Reservering: ' + g.reservation_nr + '.',
+          user_id: currentUserId,
+          user_name: currentUserName
+        }]).then(function() {
+          done++;
+          updateProgress();
+          processNext();
+        });
+      });
+    }
+
+    function updateProgress() {
+      document.getElementById('import-progress-text').textContent = done + ' van ' + total + ' verwerkt';
+      document.getElementById('import-progress-bar').style.width = Math.round((done / total) * 100) + '%';
+    }
+
+    processNext();
+  });
+
+  /* ── Auth Check ── */
+  sb.auth.getSession().then(function(res) {
+    if (!res.data.session) { window.location.href = 'index.html'; return; }
+    return sb.auth.getUser();
+  }).then(function(res) {
+    if (!res || !res.data.user) { window.location.href = 'index.html'; return; }
+    var user = res.data.user;
+    currentUserId = user.id;
+    var meta = user.user_metadata || {};
+    var firstName = meta.first_name || '';
+    var lastName = meta.last_name || '';
+    currentUserName = (firstName + ' ' + lastName).trim() || meta.full_name || user.email;
+    var role = meta.role || 'Medewerker';
+
+    document.getElementById('user-name').textContent = currentUserName;
+    document.getElementById('user-role-label').textContent = role;
+    var ini = currentUserName.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+    var avatarUrl = meta.avatar_url;
+    if (avatarUrl) {
+      document.getElementById('user-avatar').innerHTML = '<img src="' + avatarUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+    } else {
+      document.getElementById('user-avatar').textContent = ini;
+    }
+
+    // Permissions
+    var ALL_PERMS = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','dashboard.rooster','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','nieuws.bekijken','nieuws.aanmaken','nieuws.bewerken','nieuws.verwijderen','rechten.bekijken','rechten.bewerken','debiteuren.bekijken','debiteuren.beheren','debiteuren.importeren'];
+    function getDefaultPerms(r) {
+      var p = {};
+      ALL_PERMS.forEach(function(k) {
+        if (r === 'Manager') p[k] = true;
+        else if (r === 'Assistent Manager') p[k] = k !== 'rechten.bewerken' && k !== 'medewerkers.verwijderen';
+        else if (r === 'Senior Medewerker') p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken' || k === 'debiteuren.bekijken';
+        else p[k] = k.startsWith('dashboard.') || k.startsWith('nav.');
+      });
+      return p;
+    }
+
+    // Load role permissions, then user overrides, then apply
+    sb.from('role_permissions').select('permission, granted').eq('role', role).then(function(pr) {
+      var perms = {};
+      if (!pr.error && pr.data && pr.data.length > 0) {
+        pr.data.forEach(function(r) { perms[r.permission] = r.granted; });
+      } else {
+        perms = getDefaultPerms(role);
+      }
+      // Load user-specific overrides
+      return sb.from('user_permissions').select('permission, granted').eq('user_id', user.id).then(function(upr) {
+        if (!upr.error && upr.data && upr.data.length > 0) {
+          upr.data.forEach(function(r) { perms[r.permission] = r.granted; });
+        }
+        return perms;
+      }).catch(function() { return perms; });
+    }).then(function(perms) {
+      if (perms['debiteuren.bekijken'] === false) {
+        window.location.href = 'dashboard.html'; return;
+      }
+      document.querySelectorAll('[data-permission]').forEach(function(el) {
+        if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
+      });
+      // Hide manage buttons if no beheren permission
+      if (perms['debiteuren.beheren'] === false) {
+        var newBtn = document.getElementById('btn-new-dossier');
+        if (newBtn) newBtn.style.display = 'none';
+        var detailActions = document.getElementById('detail-actions');
+        if (detailActions) detailActions.style.display = 'none';
+      }
+      // Hide import button if no importeren permission
+      if (perms['debiteuren.importeren'] === false) {
+        var importBtn = document.getElementById('btn-import-rapport');
+        if (importBtn) importBtn.style.display = 'none';
+      }
+    }).catch(function() {});
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', function() {
+      sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
+    });
+
+    // ── Postcode lookup via PDOK Locatieserver (gratis overheids-API) ──
+    var pcTimeout = null;
+    function lookupAddress() {
+      var pc = (document.getElementById('f-postcode').value || '').replace(/\s/g, '').toUpperCase();
+      var nr = (document.getElementById('f-huisnummer').value || '').trim().replace(/[^0-9]/g, '');
+      var statusEl = document.getElementById('postcode-status');
+      document.getElementById('f-straat').value = '';
+      document.getElementById('f-plaats').value = '';
+      document.getElementById('f-provincie').value = '';
+      if (!/^[1-9][0-9]{3}[A-Z]{2}$/.test(pc) || !nr) {
+        statusEl.innerHTML = pc.length >= 6 && !/^[1-9][0-9]{3}[A-Z]{2}$/.test(pc)
+          ? '<span style="color:#dc2626;">⚠ Ongeldige postcode</span>' : '';
+        return;
+      }
+      statusEl.innerHTML = '<span style="color:var(--sanadome-blue);">🔍 Opzoeken…</span>';
+      fetch('https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=' + encodeURIComponent(pc + ' ' + nr) + '&fq=type:adres&rows=1')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var docs = data && data.response && data.response.docs;
+        if (docs && docs.length > 0 && docs[0].postcode && docs[0].postcode.replace(/\s/g, '') === pc) {
+          var d = docs[0];
+          document.getElementById('f-straat').value = d.straatnaam || '';
+          document.getElementById('f-plaats').value = d.woonplaatsnaam || '';
+          document.getElementById('f-provincie').value = d.provincienaam || '';
+          statusEl.innerHTML = '<span style="color:#16a34a;">✅ ' + (d.straatnaam || '') + ' ' + nr + ', ' + (d.woonplaatsnaam || '') + '</span>';
+        } else {
+          statusEl.innerHTML = '<span style="color:#ea580c;">⚠ Adres niet gevonden – controleer postcode en huisnummer</span>';
+        }
+      })
+      .catch(function() {
+        statusEl.innerHTML = '<span style="color:#ea580c;">⚠ Kon adres niet opzoeken – controleer je internetverbinding</span>';
+      });
+    }
+    document.getElementById('f-postcode').addEventListener('input', function() {
+      clearTimeout(pcTimeout);
+      pcTimeout = setTimeout(lookupAddress, 500);
+    });
+    document.getElementById('f-huisnummer').addEventListener('input', function() {
+      clearTimeout(pcTimeout);
+      pcTimeout = setTimeout(lookupAddress, 500);
+    });
+
+    // Toggle manual address entry
+    var manualMode = false;
+    document.getElementById('toggle-manual-address').addEventListener('click', function() {
+      manualMode = !manualMode;
+      var fields = ['f-straat', 'f-plaats', 'f-provincie'];
+      if (manualMode) {
+        this.textContent = '🔍 Automatisch opzoeken';
+        fields.forEach(function(fid) {
+          var el = document.getElementById(fid);
+          el.removeAttribute('readonly');
+          el.style.background = '';
+          el.placeholder = '';
+        });
+      } else {
+        this.textContent = '✏️ Handmatig invullen';
+        fields.forEach(function(fid) {
+          var el = document.getElementById(fid);
+          el.setAttribute('readonly', true);
+          el.style.background = '#f8fafc';
+          el.placeholder = 'Wordt automatisch ingevuld';
+        });
+        lookupAddress();
+      }
+    });
+
+    // Load data
+    loadDossiers();
+  }).catch(function() {
+    window.location.href = 'index.html';
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2663 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding · MijnSanadome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══ Design tokens (zelfde als dashboard) ═══ */
+    :root {
+      --sanadome-blue: #3b82c4;
+      --sanadome-blue-light: #60a5e8;
+      --sanadome-blue-pale: #eff6ff;
+      --sanadome-blue-mist: #f0f7ff;
+      --sanadome-text: #0f172a;
+      --sanadome-text-soft: #64748b;
+      --sanadome-border: #e2e8f0;
+      --white: #ffffff;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --sidebar-w: 270px;
+      --topbar-h: 68px;
+      --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-card-hover: 0 8px 30px rgba(59,130,196,0.10), 0 2px 8px rgba(0,0,0,0.04);
+      --gradient-primary: linear-gradient(135deg, #3b82c4 0%, #60a5e8 100%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      min-height: 100vh; background: #f1f5f9;
+      color: var(--sanadome-text); font-size: 15px; line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app-layout { display: flex; min-height: 100vh; }
+
+    /* ═══ Sidebar ═══ */
+    .app-sidebar {
+      width: var(--sidebar-w); min-width: var(--sidebar-w);
+      background: var(--white); border-right: 1px solid var(--sanadome-border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 1.25rem 1.5rem; text-decoration: none; color: var(--sanadome-text);
+      border-bottom: 1px solid var(--sanadome-border);
+    }
+    .sidebar-logo svg { width: 36px; height: 36px; flex-shrink: 0; }
+    .sidebar-logo-text {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 1.2rem; letter-spacing: -0.02em; color: var(--sanadome-text);
+    }
+    .sidebar-logo-text span { color: var(--sanadome-blue); }
+    .sidebar-nav { flex: 1; padding: 1rem 0.75rem; overflow-y: auto; }
+    .nav-label {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--sanadome-text-soft);
+      padding: 0 0.75rem; margin-bottom: 0.5rem; margin-top: 0.75rem;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.6rem 0.75rem; border-radius: var(--radius-sm);
+      color: var(--sanadome-text-soft); text-decoration: none;
+      font-weight: 500; font-size: 0.9rem; margin-bottom: 2px;
+      transition: all 0.15s ease; position: relative;
+    }
+    .nav-item:hover { background: var(--sanadome-blue-mist); color: var(--sanadome-text); }
+    .nav-item.active { background: var(--sanadome-blue-pale); color: var(--sanadome-blue); }
+    .nav-item.active::before {
+      content: ''; position: absolute; left: -0.75rem; top: 50%;
+      transform: translateY(-50%); width: 3px; height: 24px;
+      border-radius: 0 3px 3px 0; background: var(--sanadome-blue);
+    }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: 0.7; }
+    .nav-item.active svg { opacity: 1; }
+
+    /* ═══ Main area ═══ */
+    .app-main {
+      flex: 1; margin-left: var(--sidebar-w);
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    .topbar {
+      height: var(--topbar-h); background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226,232,240,0.6);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; gap: 1rem; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-search-wrap { position: relative; flex: 1; max-width: 380px; }
+    .topbar-search {
+      width: 100%; padding: 0.55rem 1rem 0.55rem 2.75rem;
+      font-family: inherit; font-size: 0.875rem; color: var(--sanadome-text);
+      background: #f1f5f9; border: 1.5px solid transparent;
+      border-radius: var(--radius-sm); outline: none; transition: all 0.2s ease;
+    }
+    .topbar-search::placeholder { color: var(--sanadome-text-soft); }
+    .topbar-search:focus {
+      background: var(--white); border-color: var(--sanadome-blue);
+      box-shadow: 0 0 0 3px rgba(59,130,196,0.1);
+    }
+    .topbar-search-wrap::before {
+      content: ''; position: absolute; left: 0.75rem; top: 50%;
+      transform: translateY(-50%); width: 18px; height: 18px;
+      border: 2px solid var(--sanadome-text-soft); border-radius: 50%; opacity: 0.5;
+    }
+    .topbar-search-wrap::after {
+      content: ''; position: absolute; left: 1.45rem; top: 58%;
+      width: 6px; height: 2px; background: var(--sanadome-text-soft);
+      transform: rotate(45deg); opacity: 0.5;
+    }
+    .topbar-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .topbar-icon-btn {
+      width: 40px; height: 40px; border: none; background: transparent;
+      border-radius: var(--radius-sm); color: var(--sanadome-text-soft);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease; position: relative;
+    }
+    .topbar-icon-btn:hover { background: var(--sanadome-blue-mist); color: var(--sanadome-blue); }
+    .topbar-icon-btn svg { width: 20px; height: 20px; }
+    .topbar-user {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.35rem 0.5rem 0.35rem 0.75rem; border-radius: var(--radius-sm);
+      margin-left: 0.5rem; border: 1px solid transparent; transition: background 0.15s;
+    }
+    .topbar-user:hover { background: var(--sanadome-blue-mist); }
+    .topbar-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--gradient-primary); color: var(--white);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(59,130,196,0.25); overflow: hidden;
+    }
+    .topbar-user-info { text-align: left; }
+    .topbar-user-name {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600;
+      font-size: 0.9rem; color: var(--sanadome-text); display: block; line-height: 1.3;
+    }
+    .topbar-user-role { font-size: 0.75rem; color: var(--sanadome-text-soft); display: block; }
+    .btn-logout {
+      padding: 0.45rem 0.85rem; font-size: 0.8rem; font-family: inherit;
+      font-weight: 600; color: var(--white); background: var(--gradient-primary);
+      border: none; border-radius: var(--radius-sm); cursor: pointer;
+      margin-left: 0.5rem; transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(59,130,196,0.2);
+    }
+    .btn-logout:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ═══ Onboarding Content ═══ */
+    .ob-content { flex: 1; padding: 2rem; }
+
+    /* Hero / header */
+    .ob-hero {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      padding: 1.75rem 2rem; margin-bottom: 1.75rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .ob-hero-left { display: flex; align-items: center; gap: 1rem; }
+    .ob-hero-icon {
+      width: 52px; height: 52px; border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .ob-hero-text h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 1.35rem; letter-spacing: -0.02em; line-height: 1.3;
+    }
+    .ob-hero-text p { font-size: 0.85rem; color: var(--sanadome-text-soft); margin-top: 0.15rem; }
+    .ob-hero-right { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .ob-status-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+    }
+    .ob-status-badge.actief { background: #d1fae5; color: #065f46; }
+    .ob-status-badge.afgerond { background: #dbeafe; color: #1e40af; }
+    .ob-status-badge.gepauzeerd { background: #fef3c7; color: #92400e; }
+    .ob-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      animation: ob-pulse 2s infinite;
+    }
+    .ob-status-badge.actief .ob-status-dot { background: #10b981; }
+    .ob-status-badge.afgerond .ob-status-dot { background: #3b82f6; }
+    .ob-status-badge.gepauzeerd .ob-status-dot { background: #f59e0b; }
+    @keyframes ob-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* Progress bar */
+    .ob-progress-wrap {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.75rem;
+    }
+    .ob-progress-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .ob-progress-label {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .ob-progress-pct {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 1.1rem; color: var(--sanadome-blue);
+    }
+    .ob-progress-bar {
+      height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden;
+    }
+    .ob-progress-fill {
+      height: 100%; border-radius: 999px;
+      background: var(--gradient-primary);
+      transition: width 0.6s ease;
+    }
+    .ob-progress-meta {
+      display: flex; justify-content: space-between; margin-top: 0.5rem;
+      font-size: 0.75rem; color: var(--sanadome-text-soft);
+    }
+
+    /* Week tabs */
+    .ob-week-tabs {
+      display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+    }
+    .ob-week-tab {
+      padding: 0.55rem 1.1rem; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      border: 1.5px solid var(--sanadome-border); background: var(--white);
+      color: var(--sanadome-text-soft); cursor: pointer;
+      transition: all 0.2s ease; position: relative;
+    }
+    .ob-week-tab:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+    .ob-week-tab.active {
+      background: var(--sanadome-blue); color: var(--white);
+      border-color: var(--sanadome-blue); box-shadow: 0 2px 8px rgba(59,130,196,0.25);
+    }
+    .ob-week-tab .ob-tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 20px; border-radius: 999px;
+      font-size: 0.65rem; font-weight: 700; margin-left: 0.4rem;
+      background: rgba(0,0,0,0.08); color: inherit;
+    }
+    .ob-week-tab.active .ob-tab-count { background: rgba(255,255,255,0.25); }
+    .ob-week-tab.completed { border-color: #10b981; }
+    .ob-week-tab.completed::after {
+      content: '✓'; position: absolute; top: -6px; right: -6px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #10b981; color: white; font-size: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Current week indicator */
+    .ob-current-label {
+      font-size: 0.7rem; font-weight: 600; color: var(--sanadome-blue);
+      background: var(--sanadome-blue-pale); padding: 0.15rem 0.5rem;
+      border-radius: 999px; margin-left: 0.35rem;
+    }
+
+    /* Task list */
+    .ob-task-section {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      overflow: hidden; margin-bottom: 1.25rem;
+    }
+    .ob-task-section-header {
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--sanadome-border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(180deg, rgba(241,245,249,0.4) 0%, transparent 100%);
+    }
+    .ob-task-section-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .ob-task-section-meta {
+      font-size: 0.75rem; color: var(--sanadome-text-soft); font-weight: 500;
+    }
+
+    .ob-task-list { list-style: none; }
+    .ob-task-item {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      padding: 0.85rem 1.25rem; border-bottom: 1px solid rgba(226,232,240,0.5);
+      transition: background 0.15s ease;
+    }
+    .ob-task-item:last-child { border-bottom: none; }
+    .ob-task-item:hover { background: rgba(241,245,249,0.5); }
+    .ob-task-item.is-done { background: #f0fdf4; }
+
+    .ob-task-check {
+      width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+      border: 2px solid var(--sanadome-border); background: var(--white);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; margin-top: 1px; font-size: 0.7rem; color: transparent;
+    }
+    .ob-task-check:hover { border-color: var(--sanadome-blue); }
+    .ob-task-check.checked {
+      background: #10b981; border-color: #10b981; color: white; cursor: pointer;
+    }
+    .ob-task-check.checked:hover {
+      background: #ef4444; border-color: #ef4444;
+    }
+    .ob-task-check.disabled {
+      cursor: default; opacity: 0.5;
+    }
+    .ob-task-check.disabled:hover { border-color: var(--sanadome-border); }
+
+    /* Traject actie-knoppen */
+    .ob-traject-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ob-btn-end-traject {
+      padding: 0.45rem 1rem; font-family: inherit; font-size: 0.78rem;
+      font-weight: 600; border: 1.5px solid #ef4444; background: var(--white);
+      color: #ef4444; border-radius: var(--radius-sm); cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ob-btn-end-traject:hover { background: #ef4444; color: white; }
+    .ob-btn-reopen-traject {
+      padding: 0.45rem 1rem; font-family: inherit; font-size: 0.78rem;
+      font-weight: 600; border: 1.5px solid #10b981; background: var(--white);
+      color: #10b981; border-radius: var(--radius-sm); cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ob-btn-reopen-traject:hover { background: #10b981; color: white; }
+    .ob-btn-delete-traject {
+      padding: 0.45rem 1rem; font-family: inherit; font-size: 0.78rem;
+      font-weight: 600; border: 1.5px solid #dc2626; background: var(--white);
+      color: #dc2626; border-radius: var(--radius-sm); cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ob-btn-delete-traject:hover { background: #dc2626; color: white; }
+
+    /* Toast notificatie */
+    .ob-toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+      padding: 0.75rem 1.25rem; border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600;
+      color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .ob-toast.show { opacity: 1; transform: translateY(0); }
+    .ob-toast.success { background: #10b981; }
+    .ob-toast.error { background: #ef4444; }
+
+    /* Taak-notities lijst */
+    .ob-task-notes-list { margin-top: 0.35rem; }
+    .ob-task-note-entry {
+      font-size: 0.72rem; color: var(--sanadome-text-soft); padding: 0.2rem 0;
+      line-height: 1.4; font-style: italic;
+    }
+    .ob-task-note-entry strong { font-style: normal; color: var(--sanadome-text); font-size: 0.68rem; }
+
+    .ob-task-body { flex: 1; min-width: 0; }
+    .ob-task-title {
+      font-weight: 600; font-size: 0.85rem; color: var(--sanadome-text);
+      line-height: 1.4;
+    }
+    .ob-task-item.is-done .ob-task-title {
+      text-decoration: line-through; color: var(--sanadome-text-soft);
+    }
+    .ob-task-desc {
+      font-size: 0.78rem; color: var(--sanadome-text-soft); margin-top: 0.2rem;
+      line-height: 1.45;
+    }
+    .ob-task-tags { display: flex; gap: 0.35rem; margin-top: 0.4rem; flex-wrap: wrap; }
+    .ob-task-tag {
+      font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.45rem;
+      border-radius: 999px; white-space: nowrap;
+    }
+    .ob-task-tag.dept-fo { background: #dbeafe; color: #1e40af; }
+    .ob-task-tag.dept-res { background: #fef3c7; color: #92400e; }
+    .ob-task-tag.dept-alg { background: #ede9fe; color: #5b21b6; }
+
+    .ob-task-done-info {
+      font-size: 0.7rem; color: #065f46; margin-top: 0.35rem;
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .ob-task-done-info svg { width: 12px; height: 12px; }
+
+    .ob-task-actions { display: flex; gap: 0.35rem; flex-shrink: 0; align-items: flex-start; }
+    .ob-task-btn {
+      padding: 0.3rem 0.55rem; font-size: 0.72rem; font-weight: 600;
+      font-family: inherit; border: 1px solid var(--sanadome-border);
+      background: var(--white); border-radius: 6px; cursor: pointer;
+      color: var(--sanadome-text-soft); transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .ob-task-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+
+    /* Notities sectie */
+    .ob-notes-section {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      overflow: hidden; margin-bottom: 1.25rem;
+    }
+    .ob-notes-header {
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--sanadome-border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(180deg, rgba(241,245,249,0.4) 0%, transparent 100%);
+    }
+    .ob-notes-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.9rem;
+    }
+    .ob-notes-body { padding: 1rem 1.25rem; }
+    .ob-note-item {
+      padding: 0.65rem 0; border-bottom: 1px solid rgba(226,232,240,0.4);
+      display: flex; gap: 0.65rem; align-items: flex-start;
+    }
+    .ob-note-item:last-child { border-bottom: none; }
+    .ob-note-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--gradient-primary); color: var(--white);
+      font-size: 0.65rem; font-weight: 600; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .ob-note-content { flex: 1; }
+    .ob-note-meta {
+      font-size: 0.72rem; color: var(--sanadome-text-soft);
+      margin-bottom: 0.15rem;
+    }
+    .ob-note-meta strong { color: var(--sanadome-text); }
+    .ob-note-text { font-size: 0.82rem; color: var(--sanadome-text); line-height: 1.5; }
+    .ob-note-form {
+      display: flex; gap: 0.5rem; margin-top: 0.75rem;
+    }
+    .ob-note-input {
+      flex: 1; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.82rem;
+      border: 1.5px solid var(--sanadome-border); border-radius: var(--radius-sm);
+      outline: none; transition: border-color 0.2s;
+    }
+    .ob-note-input:focus { border-color: var(--sanadome-blue); }
+    .ob-note-submit {
+      padding: 0.5rem 1rem; font-family: inherit; font-size: 0.82rem;
+      font-weight: 600; color: var(--white); background: var(--gradient-primary);
+      border: none; border-radius: var(--radius-sm); cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .ob-note-submit:hover { opacity: 0.9; }
+
+    /* Empty / loading states */
+    .ob-loading { text-align: center; padding: 3rem; color: var(--sanadome-text-soft); font-size: 0.9rem; }
+
+    /* Notitie modal */
+    .ob-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 200; align-items: center; justify-content: center;
+    }
+    .ob-modal-overlay.open { display: flex; }
+    .ob-modal {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow-card); width: 100%; max-width: 440px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .ob-modal-header {
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--sanadome-border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ob-modal-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.95rem;
+    }
+    .ob-modal-close {
+      background: none; border: none; font-size: 1.2rem; cursor: pointer;
+      color: var(--sanadome-text-soft); padding: 0.2rem 0.4rem; border-radius: 6px;
+    }
+    .ob-modal-close:hover { background: #f1f5f9; }
+    .ob-modal-body { padding: 1.25rem; }
+    .ob-modal-body label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      color: var(--sanadome-text); margin-bottom: 0.35rem; margin-top: 0.75rem;
+    }
+    .ob-modal-body label:first-child { margin-top: 0; }
+    .ob-modal-body textarea {
+      width: 100%; padding: 0.55rem 0.75rem; font-family: inherit; font-size: 0.82rem;
+      border: 1.5px solid var(--sanadome-border); border-radius: var(--radius-sm);
+      outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s;
+    }
+    .ob-modal-body textarea:focus { border-color: var(--sanadome-blue); }
+    .ob-modal-actions {
+      padding: 0.75rem 1.25rem; border-top: 1px solid var(--sanadome-border);
+      display: flex; justify-content: flex-end; gap: 0.5rem;
+    }
+    .ob-btn-cancel {
+      padding: 0.45rem 0.85rem; font-family: inherit; font-size: 0.82rem;
+      font-weight: 600; background: var(--white); border: 1.5px solid var(--sanadome-border);
+      border-radius: var(--radius-sm); cursor: pointer; color: var(--sanadome-text);
+    }
+    .ob-btn-cancel:hover { border-color: var(--sanadome-blue); }
+    .ob-btn-save {
+      padding: 0.45rem 0.85rem; font-family: inherit; font-size: 0.82rem;
+      font-weight: 600; color: var(--white); background: var(--gradient-primary);
+      border: none; border-radius: var(--radius-sm); cursor: pointer;
+    }
+    .ob-btn-save:hover { opacity: 0.9; }
+
+    /* Beheer: traject overzicht */
+    .ob-btn-new-traject {
+      padding: 0.5rem 1rem; font-family: inherit; font-size: 0.82rem;
+      font-weight: 600; color: var(--white); background: var(--gradient-primary);
+      border: none; border-radius: var(--radius-sm); cursor: pointer;
+      white-space: nowrap; text-decoration: none;
+    }
+    .ob-btn-new-traject:hover { opacity: 0.9; }
+
+    /* Filter knoppen */
+    .ob-filter-btn {
+      padding: 0.35rem 0.85rem; font-family: inherit; font-size: 0.78rem;
+      font-weight: 600; border: 1.5px solid var(--sanadome-border);
+      background: var(--white); border-radius: 999px; cursor: pointer;
+      color: var(--sanadome-text-soft); transition: all 0.15s ease;
+    }
+    .ob-filter-btn:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+    .ob-filter-btn.active { background: var(--sanadome-blue-pale); border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+
+    /* Dashboard stat cards */
+    .ob-stat-card {
+      background: var(--white); border-radius: var(--radius-sm);
+      border: 1px solid rgba(226,232,240,0.7); padding: 1rem 1.25rem;
+      box-shadow: var(--shadow-card);
+    }
+    .ob-stat-value {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 1.5rem; color: var(--sanadome-text);
+    }
+    .ob-stat-label {
+      font-size: 0.72rem; color: var(--sanadome-text-soft); font-weight: 500;
+      margin-top: 0.15rem;
+    }
+
+    /* Traject cards */
+    .ob-traject-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .ob-traject-card {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      padding: 1.25rem; cursor: pointer; transition: all 0.2s;
+    }
+    .ob-traject-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-1px); }
+    .ob-traject-card.active-card { border-color: var(--sanadome-blue); border-width: 2px; }
+    .ob-traject-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+    .ob-traject-card-name {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .ob-traject-card-meta { font-size: 0.75rem; color: var(--sanadome-text-soft); margin-bottom: 0.5rem; }
+    .ob-traject-card-progress { margin-top: 0.5rem; }
+    .ob-traject-card-bar {
+      height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden;
+    }
+    .ob-traject-card-fill {
+      height: 100%; border-radius: 999px; background: var(--gradient-primary); transition: width 0.4s;
+    }
+    .ob-traject-card-pct {
+      font-size: 0.72rem; font-weight: 600; color: var(--sanadome-blue); margin-top: 0.25rem;
+    }
+
+    /* Empty state hero */
+    .ob-empty-hero {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      padding: 3rem 2rem; text-align: center; margin-bottom: 1.5rem;
+    }
+    .ob-empty-hero-icon {
+      width: 80px; height: 80px; margin: 0 auto 1.25rem;
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+    .ob-empty-hero h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 1.3rem; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+    }
+    .ob-empty-hero p {
+      font-size: 0.88rem; color: var(--sanadome-text-soft);
+      max-width: 450px; margin: 0 auto 1.25rem; line-height: 1.6;
+    }
+    .ob-empty-hero .ob-btn-new-traject {
+      padding: 0.65rem 1.5rem; font-size: 0.9rem;
+      border-radius: var(--radius-sm); display: inline-flex;
+      align-items: center; gap: 0.5rem;
+      box-shadow: 0 2px 8px rgba(59,130,196,0.25);
+    }
+    .ob-empty-hero .ob-btn-new-traject:hover { transform: translateY(-1px); }
+
+    /* ═══ Tab bar (Trajecten / Templates) ═══ */
+    .ob-page-tabs {
+      display: flex; gap: 0; margin-bottom: 1.25rem;
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .ob-page-tab {
+      flex: 1; padding: 0.75rem 1.25rem; font-family: inherit; font-size: 0.85rem;
+      font-weight: 600; border: none; background: var(--white);
+      color: var(--sanadome-text-soft); cursor: pointer; transition: all 0.2s;
+      border-bottom: 3px solid transparent; text-align: center;
+    }
+    .ob-page-tab:hover { background: var(--sanadome-blue-mist); color: var(--sanadome-text); }
+    .ob-page-tab.active {
+      color: var(--sanadome-blue); border-bottom-color: var(--sanadome-blue);
+      background: var(--sanadome-blue-pale);
+    }
+    .ob-page-tab + .ob-page-tab { border-left: 1px solid var(--sanadome-border); }
+
+    /* ═══ Template Management ═══ */
+    .tpl-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .tpl-card {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,0.7); box-shadow: var(--shadow-card);
+      padding: 1.25rem; transition: all 0.2s;
+    }
+    .tpl-card:hover { box-shadow: var(--shadow-card-hover); }
+    .tpl-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; }
+    .tpl-card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 0.95rem; line-height: 1.3;
+    }
+    .tpl-card-badge {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      padding: 0.2rem 0.5rem; border-radius: 999px;
+      font-size: 0.68rem; font-weight: 600; flex-shrink: 0;
+    }
+    .tpl-card-badge.actief { background: #d1fae5; color: #065f46; }
+    .tpl-card-badge.inactief { background: #fee2e2; color: #991b1b; }
+    .tpl-card-desc { font-size: 0.8rem; color: var(--sanadome-text-soft); margin-bottom: 0.75rem; line-height: 1.45; }
+    .tpl-card-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; font-size: 0.75rem; color: var(--sanadome-text-soft); }
+    .tpl-card-meta span { display: flex; align-items: center; gap: 0.25rem; }
+    .tpl-card-actions {
+      display: flex; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem;
+      border-top: 1px solid var(--sanadome-border);
+    }
+    .tpl-btn {
+      padding: 0.35rem 0.7rem; font-family: inherit; font-size: 0.75rem;
+      font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    }
+    .tpl-btn-primary {
+      background: var(--gradient-primary); color: var(--white);
+      border: none;
+    }
+    .tpl-btn-primary:hover { opacity: 0.9; }
+    .tpl-btn-secondary {
+      background: var(--white); color: var(--sanadome-text-soft);
+      border: 1px solid var(--sanadome-border);
+    }
+    .tpl-btn-secondary:hover { border-color: var(--sanadome-blue); color: var(--sanadome-blue); }
+    .tpl-btn-danger {
+      background: var(--white); color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .tpl-btn-danger:hover { background: #fef2f2; border-color: #dc2626; }
+
+    /* Template taken preview */
+    .tpl-tasks-preview {
+      margin-top: 0.75rem; padding-top: 0.75rem;
+      border-top: 1px solid var(--sanadome-border);
+    }
+    .tpl-week-group { margin-bottom: 0.5rem; }
+    .tpl-week-label {
+      font-size: 0.7rem; font-weight: 600; color: var(--sanadome-blue);
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;
+    }
+    .tpl-task-mini {
+      font-size: 0.75rem; color: var(--sanadome-text-soft);
+      padding: 0.15rem 0; padding-left: 0.75rem;
+      border-left: 2px solid var(--sanadome-border);
+    }
+
+    /* Template editor modal */
+    .tpl-form-group { margin-bottom: 0.75rem; }
+    .tpl-form-group label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      color: var(--sanadome-text); margin-bottom: 0.3rem;
+    }
+    .tpl-form-group input, .tpl-form-group select, .tpl-form-group textarea {
+      width: 100%; padding: 0.5rem 0.75rem; font-family: inherit; font-size: 0.82rem;
+      border: 1.5px solid var(--sanadome-border); border-radius: var(--radius-sm);
+      outline: none; transition: border-color 0.2s;
+    }
+    .tpl-form-group input:focus, .tpl-form-group select:focus, .tpl-form-group textarea:focus {
+      border-color: var(--sanadome-blue);
+    }
+    .tpl-form-group textarea { resize: vertical; min-height: 60px; }
+
+    /* Task editor in template */
+    .tpl-task-editor { margin-top: 1rem; }
+    .tpl-task-editor-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .tpl-task-editor-title {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .tpl-task-row {
+      display: flex; gap: 0.5rem; align-items: center;
+      padding: 0.4rem 0; border-bottom: 1px solid rgba(226,232,240,0.4);
+    }
+    .tpl-task-row:last-child { border-bottom: none; }
+    .tpl-task-row input { flex: 1; padding: 0.35rem 0.5rem; font-size: 0.78rem; }
+    .tpl-task-row select { width: 120px; padding: 0.35rem 0.5rem; font-size: 0.78rem; }
+    .tpl-task-row .tpl-task-remove {
+      background: none; border: none; color: #dc2626; cursor: pointer;
+      font-size: 1rem; padding: 0.2rem 0.4rem; border-radius: 4px;
+    }
+    .tpl-task-row .tpl-task-remove:hover { background: #fef2f2; }
+    .tpl-add-task-btn {
+      margin-top: 0.5rem; padding: 0.35rem 0.7rem; font-family: inherit;
+      font-size: 0.75rem; font-weight: 600; background: var(--sanadome-blue-pale);
+      color: var(--sanadome-blue); border: 1px dashed var(--sanadome-blue);
+      border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    }
+    .tpl-add-task-btn:hover { background: var(--sanadome-blue-mist); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-sidebar { display: none; }
+      .app-main { margin-left: 0; }
+      .ob-content { padding: 1rem; }
+      .ob-hero { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- ═══ Sidebar ═══ -->
+    <aside class="app-sidebar">
+      <a href="dashboard.html" class="sidebar-logo" aria-label="MijnSanadome">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+          <path d="M12 28V16l8 7 8-7v12h-3V19l-5 4.5-5-4.5v9H12z" fill="white"/>
+          <defs>
+            <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#4a7c9c"/><stop offset="1" stop-color="#6b9bb8"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="sidebar-logo-text">Mijn<span>Sanadome</span></span>
+      </a>
+      <nav class="sidebar-nav">
+        <div class="nav-label">Menu</div>
+        <a href="dashboard.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Dashboard
+        </a>
+        <a href="onboarding.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Onboarding
+        </a>
+        <a href="#placeholder-rooster" class="nav-item" data-permission="nav.rooster">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Mijn rooster
+        </a>
+        <a href="#placeholder-verlof" class="nav-item" data-permission="nav.verlof">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Verlof
+        </a>
+        <a href="#placeholder-documenten" class="nav-item" data-permission="nav.documenten">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Documenten
+        </a>
+        <a href="#placeholder-berichten" class="nav-item" data-permission="nav.berichten">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Berichten
+        </a>
+        <div class="nav-label">Beheer</div>
+        <a href="gebruikers.html" class="nav-item" data-permission="medewerkers.bekijken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          Medewerkers
+        </a>
+        <a href="nieuws.html" class="nav-item" data-permission="nieuws.bekijken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          Nieuwsbeheer
+        </a>
+        <a href="rechten.html" class="nav-item" data-permission="rechten.bekijken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Rechten
+        </a>
+        <a href="debiteuren.html" class="nav-item" data-permission="debiteuren.bekijken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Debiteuren
+        </a>
+        <div class="nav-label">Account</div>
+        <a href="profiel.html" class="nav-item" data-permission="nav.gegevens">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Mijn Profiel
+        </a>
+        <a href="#placeholder-hr" class="nav-item" data-permission="nav.hr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          HR & handboek
+        </a>
+      </nav>
+    </aside>
+
+    <!-- ═══ Main ═══ -->
+    <div class="app-main">
+      <header class="topbar">
+        <div class="topbar-search-wrap">
+          <input type="search" class="topbar-search" placeholder="Zoeken in MijnSanadome…" aria-label="Zoeken">
+        </div>
+        <div class="topbar-actions">
+          <button type="button" class="topbar-icon-btn" aria-label="Meldingen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <a href="profiel.html" class="topbar-user" style="text-decoration:none;color:inherit;">
+            <div class="topbar-avatar" id="user-avatar">—</div>
+            <div class="topbar-user-info">
+              <span class="topbar-user-name" id="user-name">Laden…</span>
+              <span class="topbar-user-role" id="user-role-label">Medewerker</span>
+            </div>
+          </a>
+          <button type="button" class="btn-logout" id="btn-logout">Uitloggen</button>
+        </div>
+      </header>
+
+      <main class="ob-content">
+        <!-- Loading state -->
+        <div id="ob-loading" class="ob-loading">⏳ Onboarding laden…</div>
+
+        <!-- Geen traject state (medewerker) -->
+        <div id="ob-empty-medewerker" class="ob-empty-hero" style="display:none;">
+          <div class="ob-empty-hero-icon">🎓</div>
+          <h2>Geen actief inwerktraject</h2>
+          <p>Er is momenteel geen actief inwerktraject gekoppeld aan jouw account. Neem contact op met je leidinggevende als je verwacht dat er een traject voor je klaarstaat.</p>
+        </div>
+
+        <!-- Geen traject state (beheerder) -->
+        <div id="ob-empty-beheerder" class="ob-empty-hero" style="display:none;">
+          <div class="ob-empty-hero-icon">📋</div>
+          <h2>Geen onboarding trajecten</h2>
+          <p>Er zijn momenteel geen actieve inwerktrajecten. Start een nieuw traject om een medewerker in te werken.</p>
+          <button class="ob-btn-new-traject" id="btn-new-traject-empty">➕ Nieuw traject starten</button>
+        </div>
+
+        <!-- Page tabs (Trajecten / Templates) - alleen voor beheerders -->
+        <div id="ob-page-tabs" class="ob-page-tabs" style="display:none;">
+          <button class="ob-page-tab active" data-tab="trajecten">📋 Trajecten</button>
+          <button class="ob-page-tab" data-tab="templates">📐 Templates</button>
+        </div>
+
+        <!-- ═══ TRAJECTEN TAB ═══ -->
+        <div id="tab-trajecten">
+          <div id="ob-traject-header" style="display:none;margin-bottom:1.25rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+              <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.1rem;">📋 Onboarding trajecten</h2>
+              <button class="ob-btn-new-traject" id="btn-new-traject">+ Nieuw traject</button>
+            </div>
+            <!-- Dashboard stats -->
+            <div id="ob-dashboard-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;margin-bottom:1rem;"></div>
+            <!-- Filter knoppen -->
+            <div id="ob-filter-bar" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <button class="ob-filter-btn active" data-filter="alle">Alle</button>
+              <button class="ob-filter-btn" data-filter="actief">🟢 Actief</button>
+              <button class="ob-filter-btn" data-filter="afgerond">🔵 Afgerond</button>
+              <button class="ob-filter-btn" data-filter="gepauzeerd">🟡 Gepauzeerd</button>
+            </div>
+          </div>
+          <div id="ob-traject-grid" class="ob-traject-grid" style="display:none;"></div>
+          <!-- Melding als manager nog geen traject heeft geselecteerd -->
+          <div id="ob-select-traject-hint" style="display:none;text-align:center;padding:2rem;color:var(--sanadome-text-soft);font-size:0.88rem;">
+            <div style="font-size:2.5rem;margin-bottom:0.75rem;">👆</div>
+            <p>Selecteer een traject hierboven om de details en taken te bekijken.</p>
+          </div>
+        </div>
+
+        <!-- ═══ TEMPLATES TAB ═══ -->
+        <div id="tab-templates" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+            <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.1rem;">📐 Onboarding Templates</h2>
+            <button class="ob-btn-new-traject" id="btn-new-template">+ Nieuwe template</button>
+          </div>
+          <div id="tpl-grid" class="tpl-grid">
+            <div class="ob-loading">Templates laden…</div>
+          </div>
+        </div>
+
+        <!-- Main onboarding view -->
+        <div id="ob-main" style="display:none;">
+          <!-- Hero header -->
+          <div class="ob-hero">
+            <div class="ob-hero-left">
+              <div class="ob-hero-icon">🎓</div>
+              <div class="ob-hero-text">
+                <h1 id="ob-hero-title">Inwerktraject</h1>
+                <p id="ob-hero-subtitle">4 weken onboarding programma</p>
+              </div>
+            </div>
+            <div class="ob-hero-right">
+              <span class="ob-status-badge actief" id="ob-status-badge">
+                <span class="ob-status-dot"></span>
+                <span id="ob-status-text">Actief</span>
+              </span>
+              <div class="ob-traject-actions" id="ob-traject-actions" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="ob-progress-wrap">
+            <div class="ob-progress-header">
+              <span class="ob-progress-label">Totale voortgang</span>
+              <span class="ob-progress-pct" id="ob-progress-pct">0%</span>
+            </div>
+            <div class="ob-progress-bar">
+              <div class="ob-progress-fill" id="ob-progress-fill" style="width:0%"></div>
+            </div>
+            <div class="ob-progress-meta">
+              <span id="ob-progress-tasks">0 / 0 taken afgerond</span>
+              <span id="ob-progress-dates">—</span>
+            </div>
+          </div>
+
+          <!-- Week tabs -->
+          <div class="ob-week-tabs" id="ob-week-tabs"></div>
+
+          <!-- Task list -->
+          <div id="ob-task-container"></div>
+
+          <!-- Notes -->
+          <div class="ob-notes-section" id="ob-notes-section">
+            <div class="ob-notes-header">
+              <span class="ob-notes-title">📝 Notities</span>
+            </div>
+            <div class="ob-notes-body" id="ob-notes-body">
+              <p style="font-size:0.82rem;color:var(--sanadome-text-soft);">Geen notities.</p>
+            </div>
+            <div id="ob-note-form-wrap" style="display:none;padding:0 1.25rem 1rem;">
+              <div class="ob-note-form">
+                <input type="text" class="ob-note-input" id="ob-note-input" placeholder="Schrijf een notitie…">
+                <button class="ob-note-submit" id="ob-note-submit">Verstuur</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bevestiging modal (vervangt native confirm) -->
+  <div class="ob-modal-overlay" id="ob-confirm-modal">
+    <div class="ob-modal" style="max-width:380px;">
+      <div class="ob-modal-header">
+        <span class="ob-modal-title" id="ob-confirm-title">Bevestigen</span>
+        <button class="ob-modal-close" id="ob-confirm-close">✕</button>
+      </div>
+      <div class="ob-modal-body">
+        <p id="ob-confirm-message" style="font-size:0.88rem;color:var(--sanadome-text);margin:0;"></p>
+      </div>
+      <div class="ob-modal-actions">
+        <button class="ob-btn-cancel" id="ob-confirm-cancel">Annuleren</button>
+        <button class="ob-btn-save" id="ob-confirm-ok" style="background:#ef4444;">Bevestigen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notitie modal voor taak -->
+  <div class="ob-modal-overlay" id="ob-task-note-modal">
+    <div class="ob-modal">
+      <div class="ob-modal-header">
+        <span class="ob-modal-title" id="ob-modal-task-title">Notitie bij taak</span>
+        <button class="ob-modal-close" onclick="closeTaskNoteModal()">✕</button>
+      </div>
+      <div class="ob-modal-body">
+        <div id="ob-modal-existing-notes" style="margin-bottom:0.75rem;"></div>
+        <label for="ob-modal-note">Nieuwe notitie</label>
+        <textarea id="ob-modal-note" placeholder="Schrijf een notitie bij deze taak…"></textarea>
+      </div>
+      <div class="ob-modal-actions">
+        <button class="ob-btn-cancel" onclick="closeTaskNoteModal()">Annuleren</button>
+        <button class="ob-btn-save" id="ob-modal-save">Notitie opslaan</button>
+        <button class="ob-btn-save" id="ob-modal-save-complete" style="background:linear-gradient(135deg,#10b981,#059669);">Opslaan & aftekenen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nieuw traject modal -->
+  <div class="ob-modal-overlay" id="ob-new-traject-modal">
+    <div class="ob-modal">
+      <div class="ob-modal-header">
+        <span class="ob-modal-title">Nieuw onboarding traject</span>
+        <button class="ob-modal-close" onclick="closeNewTrajectModal()">✕</button>
+      </div>
+      <div class="ob-modal-body">
+        <label for="nt-user-select">Medewerker</label>
+        <select id="nt-user-select" style="width:100%;padding:0.5rem 0.75rem;font-family:inherit;font-size:0.82rem;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);outline:none;">
+          <option value="">— Selecteer medewerker —</option>
+        </select>
+        <label for="nt-template-select">Template</label>
+        <select id="nt-template-select" style="width:100%;padding:0.5rem 0.75rem;font-family:inherit;font-size:0.82rem;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);outline:none;">
+          <option value="">— Selecteer template —</option>
+        </select>
+        <div id="nt-template-preview" style="margin-top:0.5rem;"></div>
+        <label for="nt-afdeling">Afdeling</label>
+        <select id="nt-afdeling" style="width:100%;padding:0.5rem 0.75rem;font-family:inherit;font-size:0.82rem;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);outline:none;">
+          <option value="Front Office">Front Office</option>
+          <option value="Reserveringen">Reserveringen</option>
+          <option value="Algemeen">Algemeen</option>
+        </select>
+        <label for="nt-startdatum">Startdatum</label>
+        <input type="date" id="nt-startdatum" style="width:100%;padding:0.5rem 0.75rem;font-family:inherit;font-size:0.82rem;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);outline:none;">
+      </div>
+      <div class="ob-modal-actions">
+        <button class="ob-btn-cancel" onclick="closeNewTrajectModal()">Annuleren</button>
+        <button class="ob-btn-save" id="nt-save-btn">Traject aanmaken</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template editor modal -->
+  <div class="ob-modal-overlay" id="ob-template-modal">
+    <div class="ob-modal" style="max-width:600px;">
+      <div class="ob-modal-header">
+        <span class="ob-modal-title" id="tpl-modal-title">Nieuwe template</span>
+        <button class="ob-modal-close" onclick="closeTemplateModal()">✕</button>
+      </div>
+      <div class="ob-modal-body">
+        <input type="hidden" id="tpl-edit-id" value="">
+        <div class="tpl-form-group">
+          <label for="tpl-naam">Template naam</label>
+          <input type="text" id="tpl-naam" placeholder="Bijv. Front Office Standaard">
+        </div>
+        <div class="tpl-form-group">
+          <label for="tpl-omschrijving">Omschrijving</label>
+          <textarea id="tpl-omschrijving" placeholder="Korte beschrijving van dit inwerkprogramma…"></textarea>
+        </div>
+        <div class="tpl-form-group">
+          <label for="tpl-afdeling">Afdeling</label>
+          <select id="tpl-afdeling">
+            <option value="Algemeen">Algemeen</option>
+            <option value="Front Office">Front Office</option>
+            <option value="Reserveringen">Reserveringen</option>
+          </select>
+        </div>
+        <div class="tpl-form-group">
+          <label>
+            <input type="checkbox" id="tpl-actief" checked style="margin-right:0.35rem;">
+            Template is actief
+          </label>
+        </div>
+        <div class="tpl-task-editor">
+          <div class="tpl-task-editor-header">
+            <span class="tpl-task-editor-title">Taken</span>
+          </div>
+          <div id="tpl-task-list"></div>
+          <button class="tpl-add-task-btn" id="tpl-add-task">+ Taak toevoegen</button>
+        </div>
+      </div>
+      <div class="ob-modal-actions">
+        <button class="ob-btn-cancel" onclick="closeTemplateModal()">Annuleren</button>
+        <button class="ob-btn-save" id="tpl-save-btn">Template opslaan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+  (function() {
+    /* ═══ Supabase init ═══ */
+    var supabaseUrl = window.SUPABASE_URL;
+    var supabaseKey = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
+    var serviceRoleKey = window.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !supabaseKey) { window.location.href = 'index.html'; return; }
+    var sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+    // Admin client voor data-operaties (bypassed RLS en GRANT issues)
+    // persistSession:false voorkomt sessie-conflicten met de reguliere sb client
+    var sbAdmin = serviceRoleKey ? window.supabase.createClient(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
+      global: { headers: { apikey: serviceRoleKey } }
+    }) : sb;
+
+    var currentUser = null;
+    var currentRole = 'Medewerker';
+    var isBeheerder = false;
+    var kanBeheren = false; // Kan taken afvinken, trajecten beëindigen (Manager, Assistent Manager, Senior Medewerker)
+    var currentTraject = null;
+    var allTaken = [];
+    var trajectTaken = []; // taken gefilterd op template
+    var allTemplates = [];
+    var voortgang = {};  // taak_id -> voortgang record
+    var notities = [];  // algemene notities per traject
+    var taakNotities = {}; // taak_id -> array van notities
+    var activeWeek = 1;
+    var activePageTab = 'trajecten';
+    var allTrajecten = [];
+
+    /* ═══ Auth check ═══ */
+    sb.auth.getSession().then(function(res) {
+      var session = res.data.session;
+      if (!session || !session.user) { window.location.href = 'index.html'; return; }
+      return sb.auth.getUser();
+    }).then(function(userRes) {
+      if (!userRes || userRes.error || !userRes.data || !userRes.data.user) {
+        window.location.href = 'index.html'; return;
+      }
+      currentUser = userRes.data.user;
+      var meta = currentUser.user_metadata || {};
+      var name = meta.full_name || meta.name || (currentUser.email || '').split('@')[0];
+      currentRole = meta.role || 'Medewerker';
+      isBeheerder = ['Manager', 'Assistent Manager', 'Senior Medewerker'].indexOf(currentRole) >= 0;
+      kanBeheren = ['Manager', 'Assistent Manager', 'Senior Medewerker'].indexOf(currentRole) >= 0;
+
+      // Update UI
+      var elName = document.getElementById('user-name');
+      if (elName) elName.textContent = name;
+      var elRole = document.getElementById('user-role-label');
+      if (elRole) elRole.textContent = currentRole;
+      var initials = name.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+      var avatarUrl = meta.avatar_url;
+      var elAvatar = document.getElementById('user-avatar');
+      if (avatarUrl && elAvatar) {
+        elAvatar.innerHTML = '<img src="' + avatarUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+      } else if (elAvatar) {
+        elAvatar.textContent = initials;
+      }
+
+      // Logout
+      document.getElementById('btn-logout').addEventListener('click', function(e) {
+        e.preventDefault();
+        sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
+      });
+
+      // Load and enforce permissions
+      enforcePermissions();
+
+      // Setup page tabs
+      setupPageTabs();
+
+      // Load onboarding data
+      loadOnboardingData();
+    }).catch(function() {
+      window.location.href = 'index.html';
+    });
+
+    /* ═══ Permission enforcement ═══ */
+    function enforcePermissions() {
+      function getDefaultPerms(role) {
+        var ALL = ['dashboard.nieuws','dashboard.berichten','dashboard.aanvragen','dashboard.contactgegevens','dashboard.dienstverband','dashboard.rooster','nav.rooster','nav.verlof','nav.documenten','nav.berichten','nav.gegevens','nav.hr','medewerkers.bekijken','medewerkers.aanmaken','medewerkers.bewerken','medewerkers.verwijderen','nieuws.bekijken','nieuws.aanmaken','nieuws.bewerken','nieuws.verwijderen','rechten.bekijken','rechten.bewerken','debiteuren.bekijken','debiteuren.beheren','debiteuren.importeren'];
+        var p = {};
+        ALL.forEach(function(k) {
+          if (role === 'Manager') p[k] = true;
+          else if (role === 'Assistent Manager') p[k] = k !== 'rechten.bewerken' && k !== 'medewerkers.verwijderen';
+          else if (role === 'Senior Medewerker') p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken' || k === 'debiteuren.bekijken';
+          else p[k] = k.startsWith('dashboard.') || k.startsWith('nav.');
+        });
+        return p;
+      }
+      sb.from('role_permissions').select('permission, granted').eq('role', currentRole).then(function(pr) {
+        var perms = {};
+        if (!pr.error && pr.data && pr.data.length > 0) {
+          pr.data.forEach(function(r) { perms[r.permission] = r.granted; });
+        } else {
+          perms = getDefaultPerms(currentRole);
+        }
+        return sb.from('user_permissions').select('permission, granted').eq('user_id', currentUser.id).then(function(upr) {
+          if (!upr.error && upr.data && upr.data.length > 0) {
+            upr.data.forEach(function(r) { perms[r.permission] = r.granted; });
+          }
+          return perms;
+        }).catch(function() { return perms; });
+      }).then(function(perms) {
+        document.querySelectorAll('[data-permission]').forEach(function(el) {
+          if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
+        });
+      }).catch(function() {});
+    }
+
+    /* ═══ Toast notificaties ═══ */
+    function showToast(message, type) {
+      var existing = document.querySelector('.ob-toast');
+      if (existing) existing.remove();
+      var toast = document.createElement('div');
+      toast.className = 'ob-toast ' + (type || 'success');
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(function() { toast.classList.add('show'); }, 10);
+      setTimeout(function() {
+        toast.classList.remove('show');
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 3000);
+    }
+
+    /* ═══ Page tabs (Trajecten / Templates) ═══ */
+    function setupPageTabs() {
+      var tabContainer = document.getElementById('ob-page-tabs');
+      tabContainer.querySelectorAll('.ob-page-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          activePageTab = this.getAttribute('data-tab');
+          tabContainer.querySelectorAll('.ob-page-tab').forEach(function(t) { t.classList.remove('active'); });
+          this.classList.add('active');
+
+          document.getElementById('tab-trajecten').style.display = activePageTab === 'trajecten' ? '' : 'none';
+          document.getElementById('tab-templates').style.display = activePageTab === 'templates' ? '' : 'none';
+          document.getElementById('ob-main').style.display = activePageTab === 'trajecten' && currentTraject ? '' : 'none';
+          document.getElementById('ob-empty-medewerker').style.display = 'none';
+          document.getElementById('ob-empty-beheerder').style.display = 'none';
+          var hintEl = document.getElementById('ob-select-traject-hint');
+          if (hintEl) hintEl.style.display = (activePageTab === 'trajecten' && !currentTraject && allTrajecten.length > 0) ? 'block' : 'none';
+
+          if (activePageTab === 'templates') {
+            loadTemplates();
+          }
+        });
+      });
+    }
+
+    /* ═══ Load onboarding data ═══ */
+    function loadOnboardingData() {
+      var loadingEl = document.getElementById('ob-loading');
+      var db = sbAdmin; // Gebruik admin client voor data laden
+
+      // Load all taken
+      var takenPromise = db.from('onboarding_taken').select('*').order('week_nr').order('volgorde')
+        .then(function(res) {
+          if (res.error) console.error('Fout bij laden taken:', res.error);
+          if (!res.error && res.data) allTaken = res.data;
+        });
+
+      // Load templates
+      var templatesPromise = db.from('onboarding_templates').select('*').order('naam')
+        .then(function(res) {
+          if (res.error) console.error('Fout bij laden templates:', res.error);
+          if (!res.error && res.data) allTemplates = res.data;
+        });
+
+      // Load trajecten
+      var trajectPromise;
+      if (isBeheerder) {
+        // Beheerders zien alle trajecten
+        trajectPromise = db.from('onboarding_trajecten').select('*').order('created_at', { ascending: false });
+      } else {
+        // Medewerker ziet alleen eigen traject
+        trajectPromise = db.from('onboarding_trajecten').select('*').eq('medewerker_id', currentUser.id).eq('status', 'actief').limit(1);
+      }
+
+      Promise.all([takenPromise, trajectPromise, templatesPromise]).then(function(results) {
+        var trajectRes = results[1];
+        loadingEl.style.display = 'none';
+
+        if (trajectRes.error) {
+          console.error('Fout bij laden trajecten:', trajectRes.error);
+          // Tabel bestaat mogelijk niet
+          if (isBeheerder) {
+            document.getElementById('ob-page-tabs').style.display = 'flex';
+            document.getElementById('ob-empty-beheerder').style.display = 'block';
+            document.getElementById('ob-empty-beheerder').querySelector('p').textContent =
+              'Fout bij laden onboarding data: ' + (trajectRes.error.message || JSON.stringify(trajectRes.error));
+          } else {
+            document.getElementById('ob-empty-medewerker').style.display = 'block';
+          }
+          return;
+        }
+
+        var trajecten = trajectRes.data || [];
+        allTrajecten = trajecten;
+
+        if (isBeheerder) {
+          document.getElementById('ob-page-tabs').style.display = 'flex';
+
+          if (trajecten.length === 0) {
+            document.getElementById('ob-empty-beheerder').style.display = 'block';
+            return;
+          }
+
+          // Show traject header + grid (dashboard overzicht)
+          document.getElementById('ob-traject-header').style.display = 'block';
+          renderDashboardStats(trajecten);
+          renderTrajectGrid(trajecten);
+          setupFilterBar(trajecten);
+
+          // Toon selectie-hint als er geen traject geselecteerd is
+          if (!currentTraject) {
+            document.getElementById('ob-select-traject-hint').style.display = 'block';
+          }
+
+        } else {
+          // Medewerker
+          if (trajecten.length === 0) {
+            document.getElementById('ob-empty-medewerker').style.display = 'block';
+            return;
+          }
+          loadTraject(trajecten[0]);
+        }
+      });
+    }
+
+    /* ═══ Dashboard stats ═══ */
+    function renderDashboardStats(trajecten) {
+      var statsEl = document.getElementById('ob-dashboard-stats');
+      var actief = trajecten.filter(function(t) { return t.status === 'actief'; }).length;
+      var afgerond = trajecten.filter(function(t) { return t.status === 'afgerond'; }).length;
+      var gepauzeerd = trajecten.filter(function(t) { return t.status === 'gepauzeerd'; }).length;
+
+      statsEl.innerHTML = '' +
+        '<div class="ob-stat-card"><div class="ob-stat-value">' + trajecten.length + '</div><div class="ob-stat-label">Totaal trajecten</div></div>' +
+        '<div class="ob-stat-card"><div class="ob-stat-value" style="color:#10b981;">' + actief + '</div><div class="ob-stat-label">Actief</div></div>' +
+        '<div class="ob-stat-card"><div class="ob-stat-value" style="color:#3b82f6;">' + afgerond + '</div><div class="ob-stat-label">Afgerond</div></div>' +
+        '<div class="ob-stat-card"><div class="ob-stat-value" style="color:#f59e0b;">' + gepauzeerd + '</div><div class="ob-stat-label">Gepauzeerd</div></div>';
+    }
+
+    /* ═══ Filter bar ═══ */
+    var currentFilter = 'alle';
+    function setupFilterBar(trajecten) {
+      document.querySelectorAll('.ob-filter-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          currentFilter = this.getAttribute('data-filter');
+          document.querySelectorAll('.ob-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+
+          var filtered = currentFilter === 'alle' ? trajecten :
+            trajecten.filter(function(t) { return t.status === currentFilter; });
+          renderTrajectGrid(filtered);
+        });
+      });
+    }
+
+    /* ═══ Render traject cards ═══ */
+    function renderTrajectGrid(trajecten) {
+      var grid = document.getElementById('ob-traject-grid');
+      grid.style.display = 'grid';
+
+      if (trajecten.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--sanadome-text-soft);font-size:0.85rem;">Geen trajecten met deze status.</div>';
+        return;
+      }
+
+      var html = '';
+      trajecten.forEach(function(t) {
+        var isActive = currentTraject && currentTraject.id === t.id;
+        var tplTaken = t.template_id ? allTaken.filter(function(tk) { return tk.template_id === t.template_id; }) : allTaken;
+        var cls = 'ob-traject-card' + (isActive ? ' active-card' : '');
+
+        html += '<div class="' + cls + '" data-traject-id="' + t.id + '">';
+        html += '<div class="ob-traject-card-header">';
+        html += '<span class="ob-traject-card-name">' + escapeHtml(t.naam) + '</span>';
+        html += '<span class="ob-status-badge ' + t.status + '" style="font-size:0.7rem;padding:0.2rem 0.5rem;">';
+        html += '<span class="ob-status-dot" style="width:6px;height:6px;"></span>';
+        html += (t.status === 'actief' ? 'Actief' : t.status === 'afgerond' ? 'Afgerond' : 'Gepauzeerd');
+        html += '</span>';
+        html += '</div>';
+        html += '<div class="ob-traject-card-meta">' + escapeHtml(t.afdeling);
+        var start = new Date(t.startdatum);
+        html += ' · Gestart ' + start.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' });
+        html += '</div>';
+
+        // Template naam
+        if (t.template_id) {
+          var tpl = allTemplates.find(function(tp) { return tp.id === t.template_id; });
+          if (tpl) {
+            html += '<div style="font-size:0.7rem;color:var(--sanadome-blue);font-weight:600;margin-bottom:0.35rem;">📐 ' + escapeHtml(tpl.naam) + '</div>';
+          }
+        }
+
+        // Progress bar met taken-telling
+        html += '<div class="ob-traject-card-progress">';
+        html += '<div class="ob-traject-card-bar"><div class="ob-traject-card-fill" style="width:0%" data-traject-progress="' + t.id + '"></div></div>';
+        html += '<div class="ob-traject-card-pct" data-traject-pct="' + t.id + '">' + tplTaken.length + ' taken</div>';
+        html += '</div>';
+        html += '</div>';
+      });
+
+      grid.innerHTML = html;
+
+      // Laad voortgang voor elke kaart async
+      trajecten.forEach(function(t) {
+        var tplTaken = t.template_id ? allTaken.filter(function(tk) { return tk.template_id === t.template_id; }) : allTaken;
+        if (tplTaken.length === 0) return;
+        sbAdmin.from('onboarding_voortgang').select('taak_id, voltooid').eq('traject_id', t.id).eq('voltooid', true).then(function(res) {
+          if (res.error || !res.data) return;
+          var done = res.data.length;
+          var total = tplTaken.length;
+          var pct = Math.round((done / total) * 100);
+          var fillEl = document.querySelector('[data-traject-progress="' + t.id + '"]');
+          var pctEl = document.querySelector('[data-traject-pct="' + t.id + '"]');
+          if (fillEl) fillEl.style.width = pct + '%';
+          if (pctEl) pctEl.textContent = done + '/' + total + ' taken · ' + pct + '%';
+        });
+      });
+
+      // Bind click handlers
+      grid.querySelectorAll('.ob-traject-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+          var id = this.getAttribute('data-traject-id');
+          var t = allTrajecten.find(function(tr) { return tr.id === id; });
+          if (t) {
+            document.getElementById('ob-select-traject-hint').style.display = 'none';
+            loadTraject(t);
+            // Re-render grid met actief markering
+            var filtered = currentFilter === 'alle' ? allTrajecten :
+              allTrajecten.filter(function(tr) { return tr.status === currentFilter; });
+            renderTrajectGrid(filtered);
+          }
+        });
+      });
+    }
+
+    /* ═══ Load a specific traject ═══ */
+    function loadTraject(traject) {
+      currentTraject = traject;
+      var mainEl = document.getElementById('ob-main');
+      mainEl.style.display = 'block';
+      document.getElementById('ob-empty-medewerker').style.display = 'none';
+      document.getElementById('ob-empty-beheerder').style.display = 'none';
+      var hintEl = document.getElementById('ob-select-traject-hint');
+      if (hintEl) hintEl.style.display = 'none';
+
+      // Filter taken op template
+      if (traject.template_id) {
+        trajectTaken = allTaken.filter(function(t) { return t.template_id === traject.template_id; });
+      } else {
+        trajectTaken = allTaken;
+      }
+
+      // Update hero
+      var templateNaam = '';
+      if (traject.template_id) {
+        var tpl = allTemplates.find(function(t) { return t.id === traject.template_id; });
+        templateNaam = tpl ? tpl.naam : '';
+      }
+      document.getElementById('ob-hero-title').textContent = 'Inwerktraject — ' + traject.naam;
+      document.getElementById('ob-hero-subtitle').textContent = traject.afdeling + (templateNaam ? ' · ' + templateNaam : '') + ' · 4 weken programma';
+
+      // Traject actie-knoppen (alleen kanBeheren rollen)
+      var actionsEl = document.getElementById('ob-traject-actions');
+      actionsEl.innerHTML = '';
+      if (kanBeheren) {
+        actionsEl.style.display = 'flex';
+        if (traject.status === 'actief') {
+          var btnEnd = document.createElement('button');
+          btnEnd.className = 'ob-btn-end-traject';
+          btnEnd.textContent = '⏹ Traject beëindigen';
+          btnEnd.onclick = function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            endTraject();
+          };
+          actionsEl.appendChild(btnEnd);
+        } else if (traject.status === 'afgerond') {
+          var btnReopen = document.createElement('button');
+          btnReopen.className = 'ob-btn-reopen-traject';
+          btnReopen.textContent = '🔄 Traject heropenen';
+          btnReopen.onclick = function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            reopenTraject();
+          };
+          actionsEl.appendChild(btnReopen);
+          var btnDelete = document.createElement('button');
+          btnDelete.className = 'ob-btn-delete-traject';
+          btnDelete.textContent = '🗑 Traject verwijderen';
+          btnDelete.onclick = function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            deleteTraject();
+          };
+          actionsEl.appendChild(btnDelete);
+        }
+      } else {
+        actionsEl.style.display = 'none';
+      }
+
+      var badge = document.getElementById('ob-status-badge');
+      badge.className = 'ob-status-badge ' + traject.status;
+      document.getElementById('ob-status-text').textContent =
+        traject.status === 'actief' ? 'Actief' : traject.status === 'afgerond' ? 'Afgerond' : 'Gepauzeerd';
+
+      // Dates
+      var start = new Date(traject.startdatum);
+      var eind = new Date(start); eind.setDate(eind.getDate() + 28);
+      var dateStr = formatDate(start) + ' — ' + formatDate(eind);
+      document.getElementById('ob-progress-dates').textContent = dateStr;
+
+      // Determine current week
+      var now = new Date();
+      var daysSinceStart = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+      var currentWeekNr = Math.min(4, Math.max(1, Math.floor(daysSinceStart / 7) + 1));
+      activeWeek = currentWeekNr;
+
+      // Load voortgang + notities
+      Promise.all([
+        sbAdmin.from('onboarding_voortgang').select('*').eq('traject_id', traject.id),
+        sbAdmin.from('onboarding_notities').select('*').eq('traject_id', traject.id).order('created_at', { ascending: true })
+      ]).then(function(results) {
+        // Voortgang
+        voortgang = {};
+        if (!results[0].error && results[0].data) {
+          results[0].data.forEach(function(v) { voortgang[v.taak_id] = v; });
+        }
+
+        // Taak-notities groeperen
+        taakNotities = {};
+        var allNotities = (!results[1].error && results[1].data) ? results[1].data : [];
+        notities = [];
+        allNotities.forEach(function(n) {
+          if (n.taak_id) {
+            if (!taakNotities[n.taak_id]) taakNotities[n.taak_id] = [];
+            taakNotities[n.taak_id].push(n);
+          } else {
+            notities.push(n);
+          }
+        });
+
+        renderWeekTabs(currentWeekNr);
+        renderTasks(activeWeek);
+        renderProgress();
+        renderNotes();
+      });
+    }
+
+    /* ═══ Render week tabs ═══ */
+    function renderWeekTabs(currentWeekNr) {
+      var container = document.getElementById('ob-week-tabs');
+      var html = '';
+      for (var w = 1; w <= 4; w++) {
+        var weekTaken = trajectTaken.filter(function(t) { return t.week_nr === w; });
+        var weekDone = weekTaken.filter(function(t) { return voortgang[t.id] && voortgang[t.id].voltooid; });
+        var allDone = weekTaken.length > 0 && weekDone.length === weekTaken.length;
+        var cls = 'ob-week-tab';
+        if (w === activeWeek) cls += ' active';
+        if (allDone) cls += ' completed';
+        html += '<button class="' + cls + '" data-week="' + w + '">';
+        html += 'Week ' + w;
+        html += '<span class="ob-tab-count">' + weekDone.length + '/' + weekTaken.length + '</span>';
+        if (w === currentWeekNr && currentTraject && currentTraject.status === 'actief') {
+          html += '<span class="ob-current-label">Nu</span>';
+        }
+        html += '</button>';
+      }
+      container.innerHTML = html;
+
+      // Tab click handlers
+      container.querySelectorAll('.ob-week-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          activeWeek = parseInt(this.getAttribute('data-week'));
+          renderWeekTabs(currentWeekNr);
+          renderTasks(activeWeek);
+        });
+      });
+    }
+
+    /* ═══ Render tasks ═══ */
+    function renderTasks(weekNr) {
+      var container = document.getElementById('ob-task-container');
+      var weekTaken = trajectTaken.filter(function(t) { return t.week_nr === weekNr; });
+
+      if (weekTaken.length === 0) {
+        container.innerHTML = '<div class="ob-task-section"><div style="padding:2rem;text-align:center;color:var(--sanadome-text-soft);font-size:0.85rem;">Geen taken voor week ' + weekNr + '.</div></div>';
+        return;
+      }
+
+      var weekDone = weekTaken.filter(function(t) { return voortgang[t.id] && voortgang[t.id].voltooid; });
+
+      var html = '<div class="ob-task-section">';
+      html += '<div class="ob-task-section-header">';
+      html += '<span class="ob-task-section-title">Week ' + weekNr + ' taken</span>';
+      html += '<span class="ob-task-section-meta">' + weekDone.length + ' van ' + weekTaken.length + ' afgerond</span>';
+      html += '</div>';
+      html += '<ul class="ob-task-list">';
+
+      weekTaken.forEach(function(taak) {
+        var v = voortgang[taak.id];
+        var isDone = v && v.voltooid;
+        var taskNotes = taakNotities[taak.id] || [];
+        var cls = 'ob-task-item' + (isDone ? ' is-done' : '');
+
+        html += '<li class="' + cls + '">';
+
+        // Checkbox — alleen kanBeheren rollen kunnen toggling doen
+        if (kanBeheren) {
+          html += '<div class="ob-task-check' + (isDone ? ' checked' : '') + '" data-taak-id="' + taak.id + '" title="' + (isDone ? 'Ontvinken' : 'Aftekenen') + '">✓</div>';
+        } else if (isDone) {
+          html += '<div class="ob-task-check checked">✓</div>';
+        } else {
+          html += '<div class="ob-task-check disabled">✓</div>';
+        }
+
+        // Body
+        html += '<div class="ob-task-body">';
+        html += '<div class="ob-task-title">' + escapeHtml(taak.titel) + '</div>';
+        if (taak.omschrijving) {
+          html += '<div class="ob-task-desc">' + escapeHtml(taak.omschrijving) + '</div>';
+        }
+
+        // Tags
+        html += '<div class="ob-task-tags">';
+        var deptClass = taak.afdeling === 'Front Office' ? 'dept-fo' :
+                        taak.afdeling === 'Reserveringen' ? 'dept-res' : 'dept-alg';
+        html += '<span class="ob-task-tag ' + deptClass + '">' + escapeHtml(taak.afdeling) + '</span>';
+        html += '</div>';
+
+        // Done info
+        if (isDone && v) {
+          html += '<div class="ob-task-done-info">';
+          html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+          html += 'Afgetekend door ' + escapeHtml(v.voltooid_naam || 'onbekend');
+          if (v.voltooid_op) {
+            html += ' · ' + formatDateTime(new Date(v.voltooid_op));
+          }
+          html += '</div>';
+        }
+
+        // Taak-notities (meerdere)
+        if (taskNotes.length > 0) {
+          html += '<div class="ob-task-notes-list">';
+          taskNotes.forEach(function(n) {
+            html += '<div class="ob-task-note-entry">💬 <strong>' + escapeHtml(n.auteur_naam || 'Onbekend') + ':</strong> ' + escapeHtml(n.inhoud);
+            if (n.created_at) html += ' <span style="opacity:0.6;">(' + formatDateTime(new Date(n.created_at)) + ')</span>';
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+
+        html += '</div>'; // task-body
+
+        // Actions (alleen kanBeheren — altijd notitie-knop tonen)
+        if (kanBeheren) {
+          html += '<div class="ob-task-actions">';
+          html += '<button class="ob-task-btn" data-taak-id="' + taak.id + '" data-action="note" title="Notitie toevoegen">📝 Notitie</button>';
+          html += '</div>';
+        }
+
+        html += '</li>';
+      });
+
+      html += '</ul></div>';
+      container.innerHTML = html;
+
+      // Bind click handlers — checkbox toggle (aftekenen of ontvinken)
+      container.querySelectorAll('.ob-task-check[data-taak-id]').forEach(function(el) {
+        el.addEventListener('click', function() {
+          var taakId = this.getAttribute('data-taak-id');
+          var v = voortgang[taakId];
+          if (v && v.voltooid) {
+            uncompleteTask(taakId);
+          } else {
+            completeTask(taakId, '');
+          }
+        });
+      });
+
+      container.querySelectorAll('.ob-task-btn[data-action="note"]').forEach(function(el) {
+        el.addEventListener('click', function() {
+          var taakId = this.getAttribute('data-taak-id');
+          openTaskNoteModal(taakId);
+        });
+      });
+    }
+
+    /* ═══ Render progress ═══ */
+    function renderProgress() {
+      var total = trajectTaken.length;
+      var done = 0;
+      trajectTaken.forEach(function(t) {
+        if (voortgang[t.id] && voortgang[t.id].voltooid) done++;
+      });
+      var pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('ob-progress-pct').textContent = pct + '%';
+      document.getElementById('ob-progress-fill').style.width = pct + '%';
+      document.getElementById('ob-progress-tasks').textContent = done + ' / ' + total + ' taken afgerond';
+    }
+
+    /* ═══ Render notes ═══ */
+    function renderNotes() {
+      var body = document.getElementById('ob-notes-body');
+      var formWrap = document.getElementById('ob-note-form-wrap');
+
+      if (notities.length === 0) {
+        body.innerHTML = '<p style="font-size:0.82rem;color:var(--sanadome-text-soft);">Nog geen notities.</p>';
+      } else {
+        var html = '';
+        notities.forEach(function(n) {
+          var initials = (n.auteur_naam || '?').split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+          html += '<div class="ob-note-item">';
+          html += '<div class="ob-note-avatar">' + initials + '</div>';
+          html += '<div class="ob-note-content">';
+          html += '<div class="ob-note-meta"><strong>' + escapeHtml(n.auteur_naam || 'Onbekend') + '</strong>';
+          if (n.week_nr) html += ' · Week ' + n.week_nr;
+          html += ' · ' + formatDateTime(new Date(n.created_at));
+          html += '</div>';
+          html += '<div class="ob-note-text">' + escapeHtml(n.inhoud) + '</div>';
+          html += '</div></div>';
+        });
+        body.innerHTML = html;
+      }
+
+      // Show note form for beheerders met beheerdersrechten
+      if (kanBeheren) {
+        formWrap.style.display = 'block';
+      }
+    }
+
+    /* ═══ Complete a task ═══ */
+    function completeTask(taakId, notitie) {
+      if (!currentTraject || !kanBeheren) return;
+
+      var meta = currentUser.user_metadata || {};
+      var myName = meta.full_name || meta.name || (currentUser.email || '').split('@')[0];
+
+      sbAdmin.from('onboarding_voortgang').upsert({
+        traject_id: currentTraject.id,
+        taak_id: taakId,
+        voltooid: true,
+        voltooid_door: currentUser.id,
+        voltooid_naam: myName,
+        voltooid_op: new Date().toISOString(),
+        notities: notitie || null
+      }, { onConflict: 'traject_id,taak_id' }).then(function(res) {
+        if (res.error) {
+          alert('Fout bij aftekenen: ' + res.error.message);
+          return;
+        }
+        // Update local state
+        voortgang[taakId] = {
+          traject_id: currentTraject.id,
+          taak_id: taakId,
+          voltooid: true,
+          voltooid_door: currentUser.id,
+          voltooid_naam: myName,
+          voltooid_op: new Date().toISOString(),
+          notities: notitie || null
+        };
+
+        refreshAfterTaskChange();
+      });
+    }
+
+    /* ═══ Uncomplete a task (ontvinken) ═══ */
+    function uncompleteTask(taakId) {
+      if (!currentTraject || !kanBeheren) return;
+
+      sbAdmin.from('onboarding_voortgang').update({
+        voltooid: false,
+        voltooid_door: null,
+        voltooid_naam: null,
+        voltooid_op: null
+      }).eq('traject_id', currentTraject.id).eq('taak_id', taakId).then(function(res) {
+        if (res.error) {
+          alert('Fout bij ontvinken: ' + res.error.message);
+          return;
+        }
+        // Update local state
+        if (voortgang[taakId]) {
+          voortgang[taakId].voltooid = false;
+          voortgang[taakId].voltooid_door = null;
+          voortgang[taakId].voltooid_naam = null;
+          voortgang[taakId].voltooid_op = null;
+        }
+
+        // Als traject afgerond was, heropenen
+        if (currentTraject.status === 'afgerond') {
+          sbAdmin.from('onboarding_trajecten').update({ status: 'actief' }).eq('id', currentTraject.id).then(function() {
+            currentTraject.status = 'actief';
+            refreshAfterTaskChange();
+            // Update hero
+            var badge = document.getElementById('ob-status-badge');
+            badge.className = 'ob-status-badge actief';
+            document.getElementById('ob-status-text').textContent = 'Actief';
+            // Update actie-knoppen
+            var actionsEl = document.getElementById('ob-traject-actions');
+            actionsEl.innerHTML = '';
+            var btnEnd2 = document.createElement('button');
+            btnEnd2.className = 'ob-btn-end-traject';
+            btnEnd2.textContent = '⏹ Traject beëindigen';
+            btnEnd2.onclick = function(ev) {
+              ev.preventDefault();
+              ev.stopPropagation();
+              endTraject();
+            };
+            actionsEl.appendChild(btnEnd2);
+          });
+        } else {
+          refreshAfterTaskChange();
+        }
+      });
+    }
+
+    /* ═══ Refresh UI after task change ═══ */
+    function refreshAfterTaskChange() {
+      var start = new Date(currentTraject.startdatum);
+      var daysSinceStart = Math.floor((new Date() - start) / (1000 * 60 * 60 * 24));
+      var currentWeekNr = Math.min(4, Math.max(1, Math.floor(daysSinceStart / 7) + 1));
+      renderWeekTabs(currentWeekNr);
+      renderTasks(activeWeek);
+      renderProgress();
+    }
+
+    /* ═══ Custom confirm modal (vervangt geblokkeerde native confirm) ═══ */
+    function showConfirm(title, message, btnText, btnColor, onConfirm) {
+      var overlay = document.getElementById('ob-confirm-modal');
+      document.getElementById('ob-confirm-title').textContent = title;
+      document.getElementById('ob-confirm-message').textContent = message;
+      var okBtn = document.getElementById('ob-confirm-ok');
+      okBtn.textContent = btnText || 'Bevestigen';
+      okBtn.style.background = btnColor || '#ef4444';
+      overlay.classList.add('open');
+
+      function cleanup() {
+        overlay.classList.remove('open');
+        okBtn.onclick = null;
+        document.getElementById('ob-confirm-cancel').onclick = null;
+        document.getElementById('ob-confirm-close').onclick = null;
+      }
+      okBtn.onclick = function() { cleanup(); onConfirm(); };
+      document.getElementById('ob-confirm-cancel').onclick = function() { cleanup(); };
+      document.getElementById('ob-confirm-close').onclick = function() { cleanup(); };
+    }
+
+    /* ═══ End traject ═══ */
+    function endTraject() {
+      console.log('endTraject aangeroepen', currentTraject, kanBeheren);
+      if (!currentTraject) { showToast('Geen traject geselecteerd', 'error'); return; }
+      if (!kanBeheren) { showToast('Geen rechten om traject te beëindigen', 'error'); return; }
+
+      showConfirm(
+        'Traject beëindigen',
+        'Weet je zeker dat je het traject van ' + currentTraject.naam + ' wilt beëindigen?',
+        'Beëindigen', '#ef4444',
+        function() {
+          var trajectId = currentTraject.id;
+          console.log('Traject beëindigen:', trajectId);
+          sbAdmin.from('onboarding_trajecten').update({ status: 'afgerond' }).eq('id', trajectId)
+            .then(function(res) {
+              console.log('Update result:', res);
+              if (res.error) {
+                showToast('Fout bij beëindigen: ' + res.error.message, 'error');
+                return;
+              }
+              currentTraject.status = 'afgerond';
+              for (var i = 0; i < allTrajecten.length; i++) {
+                if (allTrajecten[i].id === trajectId) {
+                  allTrajecten[i].status = 'afgerond';
+                  break;
+                }
+              }
+              showToast('Traject is beëindigd!', 'success');
+              loadTraject(currentTraject);
+              if (allTrajecten.length > 0) {
+                renderDashboardStats(allTrajecten);
+                var filtered = currentFilter === 'alle' ? allTrajecten :
+                  allTrajecten.filter(function(tr) { return tr.status === currentFilter; });
+                renderTrajectGrid(filtered);
+              }
+            })
+            .catch(function(err) {
+              console.error('endTraject catch:', err);
+              showToast('Onverwachte fout: ' + (err.message || err), 'error');
+            });
+        }
+      );
+    }
+
+    /* ═══ Reopen traject ═══ */
+    function reopenTraject() {
+      if (!currentTraject || !kanBeheren) return;
+
+      showConfirm(
+        'Traject heropenen',
+        'Weet je zeker dat je het traject van ' + currentTraject.naam + ' wilt heropenen?',
+        'Heropenen', '#10b981',
+        function() {
+          sbAdmin.from('onboarding_trajecten').update({ status: 'actief' }).eq('id', currentTraject.id).then(function(res) {
+            if (res.error) {
+              showToast('Fout bij heropenen: ' + res.error.message, 'error');
+              return;
+            }
+            currentTraject.status = 'actief';
+            for (var i = 0; i < allTrajecten.length; i++) {
+              if (allTrajecten[i].id === currentTraject.id) {
+                allTrajecten[i].status = 'actief';
+                break;
+              }
+            }
+            showToast('Traject is heropend!', 'success');
+            loadTraject(currentTraject);
+            if (allTrajecten.length > 0) {
+              renderDashboardStats(allTrajecten);
+              var filtered = currentFilter === 'alle' ? allTrajecten :
+                allTrajecten.filter(function(tr) { return tr.status === currentFilter; });
+              renderTrajectGrid(filtered);
+            }
+          });
+        }
+      );
+    }
+
+    // Knop-handlers worden nu direct gekoppeld in loadTraject() via createElement
+
+    /* ═══ Delete traject ═══ */
+    function deleteTraject() {
+      if (!currentTraject || !kanBeheren) return;
+      if (currentTraject.status !== 'afgerond') {
+        showToast('Alleen afgeronde trajecten kunnen verwijderd worden', 'error');
+        return;
+      }
+
+      showConfirm(
+        'Traject verwijderen',
+        'Weet je zeker dat je het traject van ' + currentTraject.naam + ' permanent wilt verwijderen? Alle voortgang en notities worden ook verwijderd. Dit kan niet ongedaan worden.',
+        'Definitief verwijderen', '#dc2626',
+        function() {
+          var trajectId = currentTraject.id;
+          // Verwijder eerst gerelateerde data, dan het traject zelf
+          Promise.all([
+            sbAdmin.from('onboarding_voortgang').delete().eq('traject_id', trajectId),
+            sbAdmin.from('onboarding_notities').delete().eq('traject_id', trajectId)
+          ]).then(function(results) {
+            var hasError = results.some(function(r) { return r.error; });
+            if (hasError) {
+              var errMsg = results.map(function(r) { return r.error ? r.error.message : ''; }).filter(Boolean).join(', ');
+              showToast('Fout bij verwijderen gerelateerde data: ' + errMsg, 'error');
+              return;
+            }
+            return sbAdmin.from('onboarding_trajecten').delete().eq('id', trajectId);
+          }).then(function(res) {
+            if (!res) return; // eerder afgebroken
+            if (res.error) {
+              showToast('Fout bij verwijderen traject: ' + res.error.message, 'error');
+              return;
+            }
+            // Verwijder uit lokale array
+            allTrajecten = allTrajecten.filter(function(t) { return t.id !== trajectId; });
+            currentTraject = null;
+            showToast('Traject is verwijderd', 'success');
+
+            // Terug naar overzicht
+            document.getElementById('ob-main').style.display = 'none';
+            if (allTrajecten.length > 0) {
+              renderDashboardStats(allTrajecten);
+              var filtered = currentFilter === 'alle' ? allTrajecten :
+                allTrajecten.filter(function(tr) { return tr.status === currentFilter; });
+              renderTrajectGrid(filtered);
+              document.getElementById('ob-select-traject-hint').style.display = 'block';
+            } else {
+              // Geen trajecten meer
+              if (isBeheerder) {
+                document.getElementById('ob-empty-beheerder').style.display = 'flex';
+                renderDashboardStats([]);
+                renderTrajectGrid([]);
+              } else {
+                document.getElementById('ob-empty-medewerker').style.display = 'flex';
+              }
+            }
+          }).catch(function(err) {
+            showToast('Onverwachte fout: ' + (err.message || err), 'error');
+          });
+        }
+      );
+    }
+
+    /* ═══ Task note modal ═══ */
+    var pendingTaskId = null;
+
+    function openTaskNoteModal(taakId) {
+      pendingTaskId = taakId;
+      var taak = allTaken.find(function(t) { return t.id === taakId; });
+      var v = voortgang[taakId];
+      var isDone = v && v.voltooid;
+      document.getElementById('ob-modal-task-title').textContent = taak ? taak.titel : 'Taak';
+      document.getElementById('ob-modal-note').value = '';
+
+      // Toon bestaande notities
+      var existingEl = document.getElementById('ob-modal-existing-notes');
+      var taskNotes = taakNotities[taakId] || [];
+      if (taskNotes.length > 0) {
+        var notesHtml = '<div style="font-size:0.72rem;font-weight:600;color:var(--sanadome-text);margin-bottom:0.35rem;">Eerdere notities:</div>';
+        taskNotes.forEach(function(n) {
+          notesHtml += '<div style="font-size:0.78rem;padding:0.35rem 0.55rem;background:#f8fafc;border-radius:6px;margin-bottom:0.3rem;border:1px solid #e2e8f0;">';
+          notesHtml += '<strong style="font-size:0.7rem;color:var(--sanadome-blue);">' + escapeHtml(n.auteur_naam || 'Onbekend') + '</strong>';
+          if (n.created_at) notesHtml += ' <span style="font-size:0.65rem;color:var(--sanadome-text-soft);">' + formatDateTime(new Date(n.created_at)) + '</span>';
+          notesHtml += '<div style="margin-top:0.15rem;color:var(--sanadome-text);">' + escapeHtml(n.inhoud) + '</div>';
+          notesHtml += '</div>';
+        });
+        existingEl.innerHTML = notesHtml;
+      } else {
+        existingEl.innerHTML = '';
+      }
+
+      // Toon/verberg de "Opslaan & aftekenen" knop (alleen als taak nog niet afgevinkt is)
+      var saveCompleteBtn = document.getElementById('ob-modal-save-complete');
+      saveCompleteBtn.style.display = isDone ? 'none' : '';
+
+      document.getElementById('ob-task-note-modal').classList.add('open');
+    }
+    window.closeTaskNoteModal = function() {
+      document.getElementById('ob-task-note-modal').classList.remove('open');
+      pendingTaskId = null;
+    };
+    document.getElementById('ob-task-note-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeTaskNoteModal();
+    });
+
+    // Alleen notitie opslaan (niet aftekenen)
+    document.getElementById('ob-modal-save').addEventListener('click', function() {
+      if (!pendingTaskId || !currentTraject) return;
+      var note = document.getElementById('ob-modal-note').value.trim();
+      if (!note) { alert('Schrijf een notitie.'); return; }
+      saveTaskNote(pendingTaskId, note, false);
+    });
+
+    // Notitie opslaan EN aftekenen
+    document.getElementById('ob-modal-save-complete').addEventListener('click', function() {
+      if (!pendingTaskId || !currentTraject) return;
+      var note = document.getElementById('ob-modal-note').value.trim();
+      saveTaskNote(pendingTaskId, note, true);
+    });
+
+    function saveTaskNote(taakId, noteText, alsoComplete) {
+      var meta = currentUser.user_metadata || {};
+      var myName = meta.full_name || meta.name || (currentUser.email || '').split('@')[0];
+
+      // Notitie opslaan in onboarding_notities met taak_id
+      var notePromise = noteText ? sbAdmin.from('onboarding_notities').insert({
+        traject_id: currentTraject.id,
+        taak_id: taakId,
+        auteur_id: currentUser.id,
+        auteur_naam: myName,
+        inhoud: noteText,
+        week_nr: activeWeek
+      }) : Promise.resolve({ error: null });
+
+      notePromise.then(function(nRes) {
+        if (nRes.error) {
+          alert('Fout bij opslaan notitie: ' + nRes.error.message);
+          return;
+        }
+
+        // Update lokale notities
+        if (noteText) {
+          var newNote = {
+            traject_id: currentTraject.id,
+            taak_id: taakId,
+            auteur_id: currentUser.id,
+            auteur_naam: myName,
+            inhoud: noteText,
+            week_nr: activeWeek,
+            created_at: new Date().toISOString()
+          };
+          if (!taakNotities[taakId]) taakNotities[taakId] = [];
+          taakNotities[taakId].push(newNote);
+        }
+
+        if (alsoComplete) {
+          completeTask(taakId, noteText);
+        } else {
+          renderTasks(activeWeek);
+        }
+        closeTaskNoteModal();
+      });
+    }
+
+    /* ═══ General notes ═══ */
+    document.getElementById('ob-note-submit').addEventListener('click', function() {
+      var input = document.getElementById('ob-note-input');
+      var text = input.value.trim();
+      if (!text || !currentTraject) return;
+
+      var meta = currentUser.user_metadata || {};
+      var myName = meta.full_name || meta.name || (currentUser.email || '').split('@')[0];
+
+      sbAdmin.from('onboarding_notities').insert({
+        traject_id: currentTraject.id,
+        auteur_id: currentUser.id,
+        auteur_naam: myName,
+        inhoud: text,
+        week_nr: activeWeek
+      }).then(function(res) {
+        if (res.error) {
+          alert('Fout bij opslaan notitie: ' + res.error.message);
+          return;
+        }
+        input.value = '';
+        notities.push({
+          auteur_naam: myName,
+          inhoud: text,
+          week_nr: activeWeek,
+          created_at: new Date().toISOString()
+        });
+        renderNotes();
+      });
+    });
+
+    /* ═══ Open new traject modal ═══ */
+    function openNewTrajectModal() {
+      // Load users via admin client
+      var userSelect = document.getElementById('nt-user-select');
+      userSelect.innerHTML = '<option value="">Medewerkers laden…</option>';
+
+      function populateUsers(users) {
+        userSelect.innerHTML = '<option value="">— Selecteer medewerker —</option>' +
+          users.map(function(u) {
+            return '<option value="' + u.id + '" data-name="' + escapeHtml(u.name) + '">' +
+              escapeHtml(u.name) + (u.email ? ' (' + u.email + ')' : '') + '</option>';
+          }).join('');
+      }
+
+      // Try admin API
+      if (serviceRoleKey) {
+        try {
+          sbAdmin.auth.admin.listUsers().then(function(res) {
+            if (res.data && res.data.users && res.data.users.length > 0) {
+              var users = res.data.users.map(function(u) {
+                return {
+                  id: u.id,
+                  name: (u.user_metadata && (u.user_metadata.full_name || u.user_metadata.name)) || u.email || 'Onbekend',
+                  email: u.email
+                };
+              });
+              populateUsers(users);
+            } else {
+              userSelect.innerHTML = '<option value="">Geen medewerkers gevonden</option>';
+            }
+          }).catch(function(err) {
+            console.error('Admin user list failed:', err);
+            userSelect.innerHTML = '<option value="">Kan medewerkers niet laden</option>';
+          });
+        } catch(e) {
+          console.error('Admin client error:', e);
+          userSelect.innerHTML = '<option value="">Kan medewerkers niet laden</option>';
+        }
+      } else {
+        userSelect.innerHTML = '<option value="">Service role key niet geconfigureerd in config.js</option>';
+      }
+
+      // Load templates into selector
+      var tplSel = document.getElementById('nt-template-select');
+      var activeTemplates = allTemplates.filter(function(t) { return t.actief; });
+      if (activeTemplates.length === 0) {
+        tplSel.innerHTML = '<option value="">Geen actieve templates beschikbaar</option>';
+      } else {
+        tplSel.innerHTML = '<option value="">— Selecteer template —</option>' +
+          activeTemplates.map(function(t) {
+            var taakCount = allTaken.filter(function(tk) { return tk.template_id === t.id; }).length;
+            return '<option value="' + t.id + '" data-afdeling="' + escapeHtml(t.afdeling) + '">' +
+              escapeHtml(t.naam) + ' (' + taakCount + ' taken)</option>';
+          }).join('');
+      }
+
+      // Template preview on change
+      tplSel.onchange = function() {
+        var tplId = this.value;
+        var preview = document.getElementById('nt-template-preview');
+        if (!tplId) { preview.innerHTML = ''; return; }
+        var tpl = allTemplates.find(function(t) { return t.id === tplId; });
+        var tplTaken = allTaken.filter(function(t) { return t.template_id === tplId; });
+
+        // Auto-set afdeling
+        if (tpl) {
+          var afdSel = document.getElementById('nt-afdeling');
+          for (var i = 0; i < afdSel.options.length; i++) {
+            if (afdSel.options[i].value === tpl.afdeling) { afdSel.selectedIndex = i; break; }
+          }
+        }
+
+        var html = '<div style="background:var(--sanadome-blue-pale);border-radius:var(--radius-sm);padding:0.75rem;margin-top:0.25rem;">';
+        html += '<div style="font-size:0.75rem;font-weight:600;color:var(--sanadome-blue);margin-bottom:0.35rem;">📐 ' + escapeHtml(tpl.naam) + '</div>';
+        if (tpl.omschrijving) html += '<div style="font-size:0.72rem;color:var(--sanadome-text-soft);margin-bottom:0.5rem;">' + escapeHtml(tpl.omschrijving) + '</div>';
+        for (var w = 1; w <= 4; w++) {
+          var wt = tplTaken.filter(function(t) { return t.week_nr === w; });
+          if (wt.length === 0) continue;
+          html += '<div style="font-size:0.68rem;font-weight:600;color:var(--sanadome-text);margin-top:0.35rem;">Week ' + w + ' (' + wt.length + ' taken)</div>';
+          wt.forEach(function(t) {
+            html += '<div style="font-size:0.7rem;color:var(--sanadome-text-soft);padding-left:0.5rem;">• ' + escapeHtml(t.titel) + '</div>';
+          });
+        }
+        html += '</div>';
+        preview.innerHTML = html;
+      };
+
+      // Set default start date
+      document.getElementById('nt-startdatum').value = new Date().toISOString().split('T')[0];
+      document.getElementById('nt-template-preview').innerHTML = '';
+      document.getElementById('ob-new-traject-modal').classList.add('open');
+    }
+
+    // Bind all "new traject" buttons
+    document.querySelectorAll('#btn-new-traject, #btn-new-traject-empty').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        openNewTrajectModal();
+      });
+    });
+
+    window.closeNewTrajectModal = function() {
+      document.getElementById('ob-new-traject-modal').classList.remove('open');
+    };
+    document.getElementById('ob-new-traject-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeNewTrajectModal();
+    });
+
+    document.getElementById('nt-save-btn').addEventListener('click', function() {
+      var userSelect = document.getElementById('nt-user-select');
+      var userId = userSelect.value;
+      if (!userId) { alert('Selecteer een medewerker.'); return; }
+
+      var selectedOption = userSelect.options[userSelect.selectedIndex];
+      var userName = selectedOption ? (selectedOption.getAttribute('data-name') || selectedOption.textContent || '') : '';
+      var templateId = document.getElementById('nt-template-select').value;
+      var afdeling = document.getElementById('nt-afdeling').value;
+      var startdatum = document.getElementById('nt-startdatum').value;
+
+      if (!templateId) { alert('Selecteer een template.'); return; }
+      if (!startdatum) { alert('Kies een startdatum.'); return; }
+
+      var saveBtn = document.getElementById('nt-save-btn');
+      saveBtn.textContent = 'Aanmaken…';
+      saveBtn.disabled = true;
+
+      // Gebruik admin client voor insert (bypass RLS)
+      var insertData = {
+        medewerker_id: userId,
+        naam: userName,
+        afdeling: afdeling,
+        startdatum: startdatum,
+        status: 'actief',
+        template_id: templateId,
+        aangemaakt_door: currentUser.id
+      };
+
+      console.log('Traject insert data:', insertData);
+
+      sbAdmin.from('onboarding_trajecten').insert(insertData).select().then(function(res) {
+        if (res.error) {
+          alert('Fout bij aanmaken traject: ' + res.error.message + '\n\nDetails: ' + JSON.stringify(res.error));
+          console.error('Insert error:', res.error);
+          saveBtn.textContent = 'Traject aanmaken';
+          saveBtn.disabled = false;
+          return;
+        }
+
+        var newTraject = res.data && res.data[0];
+        if (!newTraject) {
+          // Insert succeeded but no data returned — still reload
+          console.warn('Traject aangemaakt maar geen data terug van select');
+          closeNewTrajectModal();
+          saveBtn.textContent = 'Traject aanmaken';
+          saveBtn.disabled = false;
+          loadOnboardingData();
+          return;
+        }
+
+        console.log('Traject aangemaakt:', newTraject);
+
+        // Auto-create voortgang records for all template tasks
+        var templateTaken = allTaken.filter(function(t) { return t.template_id === templateId; });
+        if (templateTaken.length > 0) {
+          var voortgangRecords = templateTaken.map(function(t) {
+            return {
+              traject_id: newTraject.id,
+              taak_id: t.id,
+              voltooid: false
+            };
+          });
+          sbAdmin.from('onboarding_voortgang').insert(voortgangRecords).then(function(vRes) {
+            if (vRes.error) console.error('Voortgang insert error:', vRes.error);
+            closeNewTrajectModal();
+            saveBtn.textContent = 'Traject aanmaken';
+            saveBtn.disabled = false;
+            loadOnboardingData();
+          });
+        } else {
+          closeNewTrajectModal();
+          saveBtn.textContent = 'Traject aanmaken';
+          saveBtn.disabled = false;
+          loadOnboardingData();
+        }
+      }).catch(function(err) {
+        alert('Onverwachte fout: ' + (err.message || err));
+        console.error('Catch error:', err);
+        saveBtn.textContent = 'Traject aanmaken';
+        saveBtn.disabled = false;
+      });
+    });
+
+    /* ═══ TEMPLATE MANAGEMENT ═══ */
+    function loadTemplates() {
+      sbAdmin.from('onboarding_templates').select('*').order('naam').then(function(res) {
+        if (res.error) {
+          document.getElementById('tpl-grid').innerHTML =
+            '<div style="padding:2rem;text-align:center;color:var(--sanadome-text-soft);">Kan templates niet laden. Voer het onboarding-templates.sql script uit.</div>';
+          return;
+        }
+        allTemplates = res.data || [];
+        renderTemplateGrid();
+      });
+    }
+
+    function renderTemplateGrid() {
+      var grid = document.getElementById('tpl-grid');
+      if (allTemplates.length === 0) {
+        grid.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--sanadome-text-soft);grid-column:1/-1;"><div style="font-size:2rem;margin-bottom:0.5rem;">📐</div><h3 style="font-family:Plus Jakarta Sans,sans-serif;font-weight:700;">Geen templates</h3><p style="font-size:0.82rem;">Maak een template aan om te beginnen.</p></div>';
+        return;
+      }
+
+      var html = '';
+      allTemplates.forEach(function(tpl) {
+        var tplTaken = allTaken.filter(function(t) { return t.template_id === tpl.id; });
+        var weekCounts = [0, 0, 0, 0];
+        tplTaken.forEach(function(t) { if (t.week_nr >= 1 && t.week_nr <= 4) weekCounts[t.week_nr - 1]++; });
+
+        html += '<div class="tpl-card" data-tpl-id="' + tpl.id + '">';
+        html += '<div class="tpl-card-header">';
+        html += '<div class="tpl-card-title">' + escapeHtml(tpl.naam) + '</div>';
+        html += '<span class="tpl-card-badge ' + (tpl.actief ? 'actief' : 'inactief') + '">' +
+          (tpl.actief ? '● Actief' : '○ Inactief') + '</span>';
+        html += '</div>';
+        if (tpl.omschrijving) {
+          html += '<div class="tpl-card-desc">' + escapeHtml(tpl.omschrijving) + '</div>';
+        }
+        html += '<div class="tpl-card-meta">';
+        html += '<span>📁 ' + escapeHtml(tpl.afdeling) + '</span>';
+        html += '<span>📋 ' + tplTaken.length + ' taken</span>';
+        html += '<span>📅 W1:' + weekCounts[0] + ' W2:' + weekCounts[1] + ' W3:' + weekCounts[2] + ' W4:' + weekCounts[3] + '</span>';
+        html += '</div>';
+
+        // Tasks preview
+        if (tplTaken.length > 0) {
+          html += '<div class="tpl-tasks-preview">';
+          for (var w = 1; w <= 4; w++) {
+            var wt = tplTaken.filter(function(t) { return t.week_nr === w; });
+            if (wt.length === 0) continue;
+            html += '<div class="tpl-week-group">';
+            html += '<div class="tpl-week-label">Week ' + w + '</div>';
+            wt.forEach(function(t) {
+              html += '<div class="tpl-task-mini">' + escapeHtml(t.titel) + '</div>';
+            });
+            html += '</div>';
+          }
+          html += '</div>';
+        }
+
+        html += '<div class="tpl-card-actions">';
+        html += '<button class="tpl-btn tpl-btn-primary" data-action="edit" data-tpl-id="' + tpl.id + '">✏️ Bewerken</button>';
+        html += '<button class="tpl-btn tpl-btn-secondary" data-action="duplicate" data-tpl-id="' + tpl.id + '">📋 Dupliceren</button>';
+        html += '<button class="tpl-btn tpl-btn-secondary" data-action="toggle" data-tpl-id="' + tpl.id + '">' + (tpl.actief ? '⏸️ Deactiveren' : '▶️ Activeren') + '</button>';
+        html += '<button class="tpl-btn tpl-btn-danger" data-action="delete" data-tpl-id="' + tpl.id + '">🗑️</button>';
+        html += '</div>';
+        html += '</div>';
+      });
+      grid.innerHTML = html;
+
+      // Bind action handlers
+      grid.querySelectorAll('[data-action]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var action = this.getAttribute('data-action');
+          var tplId = this.getAttribute('data-tpl-id');
+          var tpl = allTemplates.find(function(t) { return t.id === tplId; });
+          if (!tpl) return;
+
+          if (action === 'edit') openTemplateEditor(tpl);
+          else if (action === 'duplicate') duplicateTemplate(tpl);
+          else if (action === 'toggle') toggleTemplate(tpl);
+          else if (action === 'delete') deleteTemplate(tpl);
+        });
+      });
+    }
+
+    /* ═══ Template editor ═══ */
+    var templateEditorTasks = [];
+
+    function openTemplateEditor(tpl) {
+      var isNew = !tpl;
+      document.getElementById('tpl-modal-title').textContent = isNew ? 'Nieuwe template' : 'Template bewerken';
+      document.getElementById('tpl-edit-id').value = isNew ? '' : tpl.id;
+      document.getElementById('tpl-naam').value = isNew ? '' : tpl.naam;
+      document.getElementById('tpl-omschrijving').value = isNew ? '' : (tpl.omschrijving || '');
+      document.getElementById('tpl-actief').checked = isNew ? true : tpl.actief;
+
+      var afdSel = document.getElementById('tpl-afdeling');
+      var afdValue = isNew ? 'Algemeen' : tpl.afdeling;
+      for (var i = 0; i < afdSel.options.length; i++) {
+        if (afdSel.options[i].value === afdValue) { afdSel.selectedIndex = i; break; }
+      }
+
+      // Load tasks
+      if (isNew) {
+        templateEditorTasks = [];
+      } else {
+        templateEditorTasks = allTaken
+          .filter(function(t) { return t.template_id === tpl.id; })
+          .map(function(t) {
+            return { id: t.id, week_nr: t.week_nr, titel: t.titel, omschrijving: t.omschrijving || '', afdeling: t.afdeling, volgorde: t.volgorde, isNew: false };
+          });
+      }
+      renderTemplateEditorTasks();
+      document.getElementById('ob-template-modal').classList.add('open');
+    }
+
+    window.closeTemplateModal = function() {
+      document.getElementById('ob-template-modal').classList.remove('open');
+    };
+    document.getElementById('ob-template-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeTemplateModal();
+    });
+
+    function renderTemplateEditorTasks() {
+      var container = document.getElementById('tpl-task-list');
+      if (templateEditorTasks.length === 0) {
+        container.innerHTML = '<div style="padding:0.75rem;text-align:center;font-size:0.78rem;color:var(--sanadome-text-soft);">Nog geen taken. Klik op "+ Taak toevoegen".</div>';
+        return;
+      }
+
+      // Sort by week, then volgorde
+      templateEditorTasks.sort(function(a, b) {
+        return a.week_nr - b.week_nr || a.volgorde - b.volgorde;
+      });
+
+      var html = '';
+      var currentW = 0;
+      templateEditorTasks.forEach(function(task, idx) {
+        if (task.week_nr !== currentW) {
+          currentW = task.week_nr;
+          html += '<div class="tpl-week-label" style="margin-top:0.75rem;">Week ' + currentW + '</div>';
+        }
+        html += '<div class="tpl-task-row" data-idx="' + idx + '">';
+        html += '<select class="tpl-task-week" style="width:70px;padding:0.35rem 0.5rem;font-size:0.78rem;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);">';
+        for (var w = 1; w <= 4; w++) {
+          html += '<option value="' + w + '"' + (task.week_nr === w ? ' selected' : '') + '>W' + w + '</option>';
+        }
+        html += '</select>';
+        html += '<input type="text" class="tpl-task-title" value="' + escapeHtml(task.titel) + '" placeholder="Taaknaam" style="flex:1;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);">';
+        html += '<select class="tpl-task-dept" style="width:120px;padding:0.35rem 0.5rem;font-size:0.78rem;border:1.5px solid var(--sanadome-border);border-radius:var(--radius-sm);">';
+        ['Algemeen', 'Front Office', 'Reserveringen'].forEach(function(dept) {
+          html += '<option value="' + dept + '"' + (task.afdeling === dept ? ' selected' : '') + '>' + dept + '</option>';
+        });
+        html += '</select>';
+        html += '<button class="tpl-task-remove" data-idx="' + idx + '" title="Verwijderen">✕</button>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+
+      // Bind change and remove handlers
+      container.querySelectorAll('.tpl-task-row').forEach(function(row) {
+        var idx = parseInt(row.getAttribute('data-idx'));
+        row.querySelector('.tpl-task-week').addEventListener('change', function() {
+          templateEditorTasks[idx].week_nr = parseInt(this.value);
+        });
+        row.querySelector('.tpl-task-title').addEventListener('input', function() {
+          templateEditorTasks[idx].titel = this.value;
+        });
+        row.querySelector('.tpl-task-dept').addEventListener('change', function() {
+          templateEditorTasks[idx].afdeling = this.value;
+        });
+        row.querySelector('.tpl-task-remove').addEventListener('click', function() {
+          templateEditorTasks.splice(idx, 1);
+          renderTemplateEditorTasks();
+        });
+      });
+    }
+
+    // Add task button
+    document.getElementById('tpl-add-task').addEventListener('click', function() {
+      var lastWeek = templateEditorTasks.length > 0 ? templateEditorTasks[templateEditorTasks.length - 1].week_nr : 1;
+      var maxVolgorde = 0;
+      templateEditorTasks.forEach(function(t) {
+        if (t.week_nr === lastWeek && t.volgorde > maxVolgorde) maxVolgorde = t.volgorde;
+      });
+      templateEditorTasks.push({
+        id: null, week_nr: lastWeek, titel: '', omschrijving: '', afdeling: 'Algemeen',
+        volgorde: maxVolgorde + 1, isNew: true
+      });
+      renderTemplateEditorTasks();
+    });
+
+    // Save template
+    document.getElementById('tpl-save-btn').addEventListener('click', function() {
+      var editId = document.getElementById('tpl-edit-id').value;
+      var naam = document.getElementById('tpl-naam').value.trim();
+      var omschrijving = document.getElementById('tpl-omschrijving').value.trim();
+      var afdeling = document.getElementById('tpl-afdeling').value;
+      var actief = document.getElementById('tpl-actief').checked;
+
+      if (!naam) { alert('Vul een naam in.'); return; }
+
+      // Validate tasks
+      var validTasks = templateEditorTasks.filter(function(t) { return t.titel.trim() !== ''; });
+
+      // Recalculate volgorde per week
+      var weekCounters = {};
+      validTasks.forEach(function(t) {
+        if (!weekCounters[t.week_nr]) weekCounters[t.week_nr] = 0;
+        weekCounters[t.week_nr]++;
+        t.volgorde = weekCounters[t.week_nr];
+      });
+
+      var saveBtn = document.getElementById('tpl-save-btn');
+      saveBtn.textContent = 'Opslaan…';
+      saveBtn.disabled = true;
+
+      if (editId) {
+        // Update existing template
+        sbAdmin.from('onboarding_templates').update({
+          naam: naam, omschrijving: omschrijving || null,
+          afdeling: afdeling, actief: actief
+        }).eq('id', editId).then(function(res) {
+          if (res.error) { alert('Fout: ' + res.error.message); saveBtn.textContent = 'Template opslaan'; saveBtn.disabled = false; return; }
+          // Sync tasks: delete removed, update existing, insert new
+          syncTemplateTasks(editId, validTasks, function() {
+            saveBtn.textContent = 'Template opslaan'; saveBtn.disabled = false;
+            closeTemplateModal();
+            // Reload templates and tasks
+            Promise.all([
+              sbAdmin.from('onboarding_templates').select('*').order('naam'),
+              sbAdmin.from('onboarding_taken').select('*').order('week_nr').order('volgorde')
+            ]).then(function(results) {
+              if (!results[0].error) allTemplates = results[0].data || [];
+              if (!results[1].error) allTaken = results[1].data || [];
+              renderTemplateGrid();
+            });
+          });
+        });
+      } else {
+        // Insert new template
+        sbAdmin.from('onboarding_templates').insert({
+          naam: naam, omschrijving: omschrijving || null,
+          afdeling: afdeling, actief: actief, aangemaakt_door: currentUser.id
+        }).select().then(function(res) {
+          if (res.error) { alert('Fout: ' + res.error.message); saveBtn.textContent = 'Template opslaan'; saveBtn.disabled = false; return; }
+          var newTpl = res.data[0];
+          // Insert tasks
+          if (validTasks.length > 0) {
+            var taskInserts = validTasks.map(function(t) {
+              return {
+                template_id: newTpl.id, week_nr: t.week_nr, titel: t.titel,
+                omschrijving: t.omschrijving || null, afdeling: t.afdeling, volgorde: t.volgorde
+              };
+            });
+            sbAdmin.from('onboarding_taken').insert(taskInserts).then(function() {
+              saveBtn.textContent = 'Template opslaan'; saveBtn.disabled = false;
+              closeTemplateModal();
+              Promise.all([
+                sbAdmin.from('onboarding_templates').select('*').order('naam'),
+                sbAdmin.from('onboarding_taken').select('*').order('week_nr').order('volgorde')
+              ]).then(function(results) {
+                if (!results[0].error) allTemplates = results[0].data || [];
+                if (!results[1].error) allTaken = results[1].data || [];
+                renderTemplateGrid();
+              });
+            });
+          } else {
+            saveBtn.textContent = 'Template opslaan'; saveBtn.disabled = false;
+            closeTemplateModal();
+            allTemplates.push(newTpl);
+            renderTemplateGrid();
+          }
+        });
+      }
+    });
+
+    function syncTemplateTasks(templateId, validTasks, callback) {
+      // Get existing task IDs for this template
+      var existingIds = validTasks.filter(function(t) { return t.id; }).map(function(t) { return t.id; });
+
+      // Delete tasks that are no longer in the list
+      var deletePromise = sbAdmin.from('onboarding_taken')
+        .delete()
+        .eq('template_id', templateId)
+        .not('id', 'in', '(' + (existingIds.length > 0 ? existingIds.join(',') : "'00000000-0000-0000-0000-000000000000'") + ')');
+
+      deletePromise.then(function() {
+        // Update existing tasks
+        var updates = validTasks.filter(function(t) { return t.id; }).map(function(t) {
+          return sbAdmin.from('onboarding_taken').update({
+            week_nr: t.week_nr, titel: t.titel,
+            omschrijving: t.omschrijving || null, afdeling: t.afdeling, volgorde: t.volgorde
+          }).eq('id', t.id);
+        });
+
+        // Insert new tasks
+        var newTasks = validTasks.filter(function(t) { return !t.id; });
+        if (newTasks.length > 0) {
+          var inserts = newTasks.map(function(t) {
+            return {
+              template_id: templateId, week_nr: t.week_nr, titel: t.titel,
+              omschrijving: t.omschrijving || null, afdeling: t.afdeling, volgorde: t.volgorde
+            };
+          });
+          updates.push(sbAdmin.from('onboarding_taken').insert(inserts));
+        }
+
+        Promise.all(updates).then(function() { callback(); });
+      });
+    }
+
+    // New template button
+    document.getElementById('btn-new-template').addEventListener('click', function() {
+      openTemplateEditor(null);
+    });
+
+    function duplicateTemplate(tpl) {
+      if (!confirm('Template "' + tpl.naam + '" dupliceren?')) return;
+      var tplTaken = allTaken.filter(function(t) { return t.template_id === tpl.id; });
+
+      sbAdmin.from('onboarding_templates').insert({
+        naam: tpl.naam + ' (kopie)',
+        omschrijving: tpl.omschrijving,
+        afdeling: tpl.afdeling,
+        actief: false,
+        aangemaakt_door: currentUser.id
+      }).select().then(function(res) {
+        if (res.error) { alert('Fout: ' + res.error.message); return; }
+        var newTpl = res.data[0];
+        if (tplTaken.length > 0) {
+          var taskInserts = tplTaken.map(function(t) {
+            return {
+              template_id: newTpl.id, week_nr: t.week_nr, titel: t.titel,
+              omschrijving: t.omschrijving, afdeling: t.afdeling, volgorde: t.volgorde
+            };
+          });
+          sbAdmin.from('onboarding_taken').insert(taskInserts).then(function() {
+            sbAdmin.from('onboarding_taken').select('*').order('week_nr').order('volgorde').then(function(r) {
+              if (!r.error) allTaken = r.data || [];
+              allTemplates.push(newTpl);
+              renderTemplateGrid();
+            });
+          });
+        } else {
+          allTemplates.push(newTpl);
+          renderTemplateGrid();
+        }
+      });
+    }
+
+    function toggleTemplate(tpl) {
+      var newStatus = !tpl.actief;
+      sbAdmin.from('onboarding_templates').update({ actief: newStatus }).eq('id', tpl.id).then(function(res) {
+        if (res.error) { alert('Fout: ' + res.error.message); return; }
+        tpl.actief = newStatus;
+        renderTemplateGrid();
+      });
+    }
+
+    function deleteTemplate(tpl) {
+      var tplTaken = allTaken.filter(function(t) { return t.template_id === tpl.id; });
+      if (!confirm('Template "' + tpl.naam + '" verwijderen? Dit verwijdert ook ' + tplTaken.length + ' taken.')) return;
+
+      sbAdmin.from('onboarding_templates').delete().eq('id', tpl.id).then(function(res) {
+        if (res.error) { alert('Fout: ' + res.error.message); return; }
+        allTemplates = allTemplates.filter(function(t) { return t.id !== tpl.id; });
+        allTaken = allTaken.filter(function(t) { return t.template_id !== tpl.id; });
+        renderTemplateGrid();
+      });
+    }
+
+    /* ═══ Helpers ═══ */
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str || ''));
+      return div.innerHTML;
+    }
+
+    function formatDate(d) {
+      return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function formatDateTime(d) {
+      return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }) + ' ' +
+        d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+    }
+  })();
+  </script>
+</body>
+</html>

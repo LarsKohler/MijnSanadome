@@ -48,7 +48,7 @@
     .topbar-icon-btn svg { width: 20px; height: 20px; }
     .topbar-user { display: flex; align-items: center; gap: 0.75rem; padding: 0.35rem 0.5rem 0.35rem 0.75rem; border-radius: var(--radius-sm); margin-left: 0.5rem; border: 1px solid transparent; transition: background 0.15s; }
     .topbar-user:hover { background: var(--sanadome-blue-mist); }
-    .topbar-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient-primary); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(59,130,196,0.25); }
+    .topbar-avatar { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; background: var(--gradient-primary); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(59,130,196,0.25); }
     .topbar-user-info { text-align: left; }
     .topbar-user-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--sanadome-text); display: block; line-height: 1.3; }
     .topbar-user-role { font-size: 0.75rem; color: var(--sanadome-text-soft); display: block; }
@@ -138,6 +138,53 @@
     .btn-danger { padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 600; font-family: inherit; background: linear-gradient(135deg, #ef4444, #f87171); border: none; border-radius: var(--radius-sm); color: var(--white); cursor: pointer; box-shadow: 0 2px 8px rgba(239,68,68,0.2); transition: all 0.2s ease; }
     .btn-danger:hover { opacity: 0.9; transform: translateY(-1px); }
 
+    /* Tabs */
+    .tab-bar { display: flex; gap: 0.25rem; background: #f1f5f9; border-radius: var(--radius-sm); padding: 0.25rem; margin-bottom: 1.5rem; width: fit-content; }
+    .tab-btn { padding: 0.5rem 1.15rem; font-size: 0.82rem; font-weight: 600; font-family: inherit; border: none; background: transparent; border-radius: 8px; cursor: pointer; color: var(--sanadome-text-soft); transition: all 0.15s ease; display: flex; align-items: center; gap: 0.4rem; }
+    .tab-btn.active { background: var(--white); color: var(--sanadome-blue); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .tab-btn:hover:not(.active) { color: var(--sanadome-text); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* User picker */
+    .user-picker-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .user-search-wrap { position: relative; flex: 1; max-width: 360px; }
+    .user-search-wrap input { width: 100%; padding: 0.55rem 0.85rem 0.55rem 2.2rem; font-size: 0.85rem; font-family: inherit; border: 1.5px solid var(--sanadome-border); border-radius: var(--radius-sm); background: var(--white); color: var(--sanadome-text); transition: border-color 0.15s; }
+    .user-search-wrap input:focus { outline: none; border-color: var(--sanadome-blue); }
+    .user-search-wrap .search-icon { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--sanadome-text-soft); pointer-events: none; }
+    .user-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--white); border: 1.5px solid var(--sanadome-border); border-radius: var(--radius-sm); box-shadow: var(--shadow-elevated); max-height: 260px; overflow-y: auto; z-index: 100; margin-top: 4px; display: none; }
+    .user-dropdown.open { display: block; }
+    .user-dropdown-item { display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 0.85rem; cursor: pointer; transition: background 0.1s; }
+    .user-dropdown-item:hover { background: var(--sanadome-blue-mist); }
+    .user-dropdown-item .ud-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--gradient-primary); color: var(--white); font-size: 0.7rem; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .user-dropdown-item .ud-name { font-size: 0.85rem; font-weight: 600; color: var(--sanadome-text); }
+    .user-dropdown-item .ud-role { font-size: 0.72rem; color: var(--sanadome-text-soft); }
+    .user-dropdown-empty { padding: 1rem; text-align: center; font-size: 0.82rem; color: var(--sanadome-text-soft); }
+
+    /* Selected user card */
+    .selected-user-card { display: flex; align-items: center; gap: 0.85rem; padding: 0.75rem 1rem; background: var(--sanadome-blue-pale); border: 1.5px solid rgba(59,130,196,0.2); border-radius: var(--radius-sm); margin-bottom: 1.25rem; }
+    .selected-user-card .su-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-primary); color: var(--white); font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; box-shadow: 0 2px 8px rgba(59,130,196,0.25); }
+    .selected-user-card .su-info { flex: 1; }
+    .selected-user-card .su-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .selected-user-card .su-role { font-size: 0.75rem; color: var(--sanadome-text-soft); }
+    .selected-user-card .su-email { font-size: 0.72rem; color: var(--sanadome-text-soft); }
+    .btn-clear-user { padding: 0.35rem 0.7rem; font-size: 0.75rem; font-weight: 600; font-family: inherit; background: var(--white); border: 1.5px solid var(--sanadome-border); border-radius: 8px; cursor: pointer; color: var(--sanadome-text-soft); transition: all 0.15s; }
+    .btn-clear-user:hover { border-color: #ef4444; color: #ef4444; }
+    .btn-reset-user { padding: 0.35rem 0.7rem; font-size: 0.75rem; font-weight: 600; font-family: inherit; background: var(--white); border: 1.5px solid var(--sanadome-border); border-radius: 8px; cursor: pointer; color: var(--sanadome-text-soft); transition: all 0.15s; margin-right: 0.35rem; }
+    .btn-reset-user:hover { border-color: #f59e0b; color: #f59e0b; }
+
+    /* Override indicator */
+    .override-badge { display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.1rem 0.45rem; font-size: 0.62rem; font-weight: 700; background: #fef3c7; color: #92400e; border-radius: 999px; margin-left: 0.35rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .override-badge.active-override { background: #dbeafe; color: #1e40af; }
+
+    /* User matrix - single column */
+    .user-matrix-header { display: grid; grid-template-columns: 1fr 110px 110px; align-items: center; padding: 0.85rem 1.25rem; background: linear-gradient(180deg, rgba(241,245,249,0.5) 0%, transparent 100%); border-bottom: 1.5px solid var(--sanadome-border); position: sticky; top: var(--topbar-h); z-index: 10; background-color: var(--white); }
+    .user-matrix-row { display: grid; grid-template-columns: 1fr 110px 110px; align-items: center; padding: 0.6rem 1.25rem; border-bottom: 1px solid rgba(241,245,249,0.8); transition: background 0.1s; }
+    .user-matrix-row:hover { background: var(--sanadome-blue-mist); }
+    .role-default-label { font-size: 0.72rem; color: var(--sanadome-text-soft); text-align: center; }
+    .role-default-label .rd-granted { color: #16a34a; font-weight: 600; }
+    .role-default-label .rd-denied { color: #dc2626; font-weight: 600; }
+
     /* Responsive */
     @media (max-width: 1100px) { .matrix-header, .matrix-row { grid-template-columns: 1fr repeat(4, 90px); } }
     @media (max-width: 900px) { .app-sidebar { transform: translateX(-100%); } .app-main { margin-left: 0; } }
@@ -148,6 +195,7 @@
       .toggle-switch .slider::before { width: 13px; height: 13px; }
       .toggle-switch input:checked + .slider::before { transform: translateX(15px); }
       .page-content { padding: 1.25rem; }
+      .user-matrix-header, .user-matrix-row { grid-template-columns: 1fr 80px 80px; }
     }
   </style>
 </head>
@@ -193,14 +241,18 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><line x1="10" y1="6" x2="18" y2="6"/><line x1="10" y1="10" x2="18" y2="10"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
           Nieuwsbeheer
         </a>
+        <a href="debiteuren.html" class="nav-item" data-permission="debiteuren.bekijken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Debiteuren
+        </a>
         <a href="rechten.html" class="nav-item active" data-permission="rechten.bekijken">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Rechten
         </a>
         <div class="nav-label">Account</div>
-        <a href="#placeholder-gegevens" class="nav-item" data-permission="nav.gegevens">
+        <a href="profiel.html" class="nav-item" data-permission="nav.gegevens">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Mijn gegevens
+          Mijn Profiel
         </a>
         <a href="#placeholder-hr" class="nav-item" data-permission="nav.hr">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -216,13 +268,13 @@
           <button type="button" class="topbar-icon-btn" aria-label="Meldingen">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           </button>
-          <div class="topbar-user">
+          <a href="profiel.html" class="topbar-user" style="text-decoration:none;color:inherit;">
             <div class="topbar-avatar" id="user-avatar">—</div>
             <div class="topbar-user-info">
               <span class="topbar-user-name" id="user-name">Laden…</span>
               <span class="topbar-user-role" id="user-role-label">Medewerker</span>
             </div>
-          </div>
+          </a>
           <button type="button" class="btn-logout" id="btn-logout">Uitloggen</button>
         </div>
       </header>
@@ -275,7 +327,8 @@
         { key: 'dashboard.berichten', label: 'Berichten widget', desc: 'Berichten overzicht op dashboard' },
         { key: 'dashboard.aanvragen', label: 'Aanvragen widget', desc: 'Aanvragen overzicht op dashboard' },
         { key: 'dashboard.contactgegevens', label: 'Contactgegevens', desc: 'Contactgegevens widget op dashboard' },
-        { key: 'dashboard.dienstverband', label: 'Dienstverband info', desc: 'Dienstverband widget op dashboard' }
+        { key: 'dashboard.dienstverband', label: 'Dienstverband info', desc: 'Dienstverband widget op dashboard' },
+        { key: 'dashboard.rooster', label: 'Rooster widget', desc: 'Live rooster widget op dashboard' }
       ]},
       { key: 'navigatie', label: 'Navigatie', icon: '🧭', permissions: [
         { key: 'nav.rooster', label: 'Mijn rooster', desc: 'Roostertab in zijnavigatie' },
@@ -297,6 +350,11 @@
         { key: 'nieuws.bewerken', label: 'Bewerken', desc: 'Nieuwsartikelen wijzigen' },
         { key: 'nieuws.verwijderen', label: 'Verwijderen', desc: 'Nieuwsartikelen verwijderen' }
       ]},
+      { key: 'debiteuren', label: 'Debiteurenbeheer', icon: '📋', permissions: [
+        { key: 'debiteuren.bekijken', label: 'Pagina bekijken', desc: 'Debiteurenpagina openen' },
+        { key: 'debiteuren.beheren', label: 'Dossiers beheren', desc: 'Dossiers aanmaken, bewerken en verwijderen' },
+        { key: 'debiteuren.importeren', label: 'Rapport importeren', desc: 'Excel-rapporten importeren' }
+      ]},
       { key: 'rechten', label: 'Rechten', icon: '🔐', permissions: [
         { key: 'rechten.bekijken', label: 'Pagina bekijken', desc: 'Rechtenpagina openen' },
         { key: 'rechten.bewerken', label: 'Rechten aanpassen', desc: 'Rechten van rollen kunnen wijzigen' }
@@ -312,7 +370,7 @@
         if (role === 'Manager') { p[k] = true; }
         else if (role === 'Assistent Manager') { p[k] = k !== 'rechten.bewerken' && k !== 'medewerkers.verwijderen'; }
         else if (role === 'Senior Medewerker') {
-          p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken';
+          p[k] = k.startsWith('dashboard.') || k.startsWith('nav.') || k === 'medewerkers.bekijken' || k === 'nieuws.bekijken' || k === 'debiteuren.bekijken';
         } else {
           p[k] = k.startsWith('dashboard.') || k.startsWith('nav.');
         }
@@ -337,6 +395,11 @@
     var canEdit = false;
     var currentUserRole = 'Medewerker';
     var isSyncing = false;
+    var activeTab = 'roles'; // 'roles' or 'users'
+    var allUsers = [];
+    var selectedUser = null; // { id, name, email, role, avatar_url }
+    var userPermOverrides = {}; // { permKey: bool } for selectedUser
+    var currentUserId = null;
 
     /* ── Auth ── */
     sb.auth.getSession().then(function(res) {
@@ -348,11 +411,17 @@
         var email = user.email || '';
         var name = (user.user_metadata && user.user_metadata.full_name) || (email ? email.split('@')[0] : 'Medewerker');
         currentUserRole = (user.user_metadata && user.user_metadata.role) || 'Medewerker';
+        currentUserId = user.id;
 
         document.getElementById('user-name').textContent = name;
         document.getElementById('user-role-label').textContent = currentUserRole;
         var ini = name.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
-        document.getElementById('user-avatar').textContent = ini;
+        var avatarUrl = user.user_metadata && user.user_metadata.avatar_url;
+        if (avatarUrl) {
+          document.getElementById('user-avatar').innerHTML = '<img src="' + avatarUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+        } else {
+          document.getElementById('user-avatar').textContent = ini;
+        }
 
         // Logout
         document.getElementById('btn-logout').addEventListener('click', function(e) {
@@ -365,7 +434,6 @@
           return;
         }
         if (currentUserRole !== 'Manager') {
-          // Check if they have rechten.bekijken permission
           sb.from('role_permissions').select('permission, granted').eq('role', currentUserRole).then(function(pr) {
             if (pr.data && pr.data.length > 0) {
               var has = pr.data.find(function(r) { return r.permission === 'rechten.bekijken' && r.granted; });
@@ -391,6 +459,7 @@
     /* ── Init ── */
     function initPage() {
       loadPermissions();
+      loadAllUsers();
 
       // Reset modal handlers
       document.getElementById('btn-cancel-reset').addEventListener('click', function() {
@@ -404,7 +473,7 @@
         resetToDefaults();
       });
 
-      // Realtime subscription
+      // Realtime subscription for role_permissions
       sb.channel('perm-changes')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'role_permissions' }, function(payload) {
           if (isSyncing) return;
@@ -420,6 +489,17 @@
         })
         .subscribe();
 
+      // Realtime subscription for user_permissions
+      sb.channel('user-perm-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'user_permissions' }, function(payload) {
+          if (isSyncing) return;
+          var row = payload.new || payload.old;
+          if (!row || !selectedUser || row.user_id !== selectedUser.id) return;
+          // Reload user overrides
+          loadUserOverrides(selectedUser.id);
+        })
+        .subscribe();
+
       // Apply own sidebar permissions
       sb.from('role_permissions').select('permission, granted').eq('role', currentUserRole).then(function(pr) {
         var perms = {};
@@ -428,10 +508,37 @@
         } else {
           perms = getDefaults(currentUserRole);
         }
+        return sb.from('user_permissions').select('permission, granted').eq('user_id', currentUserId).then(function(upr) {
+          if (!upr.error && upr.data && upr.data.length > 0) {
+            upr.data.forEach(function(r) { perms[r.permission] = r.granted; });
+          }
+          return perms;
+        }).catch(function() { return perms; });
+      }).then(function(perms) {
         document.querySelectorAll('[data-permission]').forEach(function(el) {
           var k = el.getAttribute('data-permission');
           if (perms[k] === false) el.style.display = 'none';
         });
+      });
+    }
+
+    /* ── Load all users ── */
+    function loadAllUsers() {
+      if (!adminSb) return;
+      adminSb.auth.admin.listUsers({ perPage: 1000 }).then(function(res) {
+        if (res.error) return;
+        allUsers = (res.data.users || []).map(function(u) {
+          var meta = u.user_metadata || {};
+          return {
+            id: u.id,
+            email: u.email || '',
+            name: meta.full_name || (u.email ? u.email.split('@')[0] : 'Onbekend'),
+            role: meta.role || 'Medewerker',
+            avatar_url: meta.avatar_url || null
+          };
+        });
+        // Sort alphabetically
+        allUsers.sort(function(a, b) { return a.name.localeCompare(b.name); });
       });
     }
 
@@ -460,6 +567,22 @@
       });
     }
 
+    /* ── Load user overrides ── */
+    function loadUserOverrides(userId) {
+      adminSb.from('user_permissions').select('*').eq('user_id', userId).then(function(res) {
+        userPermOverrides = {};
+        if (!res.error && res.data) {
+          res.data.forEach(function(row) {
+            userPermOverrides[row.permission] = row.granted;
+          });
+        }
+        renderUserMatrix();
+      }).catch(function() {
+        userPermOverrides = {};
+        renderUserMatrix();
+      });
+    }
+
     /* ── Seed defaults ── */
     function seedDefaults() {
       var rows = [];
@@ -484,13 +607,13 @@
 
     /* ── Setup screen ── */
     function showSetup() {
-      var sql = "-- MijnSanadome Rechten Tabel\nCREATE TABLE role_permissions (\n  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,\n  role text NOT NULL,\n  permission text NOT NULL,\n  granted boolean NOT NULL DEFAULT true,\n  updated_at timestamptz DEFAULT now(),\n  UNIQUE(role, permission)\n);\n\nALTER TABLE role_permissions ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY \"Ingelogde gebruikers lezen\"\n  ON role_permissions FOR SELECT\n  TO authenticated USING (true);\n\n-- Optioneel: realtime inschakelen\nALTER PUBLICATION supabase_realtime ADD TABLE role_permissions;";
+      var sql = "-- MijnSanadome Rechten Tabellen\nCREATE TABLE role_permissions (\n  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,\n  role text NOT NULL,\n  permission text NOT NULL,\n  granted boolean NOT NULL DEFAULT true,\n  updated_at timestamptz DEFAULT now(),\n  UNIQUE(role, permission)\n);\n\nALTER TABLE role_permissions ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY \"Ingelogde gebruikers lezen\"\n  ON role_permissions FOR SELECT\n  TO authenticated USING (true);\n\n-- Individuele gebruikersrechten (overrides)\nCREATE TABLE user_permissions (\n  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,\n  user_id uuid NOT NULL,\n  permission text NOT NULL,\n  granted boolean NOT NULL DEFAULT true,\n  updated_at timestamptz DEFAULT now(),\n  UNIQUE(user_id, permission)\n);\n\nALTER TABLE user_permissions ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY \"Ingelogde gebruikers lezen\"\n  ON user_permissions FOR SELECT\n  TO authenticated USING (true);\n\n-- Optioneel: realtime inschakelen\nALTER PUBLICATION supabase_realtime ADD TABLE role_permissions;\nALTER PUBLICATION supabase_realtime ADD TABLE user_permissions;";
 
       document.getElementById('page-content').innerHTML =
         '<div class="setup-banner">' +
           '<div class="setup-icon">🔧</div>' +
           '<h2>Database setup nodig</h2>' +
-          '<p>De rechten-tabel bestaat nog niet in je Supabase database.</p>' +
+          '<p>De rechten-tabellen bestaan nog niet in je Supabase database.</p>' +
           '<ol>' +
             '<li>Ga naar je <a href="https://supabase.com/dashboard" target="_blank" rel="noopener">Supabase Dashboard</a></li>' +
             '<li>Open de <strong>SQL Editor</strong></li>' +
@@ -531,8 +654,62 @@
       }
       h += '</div>';
 
-      // Matrix card
-      h += '<div class="matrix-card">';
+      // Tab bar
+      h += '<div class="tab-bar">';
+      h += '<button type="button" class="tab-btn' + (activeTab === 'roles' ? ' active' : '') + '" data-tab="roles">🔑 Rollen</button>';
+      h += '<button type="button" class="tab-btn' + (activeTab === 'users' ? ' active' : '') + '" data-tab="users">👤 Individueel</button>';
+      h += '</div>';
+
+      // Tab panel: Roles
+      h += '<div class="tab-panel' + (activeTab === 'roles' ? ' active' : '') + '" id="tab-roles">';
+      h += renderRolesMatrix();
+      h += '</div>';
+
+      // Tab panel: Users
+      h += '<div class="tab-panel' + (activeTab === 'users' ? ' active' : '') + '" id="tab-users">';
+      h += renderUsersPanel();
+      h += '</div>';
+
+      document.getElementById('page-content').innerHTML = h;
+
+      // Attach tab listeners
+      document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          activeTab = btn.getAttribute('data-tab');
+          document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+          document.getElementById('tab-' + activeTab).classList.add('active');
+        });
+      });
+
+      // Attach toggle listeners for role matrix
+      document.querySelectorAll('#tab-roles input[type="checkbox"]:not([disabled])').forEach(function(input) {
+        input.addEventListener('change', function() {
+          savePermission(input.getAttribute('data-role'), input.getAttribute('data-perm'), input.checked);
+        });
+      });
+
+      // Reset button
+      var resetBtn = document.getElementById('btn-reset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          document.getElementById('modal-reset').classList.add('active');
+        });
+      }
+
+      // User search functionality
+      attachUserSearch();
+
+      // If user was selected, reload their overrides
+      if (selectedUser) {
+        loadUserOverrides(selectedUser.id);
+      }
+    }
+
+    /* ── Render roles matrix ── */
+    function renderRolesMatrix() {
+      var h = '<div class="matrix-card">';
 
       // Header row
       h += '<div class="matrix-header">';
@@ -561,26 +738,302 @@
       });
 
       h += '</div>'; // end matrix-card
+      return h;
+    }
 
-      document.getElementById('page-content').innerHTML = h;
+    /* ── Render users panel ── */
+    function renderUsersPanel() {
+      var h = '';
 
-      // Attach toggle listeners
-      document.querySelectorAll('#page-content input[type="checkbox"]:not([disabled])').forEach(function(input) {
-        input.addEventListener('change', function() {
-          savePermission(input.getAttribute('data-role'), input.getAttribute('data-perm'), input.checked);
+      // User picker
+      h += '<div class="user-picker-bar">';
+      h += '<div class="user-search-wrap">';
+      h += '<svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+      h += '<input type="text" id="user-search-input" placeholder="Zoek medewerker op naam of e-mail…" autocomplete="off">';
+      h += '<div class="user-dropdown" id="user-dropdown"></div>';
+      h += '</div>';
+      h += '</div>';
+
+      // Selected user card + matrix
+      h += '<div id="user-matrix-container">';
+      if (selectedUser) {
+        h += renderSelectedUserCard();
+        h += '<div id="user-matrix-inner"></div>';
+      } else {
+        h += '<div style="text-align:center;padding:3rem 1rem;color:var(--sanadome-text-soft);">';
+        h += '<div style="font-size:2.5rem;margin-bottom:0.75rem;">👤</div>';
+        h += '<p style="font-size:0.9rem;font-weight:600;color:var(--sanadome-text);margin-bottom:0.25rem;">Selecteer een medewerker</p>';
+        h += '<p style="font-size:0.82rem;">Zoek hierboven een medewerker om individuele rechten in te stellen die afwijken van de standaard rolrechten.</p>';
+        h += '</div>';
+      }
+      h += '</div>';
+
+      return h;
+    }
+
+    /* ── Render selected user card ── */
+    function renderSelectedUserCard() {
+      if (!selectedUser) return '';
+      var ini = selectedUser.name.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+      var avatarHtml = selectedUser.avatar_url
+        ? '<img src="' + esc(selectedUser.avatar_url) + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
+        : esc(ini);
+      var overrideCount = Object.keys(userPermOverrides).length;
+      var h = '<div class="selected-user-card">';
+      h += '<div class="su-avatar">' + avatarHtml + '</div>';
+      h += '<div class="su-info">';
+      h += '<div class="su-name">' + esc(selectedUser.name);
+      if (overrideCount > 0) {
+        h += ' <span class="override-badge active-override">' + overrideCount + ' override' + (overrideCount !== 1 ? 's' : '') + '</span>';
+      }
+      h += '</div>';
+      h += '<div class="su-role">' + esc(selectedUser.role) + '</div>';
+      h += '<div class="su-email">' + esc(selectedUser.email) + '</div>';
+      h += '</div>';
+      if (overrideCount > 0) {
+        h += '<button type="button" class="btn-reset-user" id="btn-reset-user" title="Verwijder alle overrides">↺ Reset</button>';
+      }
+      h += '<button type="button" class="btn-clear-user" id="btn-clear-user">✕</button>';
+      h += '</div>';
+      return h;
+    }
+
+    /* ── Render user matrix ── */
+    function renderUserMatrix() {
+      if (!selectedUser) return;
+      var container = document.getElementById('user-matrix-container');
+      if (!container) return;
+
+      var rolePerms = permMap[selectedUser.role] || getDefaults(selectedUser.role);
+
+      var h = renderSelectedUserCard();
+      h += '<div class="matrix-card">';
+
+      // Header
+      h += '<div class="user-matrix-header">';
+      h += '<div class="matrix-label-head">Recht</div>';
+      h += '<div class="matrix-role-head"><span class="role-dot" style="background:' + ROLE_DOTS[selectedUser.role] + '"></span><span>Rol standaard</span></div>';
+      h += '<div class="matrix-role-head"><span class="role-dot" style="background:#f59e0b"></span><span>Override</span></div>';
+      h += '</div>';
+
+      // Categories and permissions
+      CATEGORIES.forEach(function(cat) {
+        h += '<div class="matrix-cat"><span>' + cat.icon + '</span> ' + esc(cat.label) + '</div>';
+        cat.permissions.forEach(function(perm) {
+          var roleGranted = rolePerms[perm.key] !== undefined ? rolePerms[perm.key] : false;
+          var hasOverride = userPermOverrides.hasOwnProperty(perm.key);
+          var overrideGranted = hasOverride ? userPermOverrides[perm.key] : roleGranted;
+
+          h += '<div class="user-matrix-row' + (hasOverride ? ' has-override' : '') + '">';
+          h += '<div class="perm-info"><div class="perm-name">' + esc(perm.label);
+          if (hasOverride) {
+            h += ' <span class="override-badge">' + (overrideGranted ? 'AAN' : 'UIT') + '</span>';
+          }
+          h += '</div><div class="perm-desc">' + esc(perm.desc) + '</div></div>';
+
+          // Role default column (read-only indicator)
+          h += '<div class="role-default-label">';
+          if (roleGranted) {
+            h += '<span class="rd-granted">✓ Aan</span>';
+          } else {
+            h += '<span class="rd-denied">✕ Uit</span>';
+          }
+          h += '</div>';
+
+          // Override toggle
+          var disabled = !canEdit;
+          h += '<div class="toggle-cell"><label class="toggle-switch">';
+          h += '<input type="checkbox" data-user-perm="' + perm.key + '"' + (overrideGranted ? ' checked' : '') + (disabled ? ' disabled' : '') + '>';
+          h += '<span class="slider"></span></label></div>';
+
+          h += '</div>';
         });
       });
 
-      // Reset button
-      var resetBtn = document.getElementById('btn-reset');
-      if (resetBtn) {
-        resetBtn.addEventListener('click', function() {
-          document.getElementById('modal-reset').classList.add('active');
+      h += '</div>'; // end matrix-card
+      container.innerHTML = h;
+
+      // Attach toggle listeners for user overrides
+      document.querySelectorAll('input[data-user-perm]').forEach(function(input) {
+        input.addEventListener('change', function() {
+          var permKey = input.getAttribute('data-user-perm');
+          var newGranted = input.checked;
+          var roleGranted = rolePerms[permKey] !== undefined ? rolePerms[permKey] : false;
+
+          if (newGranted === roleGranted) {
+            // Same as role default → remove override
+            removeUserOverride(selectedUser.id, permKey);
+          } else {
+            // Different from role default → save override
+            saveUserOverride(selectedUser.id, permKey, newGranted);
+          }
+        });
+      });
+
+      // Clear user button
+      var clearBtn = document.getElementById('btn-clear-user');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          selectedUser = null;
+          userPermOverrides = {};
+          renderPage();
+        });
+      }
+
+      // Reset user overrides button
+      var resetUserBtn = document.getElementById('btn-reset-user');
+      if (resetUserBtn) {
+        resetUserBtn.addEventListener('click', function() {
+          resetUserOverrides(selectedUser.id);
         });
       }
     }
 
-    /* ── Save ── */
+    /* ── User search ── */
+    function attachUserSearch() {
+      var searchInput = document.getElementById('user-search-input');
+      var dropdown = document.getElementById('user-dropdown');
+      if (!searchInput || !dropdown) return;
+
+      var debounceTimer;
+      searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+          var q = searchInput.value.trim().toLowerCase();
+          if (q.length < 1) { dropdown.classList.remove('open'); return; }
+
+          var filtered = allUsers.filter(function(u) {
+            return u.name.toLowerCase().indexOf(q) !== -1 || u.email.toLowerCase().indexOf(q) !== -1;
+          }).slice(0, 8);
+
+          if (filtered.length === 0) {
+            dropdown.innerHTML = '<div class="user-dropdown-empty">Geen medewerkers gevonden</div>';
+          } else {
+            dropdown.innerHTML = filtered.map(function(u) {
+              var ini = u.name.split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+              var avatarHtml = u.avatar_url
+                ? '<img src="' + esc(u.avatar_url) + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
+                : esc(ini);
+              return '<div class="user-dropdown-item" data-uid="' + u.id + '">' +
+                '<div class="ud-avatar">' + avatarHtml + '</div>' +
+                '<div><div class="ud-name">' + esc(u.name) + '</div><div class="ud-role">' + esc(u.role) + ' · ' + esc(u.email) + '</div></div>' +
+              '</div>';
+            }).join('');
+          }
+          dropdown.classList.add('open');
+        }, 200);
+      });
+
+      searchInput.addEventListener('focus', function() {
+        if (searchInput.value.trim().length >= 1) {
+          searchInput.dispatchEvent(new Event('input'));
+        }
+      });
+
+      // Click on dropdown item
+      dropdown.addEventListener('click', function(e) {
+        var item = e.target.closest('.user-dropdown-item');
+        if (!item) return;
+        var uid = item.getAttribute('data-uid');
+        var user = allUsers.find(function(u) { return u.id === uid; });
+        if (!user) return;
+
+        selectedUser = user;
+        searchInput.value = '';
+        dropdown.classList.remove('open');
+        loadUserOverrides(user.id);
+      });
+
+      // Close dropdown on outside click
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.user-search-wrap')) {
+          dropdown.classList.remove('open');
+        }
+      });
+    }
+
+    /* ── Save user override ── */
+    function saveUserOverride(userId, permission, granted) {
+      isSyncing = true;
+      var badge = document.getElementById('save-badge');
+      if (badge) { badge.textContent = '⏳ Opslaan…'; badge.className = 'header-badge saving'; }
+
+      userPermOverrides[permission] = granted;
+
+      adminSb.from('user_permissions')
+        .upsert({ user_id: userId, permission: permission, granted: granted, updated_at: new Date().toISOString() }, { onConflict: 'user_id,permission' })
+        .then(function(res) {
+          isSyncing = false;
+          if (res.error) {
+            showToast('Fout: ' + res.error.message, 'error');
+            delete userPermOverrides[permission];
+            renderUserMatrix();
+            if (badge) { badge.textContent = '⚠ Fout bij opslaan'; badge.className = 'header-badge saving'; }
+          } else {
+            if (badge) { badge.textContent = '✓ Automatisch opgeslagen'; badge.className = 'header-badge'; }
+            renderUserMatrix();
+          }
+        })
+        .catch(function(err) {
+          isSyncing = false;
+          showToast('Fout: ' + err.message, 'error');
+          delete userPermOverrides[permission];
+          renderUserMatrix();
+        });
+    }
+
+    /* ── Remove user override ── */
+    function removeUserOverride(userId, permission) {
+      isSyncing = true;
+      var badge = document.getElementById('save-badge');
+      if (badge) { badge.textContent = '⏳ Opslaan…'; badge.className = 'header-badge saving'; }
+
+      delete userPermOverrides[permission];
+
+      adminSb.from('user_permissions')
+        .delete()
+        .eq('user_id', userId)
+        .eq('permission', permission)
+        .then(function(res) {
+          isSyncing = false;
+          if (res.error) {
+            showToast('Fout: ' + res.error.message, 'error');
+            if (badge) { badge.textContent = '⚠ Fout bij opslaan'; badge.className = 'header-badge saving'; }
+          } else {
+            if (badge) { badge.textContent = '✓ Automatisch opgeslagen'; badge.className = 'header-badge'; }
+          }
+          renderUserMatrix();
+        })
+        .catch(function(err) {
+          isSyncing = false;
+          showToast('Fout: ' + err.message, 'error');
+          renderUserMatrix();
+        });
+    }
+
+    /* ── Reset all user overrides ── */
+    function resetUserOverrides(userId) {
+      isSyncing = true;
+      adminSb.from('user_permissions')
+        .delete()
+        .eq('user_id', userId)
+        .then(function(res) {
+          isSyncing = false;
+          if (res.error) {
+            showToast('Fout: ' + res.error.message, 'error');
+          } else {
+            userPermOverrides = {};
+            showToast('Alle overrides verwijderd voor ' + selectedUser.name);
+            renderUserMatrix();
+          }
+        })
+        .catch(function(err) {
+          isSyncing = false;
+          showToast('Fout: ' + err.message, 'error');
+        });
+    }
+
+    /* ── Save role permission ── */
     function savePermission(role, permission, granted) {
       isSyncing = true;
       var badge = document.getElementById('save-badge');
