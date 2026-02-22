@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="nav-cache.js"></script>
   <style>
     :root {
       --sanadome-blue: #3b82c4;
@@ -653,6 +654,9 @@
   <script>
     /* ── Supabase clients ── */
     var sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+    // Instant render from cache if available
+    var _cached = NavCache.load();
+    if (_cached) NavCache.applyUI(_cached);
     var adminSb = window.SUPABASE_SERVICE_ROLE_KEY
       ? supabase.createClient(window.SUPABASE_URL, window.SUPABASE_SERVICE_ROLE_KEY, {
           auth: { autoRefreshToken: false, persistSession: false }
@@ -899,6 +903,7 @@
         }
         initPage();
         document.body.classList.add('app-ready');
+        NavCache.save({ userName: currentUserName, initials: ini, avatarUrl: avatarUrl, role: role, perms: perms });
       }).catch(function() {
         window._userPerms = getDefaultPerms(myRole);
         window.location.href = 'dashboard.html';
@@ -908,6 +913,7 @@
     /* ── Init ── */
     function initPage() {
       document.getElementById('btn-logout').addEventListener('click', function() {
+        NavCache.clear();
         sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
       });
 

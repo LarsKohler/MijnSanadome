@@ -1060,8 +1060,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="nav-cache.js"></script>
   <script>
   (function() {
+    // Instant render from cache if available
+    var _cached = NavCache.load();
+    if (_cached) NavCache.applyUI(_cached);
+
     /* ═══ Supabase init ═══ */
     var supabaseUrl = window.SUPABASE_URL;
     var supabaseKey = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
@@ -1123,6 +1128,7 @@
       // Logout
       document.getElementById('btn-logout').addEventListener('click', function(e) {
         e.preventDefault();
+        NavCache.clear();
         sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
       });
 
@@ -1172,6 +1178,10 @@
           if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
         });
         document.body.classList.add('app-ready');
+        var _m = currentUser.user_metadata || {};
+        var _n = _m.full_name || _m.name || (currentUser.email || '').split('@')[0];
+        var _ini = _n.split(/\s+/).map(function(s){return (s[0]||'').toUpperCase();}).slice(0,2).join('');
+        NavCache.save({ userName: _n, initials: _ini, avatarUrl: _m.avatar_url, role: currentRole, perms: perms });
         if (onReady) onReady();
       }).catch(function() { window.location.href = 'dashboard.html'; });
     }

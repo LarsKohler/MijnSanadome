@@ -67,5 +67,6 @@ fs.copyFileSync(path.join(rootDir, 'artikel.html'), path.join(distDir, 'artikel.
 fs.copyFileSync(path.join(rootDir, 'onboarding.html'), path.join(distDir, 'onboarding.html'));
 fs.copyFileSync(path.join(rootDir, 'profiel.html'), path.join(distDir, 'profiel.html'));
 fs.copyFileSync(path.join(rootDir, 'debiteuren.html'), path.join(distDir, 'debiteuren.html'));
+fs.copyFileSync(path.join(rootDir, 'nav-cache.js'), path.join(distDir, 'nav-cache.js'));
 
 console.log('Build voltooid: dist/');

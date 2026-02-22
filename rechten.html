@@ -310,8 +310,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="nav-cache.js"></script>
   <script>
   (function() {
+    // Instant render from cache if available
+    var _cached = NavCache.load();
+    if (_cached) NavCache.applyUI(_cached);
+
     /* ── Config ── */
     var supabaseUrl = window.SUPABASE_URL;
     var supabaseKey = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
@@ -431,7 +436,7 @@
 
         // Logout
         document.getElementById('btn-logout').addEventListener('click', function(e) {
-          e.preventDefault(); sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
+          e.preventDefault(); NavCache.clear(); sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
         });
 
         // Check access
@@ -444,7 +449,12 @@
           sb.from('role_permissions').select('permission, granted').eq('role', currentUserRole).then(function(pr) {
             if (pr.data && pr.data.length > 0) {
               var has = pr.data.find(function(r) { return r.permission === 'rechten.bekijken' && r.granted; });
-              if (has) { canEdit = !!pr.data.find(function(r) { return r.permission === 'rechten.bewerken' && r.granted; }); initPage(); document.body.classList.add('app-ready'); }
+              if (has) {
+                canEdit = !!pr.data.find(function(r) { return r.permission === 'rechten.bewerken' && r.granted; });
+                var _perms = {}; pr.data.forEach(function(r) { _perms[r.permission] = r.granted; });
+                NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, role: currentUserRole, perms: _perms });
+                initPage(); document.body.classList.add('app-ready');
+              }
               else { showAccessDenied('Je hebt geen toegang tot deze pagina.'); document.body.classList.add('app-ready'); }
             } else {
               showAccessDenied('Je hebt geen toegang tot deze pagina.');
@@ -457,6 +467,7 @@
         canEdit = true;
         initPage();
         document.body.classList.add('app-ready');
+        NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, role: currentUserRole, perms: {} });
       });
     }).catch(function() { window.location.href = 'index.html'; });
 

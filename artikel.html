@@ -403,8 +403,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="nav-cache.js"></script>
   <script>
     var sb = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+    // Instant render from cache if available
+    var _cached = NavCache.load();
+    if (_cached) NavCache.applyUI(_cached);
     var currentUser = null;
     var currentUserName = '';
 
@@ -484,9 +488,11 @@
         });
         loadArticle();
         document.body.classList.add('app-ready');
+        NavCache.save({ userName: currentUserName, initials: ini, avatarUrl: avatarUrl, role: role, perms: perms });
       }).catch(function() { window.location.href = 'dashboard.html'; });
 
       document.getElementById('btn-logout').addEventListener('click', function() {
+        NavCache.clear();
         sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
       });
     }).catch(function() {

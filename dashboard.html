@@ -1239,8 +1239,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="nav-cache.js"></script>
   <script>
     (function() {
+      // Instant render from cache if available
+      var _cached = NavCache.load();
+      if (_cached) NavCache.applyUI(_cached);
+
       var supabaseUrl = window.SUPABASE_URL;
       var supabaseKey = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
 
@@ -1321,6 +1326,8 @@
               if (perms[el.getAttribute('data-permission')] === false) el.style.display = 'none';
             });
             document.body.classList.add('app-ready');
+            // Save to cache for instant nav
+            NavCache.save({ userName: name, initials: initials, avatarUrl: avatarUrl, role: userRole, perms: perms });
           }).catch(function() {
             // Fail closed: apply default perms on error
             var fallbackPerms = getDefaultPerms(userRole);
@@ -1335,6 +1342,7 @@
 
           document.getElementById('btn-logout').addEventListener('click', function(e) {
             e.preventDefault();
+            NavCache.clear();
             supabase.auth.signOut().then(function() {
               window.location.href = 'index.html';
             });
