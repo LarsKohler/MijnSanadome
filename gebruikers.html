@@ -702,6 +702,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="nav-cache.js"></script>
+  <script src="idle-lock.js"></script>
   <script>
     (function() {
       // Instant render from cache if available
@@ -863,7 +864,8 @@
             // Store permissions for card rendering
             window._userPerms = perms;
             document.body.classList.add('app-ready');
-            NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, role: myRole, perms: perms });
+            NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, email: user.email, role: myRole, perms: perms });
+            if (window.IdleLock) IdleLock.setUser({ email: user.email, userName: name, initials: ini, avatarUrl: avatarUrl });
             // Show admin warning if no service key
             if (!adminSb) {
               document.getElementById('admin-warning').style.display = 'flex';

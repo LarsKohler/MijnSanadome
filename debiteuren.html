@@ -1026,6 +1026,7 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script src="config.js"></script>
 <script src="nav-cache.js"></script>
+<script src="idle-lock.js"></script>
 <script>
 (function() {
   // Instant render from cache if available
@@ -2202,7 +2203,8 @@ CREATE SEQUENCE IF NOT EXISTS dossier_nr_seq START 1;
       // Load data only after permission check passes
       loadDossiers();
       document.body.classList.add('app-ready');
-      NavCache.save({ userName: currentUserName, initials: ini, avatarUrl: avatarUrl, role: role, perms: perms });
+      NavCache.save({ userName: currentUserName, initials: ini, avatarUrl: avatarUrl, email: user.email, role: role, perms: perms });
+      if (window.IdleLock) IdleLock.setUser({ email: user.email, userName: currentUserName, initials: ini, avatarUrl: avatarUrl });
     }).catch(function() { window.location.href = 'dashboard.html'; });
 
     // Logout

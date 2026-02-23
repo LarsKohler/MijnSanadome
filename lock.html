@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vergrendeld · MijnSanadome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sanadome-blue: #4a7c9c;
+      --sanadome-blue-light: #6b9bb8;
+      --sanadome-blue-pale: #e8f2f7;
+      --sanadome-blue-mist: #f0f7fb;
+      --sanadome-slate: #5c6b7a;
+      --sanadome-text: #2d3748;
+      --sanadome-text-soft: #6b7c8d;
+      --white: #ffffff;
+      --shadow-soft: 0 4px 24px rgba(74, 124, 156, 0.08);
+      --shadow-focus: 0 0 0 3px rgba(74, 124, 156, 0.2);
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      color: var(--sanadome-text);
+      overflow: hidden;
+    }
+
+    .split-screen {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ─── Rechterhelft – branding ─── */
+    .brand-side {
+      flex: 0 0 50%;
+      background: linear-gradient(160deg, var(--sanadome-blue-pale) 0%, var(--sanadome-blue-mist) 50%, rgba(255,255,255,0.95) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      position: relative;
+    }
+
+    .brand-side::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(74, 124, 156, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(107, 155, 184, 0.08) 0%, transparent 45%);
+      pointer-events: none;
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 380px;
+    }
+
+    .logo-sub {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--sanadome-blue-light);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+    }
+
+    .brand-welcome {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--sanadome-blue);
+      margin-bottom: 0.75rem;
+    }
+
+    .brand-tagline {
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--sanadome-text-soft);
+      line-height: 1.6;
+    }
+
+    .divider-ornament {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--sanadome-blue-light), transparent);
+      margin: 2rem auto;
+      opacity: 0.6;
+    }
+
+    /* ─── Logo styling ─── */
+    .logo-mijnsanadome {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      margin-bottom: 2rem;
+    }
+    .logo-mijnsanadome svg { flex-shrink: 0; width: 40px; height: 40px; }
+    .logo-mijnsanadome-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--sanadome-text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .logo-mijnsanadome-text span { color: var(--sanadome-blue); font-weight: 700; }
+    .logo-mijnsanadome--large { margin-bottom: 1.5rem; }
+    .logo-mijnsanadome--large svg { width: 48px; height: 48px; }
+    .logo-mijnsanadome--large .logo-mijnsanadome-text {
+      font-size: 1.6rem;
+      color: var(--sanadome-blue);
+    }
+    .logo-mijnsanadome--large .logo-mijnsanadome-text span {
+      color: var(--sanadome-blue-light);
+      font-weight: 600;
+    }
+
+    /* ─── Linkerhelft – lock formulier ─── */
+    .form-side {
+      flex: 0 0 50%;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      box-shadow: 8px 0 32px rgba(45, 55, 72, 0.04);
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+
+    /* ─── Lock avatar ─── */
+    .lock-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sanadome-blue) 0%, var(--sanadome-blue-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      overflow: hidden;
+    }
+    .lock-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .lock-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      background: var(--sanadome-blue-pale);
+      border-radius: 50%;
+    }
+    .lock-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--sanadome-blue);
+    }
+
+    .lock-user-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--sanadome-text);
+      margin-bottom: 0.25rem;
+    }
+
+    .lock-user-email {
+      font-size: 0.875rem;
+      color: var(--sanadome-text-soft);
+      margin-bottom: 0.5rem;
+    }
+
+    .lock-message {
+      font-size: 0.9rem;
+      color: var(--sanadome-text-soft);
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+
+    .form-header {
+      margin-bottom: 1.75rem;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--sanadome-text);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.9rem;
+      color: var(--sanadome-text-soft);
+      line-height: 1.5;
+    }
+
+    /* ─── Form elements ─── */
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--sanadome-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--sanadome-text);
+      background: var(--sanadome-blue-mist);
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .form-group input::placeholder {
+      color: var(--sanadome-text-soft);
+      opacity: 0.8;
+    }
+
+    .form-group input:hover { background: #e8f2f7; }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--sanadome-blue-light);
+      box-shadow: var(--shadow-focus);
+      background: var(--white);
+    }
+
+    .btn-unlock {
+      width: 100%;
+      padding: 0.95rem 1.5rem;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--sanadome-blue) 0%, var(--sanadome-blue-light) 100%);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-unlock:hover {
+      opacity: 0.95;
+      box-shadow: 0 6px 28px rgba(74, 124, 156, 0.25);
+    }
+
+    .btn-unlock:active { transform: scale(0.99); }
+
+    .btn-unlock:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .unlock-error {
+      font-size: 0.875rem;
+      color: #c53030;
+      background: #fff5f5;
+      border: 1px solid #feb2b2;
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .switch-account {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--sanadome-blue);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .switch-account:hover { color: var(--sanadome-blue-light); }
+    .switch-account svg { width: 16px; height: 16px; }
+
+    /* ─── Timer badge ─── */
+    .lock-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--sanadome-text-soft);
+      background: var(--sanadome-blue-pale);
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .lock-timer svg { width: 14px; height: 14px; opacity: 0.7; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .split-screen { flex-direction: column; }
+      .brand-side {
+        min-height: 24vh;
+        padding: 2rem 1.5rem;
+      }
+      .logo-mijnsanadome svg { width: 36px; height: 36px; }
+      .logo-mijnsanadome .logo-mijnsanadome-text { font-size: 1.2rem; }
+      .logo-mijnsanadome--large svg { width: 40px; height: 40px; }
+      .logo-mijnsanadome--large .logo-mijnsanadome-text { font-size: 1.35rem; }
+      .logo-sub { font-size: 0.8rem; margin-bottom: 1rem; }
+      .brand-tagline { font-size: 0.95rem; }
+      .form-side {
+        width: 100%;
+        flex: 1;
+        padding: 2rem 1.5rem;
+      }
+    }
+
+    /* ─── Fade-in animatie ─── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .form-container { animation: fadeInUp 0.4s ease-out; }
+  </style>
+</head>
+<body>
+  <div class="split-screen">
+
+    <!-- ─── Links: Lock formulier ─── -->
+    <main class="form-side">
+      <div class="form-container">
+        <div class="logo-mijnsanadome" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+            <path d="M12 28V16l8 7 8-7v12h-3V19l-5 4.5-5-4.5v9H12z" fill="white"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4a7c9c"/>
+                <stop offset="1" stop-color="#6b9bb8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="logo-mijnsanadome-text">Mijn<span>Sanadome</span></span>
+        </div>
+
+        <!-- Lock icon -->
+        <div class="lock-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+        </div>
+
+        <!-- User avatar -->
+        <div class="lock-avatar" id="lock-avatar">?</div>
+
+        <!-- User info -->
+        <p class="lock-user-name" id="lock-user-name">Laden…</p>
+        <p class="lock-user-email" id="lock-user-email"></p>
+
+        <!-- Timer -->
+        <div class="lock-timer" id="lock-timer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <span id="lock-timer-text">Vergrendeld wegens inactiviteit</span>
+        </div>
+
+        <p class="lock-message">
+          Je sessie is vergrendeld vanwege inactiviteit. Voer je wachtwoord in om verder te gaan.
+        </p>
+
+        <form id="unlock-form" action="#" method="post">
+          <div class="form-group">
+            <label for="password">Wachtwoord</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password" autofocus>
+          </div>
+          <div id="unlock-error" class="unlock-error" role="alert" hidden></div>
+          <button type="submit" class="btn-unlock" id="btn-unlock">
+            <span style="display:inline-flex;align-items:center;gap:0.5rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+              Ontgrendelen
+            </span>
+          </button>
+        </form>
+
+        <a href="index.html" class="switch-account" id="switch-account">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+          </svg>
+          Ander account gebruiken
+        </a>
+      </div>
+    </main>
+
+    <!-- ─── Rechts: Branding ─── -->
+    <aside class="brand-side">
+      <div class="brand-content">
+        <div class="logo-mijnsanadome logo-mijnsanadome--large" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad-side)"/>
+            <path d="M12 28V16l8 7 8-7v12h-3V19l-5 4.5-5-4.5v9H12z" fill="white"/>
+            <defs>
+              <linearGradient id="logo-grad-side" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4a7c9c"/>
+                <stop offset="1" stop-color="#6b9bb8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="logo-mijnsanadome-text">Mijn<span>Sanadome</span></span>
+        </div>
+        <p class="logo-sub">Sanadome Hotel & Spa · Medewerkersportaal</p>
+        <div class="divider-ornament"></div>
+        <p class="brand-welcome">Sessie vergrendeld</p>
+        <p class="brand-tagline">
+          Je account is beveiligd. Voer je wachtwoord in om direct verder te gaan waar je gebleven was.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="nav-cache.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      // ─── Supabase init ───
+      var supabaseUrl = window.SUPABASE_URL;
+      var supabaseKey = window.SUPABASE_ANON_KEY || window.SUPABASE_PUBLISHABLE_KEY;
+      if (!supabaseUrl || !supabaseKey) {
+        window.location.href = 'index.html';
+        return;
+      }
+      var sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      // ─── Lock data uit sessionStorage ───
+      var lockData = {};
+      try {
+        lockData = JSON.parse(sessionStorage.getItem('msn_lock') || '{}');
+      } catch (e) { lockData = {}; }
+
+      var returnUrl = lockData.returnUrl || 'dashboard.html';
+      var lockedEmail = lockData.email || '';
+      var lockedName = lockData.userName || '';
+      var lockedInitials = lockData.initials || '';
+      var lockedAvatar = lockData.avatarUrl || '';
+      var lockedAt = lockData.lockedAt || null;
+
+      // ─── UI invullen ───
+      var nameEl = document.getElementById('lock-user-name');
+      var emailEl = document.getElementById('lock-user-email');
+      var avatarEl = document.getElementById('lock-avatar');
+      var timerTextEl = document.getElementById('lock-timer-text');
+
+      if (lockedName) nameEl.textContent = lockedName;
+      if (lockedEmail) emailEl.textContent = lockedEmail;
+
+      if (lockedAvatar) {
+        avatarEl.innerHTML = '<img src="' + lockedAvatar + '" alt="">';
+      } else if (lockedInitials) {
+        avatarEl.textContent = lockedInitials;
+      }
+
+      // Toon vergrendeltijd
+      if (lockedAt) {
+        var lockTime = new Date(lockedAt);
+        var timeStr = lockTime.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+        timerTextEl.textContent = 'Vergrendeld om ' + timeStr;
+      }
+
+      // ─── Als er geen lock-data is, check sessie ───
+      if (!lockedEmail) {
+        sb.auth.getSession().then(function(res) {
+          if (res.data && res.data.session && res.data.session.user) {
+            var user = res.data.session.user;
+            lockedEmail = user.email || '';
+            lockedName = user.user_metadata?.full_name || user.user_metadata?.name || (user.email ? user.email.split('@')[0] : 'Medewerker');
+            lockedInitials = (lockedName || '').split(/\s+/).map(function(s) { return (s[0] || '').toUpperCase(); }).slice(0, 2).join('');
+            lockedAvatar = user.user_metadata?.avatar_url || '';
+
+            nameEl.textContent = lockedName;
+            emailEl.textContent = lockedEmail;
+            if (lockedAvatar) {
+              avatarEl.innerHTML = '<img src="' + lockedAvatar + '" alt="">';
+            } else if (lockedInitials) {
+              avatarEl.textContent = lockedInitials;
+            }
+          } else {
+            // Geen sessie: ga naar login
+            window.location.href = 'index.html';
+          }
+        }).catch(function() {
+          window.location.href = 'index.html';
+        });
+      }
+
+      // ─── Unlock formulier ───
+      var form = document.getElementById('unlock-form');
+      var btn = document.getElementById('btn-unlock');
+      var errEl = document.getElementById('unlock-error');
+
+      function showError(msg) {
+        errEl.textContent = msg;
+        errEl.hidden = false;
+      }
+      function hideError() {
+        errEl.textContent = '';
+        errEl.hidden = true;
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        hideError();
+
+        var password = document.getElementById('password').value;
+        if (!password) return;
+
+        if (!lockedEmail) {
+          showError('Geen account gevonden. Log opnieuw in.');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem;">Ontgrendelen…</span>';
+
+        sb.auth.signInWithPassword({ email: lockedEmail, password: password })
+          .then(function(res) {
+            if (res.error) {
+              if (res.error.message && res.error.message.indexOf('Invalid login') !== -1) {
+                showError('Onjuist wachtwoord. Probeer het opnieuw.');
+              } else {
+                showError(res.error.message || 'Ontgrendelen mislukt.');
+              }
+              btn.disabled = false;
+              btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>Ontgrendelen</span>';
+              return;
+            }
+
+            // Succes: verwijder lock-data en ga terug
+            try { sessionStorage.removeItem('msn_lock'); } catch (ex) {}
+            window.location.href = returnUrl;
+          })
+          .catch(function(err) {
+            showError(err.message || 'Er ging iets mis. Probeer het opnieuw.');
+            btn.disabled = false;
+            btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>Ontgrendelen</span>';
+          });
+      });
+
+      // ─── "Ander account" = volledige uitlog ───
+      document.getElementById('switch-account').addEventListener('click', function(e) {
+        e.preventDefault();
+        try { sessionStorage.removeItem('msn_lock'); } catch (ex) {}
+        NavCache.clear();
+        sb.auth.signOut().then(function() {
+          window.location.href = 'index.html';
+        }).catch(function() {
+          window.location.href = 'index.html';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

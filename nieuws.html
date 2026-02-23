@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="nav-cache.js"></script>
+  <script src="idle-lock.js"></script>
   <style>
     :root {
       --sanadome-blue: #3b82c4;
@@ -907,7 +908,8 @@
         }
         initPage();
         document.body.classList.add('app-ready');
-        NavCache.save({ userName: currentUserName, initials: ini, avatarUrl: avatarUrl, role: role, perms: perms });
+        NavCache.save({ userName: currentUserName, initials: ini, avatarUrl: avatarUrl, email: user.email, role: role, perms: perms });
+        if (window.IdleLock) IdleLock.setUser({ email: user.email, userName: currentUserName, initials: ini, avatarUrl: avatarUrl });
       }).catch(function() {
         window._userPerms = getDefaultPerms(myRole);
         window.location.href = 'dashboard.html';

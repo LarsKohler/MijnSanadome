@@ -773,6 +773,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="nav-cache.js"></script>
+  <script src="idle-lock.js"></script>
   <script>
     (function() {
       // Instant render from cache if available
@@ -892,7 +893,8 @@
           var _m = currentUser.user_metadata || {};
           var _n = _m.full_name || _m.name || (currentUser.email || '').split('@')[0];
           var _ini = _n.split(/\s+/).map(function(s){return (s[0]||'').toUpperCase();}).slice(0,2).join('');
-          NavCache.save({ userName: _n, initials: _ini, avatarUrl: _m.avatar_url, role: userRole, perms: perms });
+          NavCache.save({ userName: _n, initials: _ini, avatarUrl: _m.avatar_url, email: currentUser.email, role: userRole, perms: perms });
+          if (window.IdleLock) IdleLock.setUser({ email: currentUser.email, userName: _n, initials: _ini, avatarUrl: _m.avatar_url });
         }).catch(function() {
           // Fail closed: apply default perms on error
           var fallbackPerms = getDefaultPerms(userRole);

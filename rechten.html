@@ -315,6 +315,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="nav-cache.js"></script>
+  <script src="idle-lock.js"></script>
   <script>
   (function() {
     // Instant render from cache if available
@@ -456,7 +457,8 @@
               if (has) {
                 canEdit = !!pr.data.find(function(r) { return r.permission === 'rechten.bewerken' && r.granted; });
                 var _perms = {}; pr.data.forEach(function(r) { _perms[r.permission] = r.granted; });
-                NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, role: currentUserRole, perms: _perms });
+                NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, email: user.email, role: currentUserRole, perms: _perms });
+                if (window.IdleLock) IdleLock.setUser({ email: user.email, userName: name, initials: ini, avatarUrl: avatarUrl });
                 initPage(); document.body.classList.add('app-ready');
               }
               else { showAccessDenied('Je hebt geen toegang tot deze pagina.'); document.body.classList.add('app-ready'); }
@@ -471,7 +473,8 @@
         canEdit = true;
         initPage();
         document.body.classList.add('app-ready');
-        NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, role: currentUserRole, perms: {} });
+        NavCache.save({ userName: name, initials: ini, avatarUrl: avatarUrl, email: user.email, role: currentUserRole, perms: {} });
+        if (window.IdleLock) IdleLock.setUser({ email: user.email, userName: name, initials: ini, avatarUrl: avatarUrl });
       });
     }).catch(function() { window.location.href = 'index.html'; });
 

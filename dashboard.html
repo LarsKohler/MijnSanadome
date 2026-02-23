@@ -1244,6 +1244,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="nav-cache.js"></script>
+  <script src="idle-lock.js"></script>
   <script>
     (function() {
       // Instant render from cache if available
@@ -1331,7 +1332,8 @@
             });
             document.body.classList.add('app-ready');
             // Save to cache for instant nav
-            NavCache.save({ userName: name, initials: initials, avatarUrl: avatarUrl, role: userRole, perms: perms });
+            NavCache.save({ userName: name, initials: initials, avatarUrl: avatarUrl, email: email, role: userRole, perms: perms });
+            if (window.IdleLock) IdleLock.setUser({ email: email, userName: name, initials: initials, avatarUrl: avatarUrl });
           }).catch(function() {
             // Fail closed: apply default perms on error
             var fallbackPerms = getDefaultPerms(userRole);
