@@ -30,16 +30,27 @@ function parseEnvFile(content) {
 }
 
 let envFromFile = {};
+const rootEnvPath = path.join(rootDir, '.env');
+if (fs.existsSync(rootEnvPath)) {
+  envFromFile = parseEnvFile(fs.readFileSync(rootEnvPath, 'utf8'));
+}
 if (fs.existsSync(envLocalPath)) {
-  envFromFile = parseEnvFile(fs.readFileSync(envLocalPath, 'utf8'));
+  envFromFile = { ...envFromFile, ...parseEnvFile(fs.readFileSync(envLocalPath, 'utf8')) };
 }
 
-const url = process.env.SUPABASE_URL || envFromFile.SUPABASE_URL || '';
+const url =
+  process.env.SUPABASE_URL ||
+  process.env.VITE_SUPABASE_URL ||
+  envFromFile.SUPABASE_URL ||
+  envFromFile.VITE_SUPABASE_URL ||
+  '';
 const key =
   process.env.SUPABASE_ANON_KEY ||
   process.env.SUPABASE_PUBLISHABLE_KEY ||
+  process.env.VITE_SUPABASE_ANON_KEY ||
   envFromFile.SUPABASE_ANON_KEY ||
   envFromFile.SUPABASE_PUBLISHABLE_KEY ||
+  envFromFile.VITE_SUPABASE_ANON_KEY ||
   '';
 
 if (!fs.existsSync(distDir)) {
